@@ -1,5 +1,5 @@
 import { shell } from "../components/layout.js?v=profile-auto-role-1";
-import { state } from "../state/appState.js";
+import { state } from "../state/appState.js?v=pilot-default-2";
 
 const orderTabs = ["全部", "待付款", "待接单", "待服务", "待评价", "已取消"];
 

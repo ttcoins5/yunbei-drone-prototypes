@@ -1,13 +1,15 @@
-import { products } from "../data/catalog.js";
+import { hoistingProducts } from "../data/catalog.js";
 
 export const state = {
   page: location.hash.replace("#/", "") || "home",
   history: [],
-  selectedProduct: products[0],
+  selectedProduct: hoistingProducts[0],
+  productListMode: "hoisting",
+  productReviewFilter: "全部",
   selectedSpecIndex: 0,
   pendingProductOrder: null,
   userProfile: {
-    role: "user",
+    role: "pilot",
     nickname: "云北用户",
     phone: "13888888821",
     gender: "男",

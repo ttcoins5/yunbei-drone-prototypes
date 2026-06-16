@@ -405,7 +405,7 @@ function productReviewsPanel(product) {
     return `<label class="review-option${checked ? " is-on" : ""}">
       <input type="checkbox" data-action="toggle-product-review" data-id="${item.id}"${checked ? " checked" : ""}>
       <span class="review-main">
-        <span class="review-head"><strong>${item.user}</strong><span class="review-stars">${"★".repeat(item.rating)}${"☆".repeat(5 - item.rating)}</span></span>
+        <span class="review-head"><strong>${item.user}</strong><span class="review-stars">${"★".repeat(item.rating)}${"☆".repeat(5 - item.rating)}</span><span class="muted">星级：${item.rating}星</span></span>
         <p>${item.content}</p>
         <span class="muted">订单 ${item.orderNo} · ${item.time}</span>
       </span>

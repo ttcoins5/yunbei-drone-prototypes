@@ -1,5 +1,5 @@
-import { routes } from "./routes.js?v=profile-auto-role-1";
-import { state } from "../state/appState.js";
+import { routes } from "./routes.js?v=pilot-default-2";
+import { state } from "../state/appState.js?v=pilot-default-2";
 
 export function render() {
   if (!routes[state.page]) state.page = "home";

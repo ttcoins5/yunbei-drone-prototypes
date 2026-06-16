@@ -1,4 +1,4 @@
-import { state } from "../state/appState.js";
+import { state } from "../state/appState.js?v=pilot-default-2";
 
 function contactSheet() {
   if (!state.showContactSheet) return "";

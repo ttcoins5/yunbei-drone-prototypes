@@ -1,5 +1,5 @@
 import { shell } from "../components/layout.js?v=profile-auto-role-1";
-import { state } from "../state/appState.js";
+import { state } from "../state/appState.js?v=pilot-default-2";
 
 export function contactPage() {
   return shell(`<div class="about-page">
@@ -187,7 +187,7 @@ export function aboutPage() {
       <p>公司围绕低空经济与交通科技场景，提供无人机设备、飞行服务、行业作业与运营支持，为企业客户打造更高效、更可靠的一站式服务体验。</p>
     </section>
     <section class="company-story">
-      <img src="../shared/assets/hero-image2.png" alt="宁波泰安宏业交通科技有限公司服务场景">
+      <img src="../../shared/assets/hero-image2.png" alt="宁波泰安宏业交通科技有限公司服务场景">
       <div>
         <b>连接设备、飞手与行业需求</b>
         <p>平台以标准化服务流程承接巡检、测绘、农业植保、物资吊运等低空作业需求，帮助客户从需求提交、方案确认到服务交付形成清晰闭环。</p>

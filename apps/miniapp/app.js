@@ -1,7 +1,8 @@
-import { products } from "./src/data/catalog.js";
-import { state } from "./src/state/appState.js";
-import { navigate, render } from "./src/router/navigation.js?v=profile-auto-role-1";
+import { hoistingProducts } from "./src/data/catalog.js";
+import { state } from "./src/state/appState.js?v=pilot-default-2";
+import { navigate, render } from "./src/router/navigation.js?v=pilot-default-2";
 import { toast } from "./src/utils/toast.js";
+import { currentProducts } from "./src/pages/products.js";
 
 function formatDateTime(date = new Date()) {
   const year = date.getFullYear();
@@ -28,12 +29,8 @@ function pushServiceNotification(orderNo, fromStatus, toStatus, time = formatDat
 
 function resolveHomepageNavLink(link, jumpType) {
   if (jumpType === "external") return { type: "external", value: link };
-  if (link.includes("/pages/products/index?type=sales")) return { type: "route", value: "products" };
-  if (link.includes("/pages/products/index?type=rental")) return { type: "route", value: "rental" };
-  if (link.includes("/pages/categories/index")) return { type: "route", value: "categories" };
-  if (link.includes("/pages/maintenance/index")) return { type: "route", value: "booking" };
-  if (link.includes("/pages/services/")) return { type: "route", value: "booking" };
-  return { type: "route", value: "categories" };
+  if (link.includes("/pages/services/hoisting/index")) return { type: "hoisting" };
+  return { type: "disabled" };
 }
 
 function openHomepageNavLink(link, jumpType) {
@@ -42,7 +39,15 @@ function openHomepageNavLink(link, jumpType) {
     toast(`后台配置链接：${target.value}`);
     return;
   }
-  navigate(target.value);
+  if (target.type === "hoisting") {
+    state.productListMode = "hoisting";
+    state.selectedProduct = hoistingProducts[0];
+    state.selectedSpecIndex = 0;
+    state.productReviewFilter = "全部";
+    navigate("products");
+    return;
+  }
+  toast("暂未开通");
 }
 
 function isPilotUser() {
@@ -174,6 +179,11 @@ function filterReports(filter) {
   render();
 }
 
+function filterProductReviews(filter) {
+  state.productReviewFilter = filter;
+  render();
+}
+
 function setTaskHallTab(tab) {
   state.taskHallTab = tab;
   render();
@@ -240,22 +250,32 @@ function submitProductOrder(form) {
     phone: fields.phone,
     remark: fields.remark
   };
+  navigate("payment");
+}
+
+function payProductOrder() {
+  const order = state.pendingProductOrder;
+  if (!order) {
+    toast("请先提交订单");
+    navigate("orderConfirm");
+    return;
+  }
   state.orders = [
     {
-      orderNo,
+      orderNo: order.orderNo,
       status: "待接单",
       tab: "待接单",
       time: formatDateTime(),
-      title: state.selectedProduct.name,
-      spec: spec.name,
-      price: spec.price,
+      title: order.productName,
+      spec: order.specName,
+      price: order.amount,
       count: 1,
-      paid: spec.price,
+      paid: order.amount,
       serviceType: "预约服务",
-      contactName: fields.phone.trim() ? "云北用户" : "",
-      contactPhone: fields.phone.trim(),
-      address: fields.address.trim(),
-      remark: fields.remark.trim() || "暂无备注",
+      contactName: order.phone.trim() ? "云北用户" : "",
+      contactPhone: order.phone.trim(),
+      address: order.address.trim(),
+      remark: order.remark.trim() || "暂无备注",
       timeline: [
         { time: formatDateTime(), title: "订单提交", desc: "已提交预约需求并完成支付" },
         { time: formatDateTime(), title: "待接单", desc: "订单已支付成功，等待平台接单" }
@@ -263,7 +283,7 @@ function submitProductOrder(form) {
     },
     ...state.orders
   ];
-  pushServiceNotification(orderNo, "待付款", "待接单");
+  pushServiceNotification(order.orderNo, "待付款", "待接单");
   toast("支付成功，订单待接单");
   navigate("paymentResult");
 }
@@ -379,11 +399,13 @@ document.addEventListener("click", (event) => {
   if (action.dataset.action === "homepage-nav-link") return openHomepageNavLink(action.dataset.link, action.dataset.jumpType);
   if (action.dataset.action === "order-filter") return filterOrders(action.dataset.filter);
   if (action.dataset.action === "report-filter") return filterReports(action.dataset.filter);
+  if (action.dataset.action === "review-filter") return filterProductReviews(action.dataset.filter);
   if (action.dataset.action === "task-hall-tab") return setTaskHallTab(action.dataset.tab);
   if (action.dataset.action === "pilot-task-join") return joinPilotTask(action.dataset.id);
   if (action.dataset.action === "pilot-order-open") return openAssignedPilotOrder(action.dataset.id);
   if (action.dataset.action === "pilot-order-complete") return completeAssignedPilotOrder(action.dataset.id);
   if (action.dataset.action === "product-spec") return selectProductSpec(Number(action.dataset.index));
+  if (action.dataset.action === "pay-product-order") return payProductOrder();
   if (action.dataset.action === "invoice-tab") return setInvoiceTab(action.dataset.tab);
   if (action.dataset.action === "invoice-toggle") return toggleInvoiceOrder(action.dataset.id);
   if (action.dataset.action === "invoice-submit") return submitInvoice();
@@ -403,8 +425,9 @@ document.addEventListener("click", (event) => {
   if (action.dataset.action === "notification-open") return openNotification(action.dataset.id);
   if (action.dataset.action === "order-open") return openOrder(action.dataset.id);
   if (action.dataset.action === "product") {
-    state.selectedProduct = products[Number(action.dataset.index)];
+    state.selectedProduct = currentProducts()[Number(action.dataset.index)];
     state.selectedSpecIndex = 0;
+    state.productReviewFilter = "全部";
     navigate("product");
   }
 });
