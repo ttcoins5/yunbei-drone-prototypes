@@ -5,7 +5,7 @@
 ## 访问地址
 
 - 总入口：https://ttcoins5.github.io/yunbei-drone-prototypes/
-- 小程序原型：https://ttcoins5.github.io/yunbei-drone-prototypes/miniapp/
+- 小程序原型：https://ttcoins5.github.io/yunbei-drone-prototypes/apps/miniapp/
 - 后台管理原型：https://ttcoins5.github.io/yunbei-drone-prototypes/admin/
 
 ## 目录结构
@@ -32,7 +32,7 @@ docs/            需求、页面地图、功能矩阵和会议材料
 
 推送到 `main` 分支后，GitHub Actions 会自动生成 Pages 站点：
 
-- `apps/miniapp` 发布为 `/miniapp/`
+- `apps/miniapp` 发布为 `/apps/miniapp/`
 - `apps/admin` 发布为 `/admin/`
 - `shared` 发布为 `/shared/`
 
@@ -42,11 +42,12 @@ docs/            需求、页面地图、功能矩阵和会议材料
 rm -rf /tmp/yunbei-drone-pages-site
 mkdir -p /tmp/yunbei-drone-pages-site
 cp index.html /tmp/yunbei-drone-pages-site/index.html
-cp -R apps/miniapp /tmp/yunbei-drone-pages-site/miniapp
+mkdir -p /tmp/yunbei-drone-pages-site/apps
+cp -R apps/miniapp /tmp/yunbei-drone-pages-site/apps/miniapp
 cp -R apps/admin /tmp/yunbei-drone-pages-site/admin
 cp -R shared /tmp/yunbei-drone-pages-site/shared
 cd /tmp/yunbei-drone-pages-site
 python3 -m http.server 4173
 ```
 
-然后访问 `http://127.0.0.1:4173/`、`/miniapp/`、`/admin/`。
+然后访问 `http://127.0.0.1:4173/`、`/apps/miniapp/`、`/admin/`。

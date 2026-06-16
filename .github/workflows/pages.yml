@@ -28,10 +28,27 @@ jobs:
         run: |
           rm -rf site
           mkdir -p site
+          mkdir -p site/apps
           cp index.html site/index.html
-          cp -R apps/miniapp site/miniapp
+          cp -R apps/miniapp site/apps/miniapp
           cp -R apps/admin site/admin
           cp -R shared site/shared
+          mkdir -p site/miniapp
+          cat <<'EOF' > site/miniapp/index.html
+          <!doctype html>
+          <html lang="zh-CN">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <meta http-equiv="refresh" content="0; url=../apps/miniapp/">
+              <title>正在跳转到小程序原型</title>
+              <script>
+                location.replace("../apps/miniapp/" + location.search + location.hash);
+              </script>
+            </head>
+            <body>正在跳转到小程序原型...</body>
+          </html>
+          EOF
           touch site/.nojekyll
           find site -name ".DS_Store" -delete
 
