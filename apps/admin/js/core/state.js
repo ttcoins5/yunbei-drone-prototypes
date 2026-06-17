@@ -2,7 +2,8 @@ const menu = [
   { id: "dashboard", label: "工作台", icon: "台" },
   { id: "homepage", label: "小程序配置", icon: "小", children: [
     { id: "carousel", label: "轮播图配置" },
-    { id: "homepage-nav", label: "导航配置" }
+    { id: "homepage-nav", label: "导航配置" },
+    { id: "case-showcase", label: "案例展示配置" }
   ]},
   { id: "users", label: "用户管理", icon: "用", children: [
     { id: "users", label: "用户列表" }
@@ -46,7 +47,8 @@ const navRouteAlias = {
   "pilot-detail": "pilots",
   "flight-report-detail": "flight-reports",
   "task-detail": "tasks",
-  "invoice-detail": "invoices"
+  "invoice-detail": "invoices",
+  "case-showcase-edit": "case-showcase"
 };
 
 function navActiveRoute(page = state.page) {

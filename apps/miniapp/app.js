@@ -1,8 +1,9 @@
-import { hoistingProducts } from "./src/data/catalog.js?v=nav-banner-1";
-import { state } from "./src/state/appState.js?v=nav-banner-1";
-import { navigate, render } from "./src/router/navigation.js?v=message-clean-2";
+import { hoistingProducts } from "./src/data/catalog.js?v=external-link-1";
+import { caseStudies } from "./src/data/caseStudies.js?v=case-showcase-1";
+import { state } from "./src/state/appState.js?v=order-list-density-1";
+import { navigate, render } from "./src/router/navigation.js?v=invoice-email-removed-1";
 import { toast } from "./src/utils/toast.js";
-import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=nav-banner-1";
+import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=all-products-2";
 
 function formatDateTime(date = new Date()) {
   const year = date.getFullYear();
@@ -11,6 +12,12 @@ function formatDateTime(date = new Date()) {
   const hours = String(date.getHours()).padStart(2, "0");
   const minutes = String(date.getMinutes()).padStart(2, "0");
   return `${year}-${month}-${day} ${hours}:${minutes}`;
+}
+
+function generateFlightReportNo(date = new Date()) {
+  const dateKey = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}`;
+  const sameDayCount = state.flightReports.filter(item => item.reportNo?.startsWith(`BB${dateKey}`)).length;
+  return `BB${dateKey}${String(sameDayCount + 1).padStart(3, "0")}`;
 }
 
 function pushServiceNotification(orderNo, fromStatus, toStatus, time = formatDateTime()) {
@@ -51,7 +58,8 @@ function resolveHomepageNavLink(link, jumpType) {
 function openHomepageNavLink(link, jumpType) {
   const target = resolveHomepageNavLink(link, jumpType);
   if (target.type === "external") {
-    toast(`后台配置链接：${target.value}`);
+    const win = window.open(target.value, "_blank", "noopener");
+    if (!win) location.href = target.value;
     return;
   }
   if (target.type === "product-list") {
@@ -59,7 +67,7 @@ function openHomepageNavLink(link, jumpType) {
     state.selectedProduct = hoistingProducts.find(item => item.id === target.productId) || hoistingProducts[0];
     state.selectedSpecIndex = 0;
     state.productReviewFilter = "全部";
-    navigate("products");
+    navigate("product");
     return;
   }
   if (target.type === "categories") {
@@ -135,6 +143,11 @@ function openOrder(orderNo) {
   navigate("orderDetail");
 }
 
+function openCase(caseId) {
+  state.selectedCaseId = caseStudies.find(item => item.id === caseId)?.id || caseStudies[0]?.id || "";
+  navigate("caseDetail");
+}
+
 function updateAddressDefault(id) {
   state.addressBook = state.addressBook.map(address => ({
     ...address,
@@ -195,7 +208,7 @@ function filterOrders(filter) {
 
 function filterReports(filter) {
   state.reportFilter = filter;
-  render();
+  render(true);
 }
 
 function filterProductReviews(filter) {
@@ -256,7 +269,6 @@ function selectProductSpec(index) {
 
 function submitProductOrder(form) {
   const formData = new FormData(form);
-  const fields = Object.fromEntries(formData.entries());
   const spec = state.selectedProduct.specs?.[state.selectedSpecIndex] || state.selectedProduct;
   const orderNo = `ORD${Date.now()}`;
   const template = selectedRequirementTemplate(state.selectedProduct);
@@ -301,16 +313,7 @@ function submitProductOrder(form) {
       fields: requirementFields
     }
   };
-  navigate("payment");
-}
-
-function payProductOrder() {
   const order = state.pendingProductOrder;
-  if (!order) {
-    toast("请先提交订单");
-    navigate("orderConfirm");
-    return;
-  }
   state.orders = [
     {
       orderNo: order.orderNo,
@@ -329,26 +332,36 @@ function payProductOrder() {
       remark: order.remark,
       requirementSnapshot: order.requirementSnapshot,
       timeline: [
-        { time: formatDateTime(), title: "订单提交", desc: "已提交服务需求并完成支付" },
-        { time: formatDateTime(), title: "待接单", desc: "订单已支付成功，等待平台接单" }
+        { time: formatDateTime(), title: "订单提交", desc: "已提交服务需求，等待平台接单" },
+        { time: formatDateTime(), title: "待接单", desc: "后台正在确认需求信息并安排后续服务" }
       ]
     },
     ...state.orders
   ];
-  pushServiceNotification(order.orderNo, "待付款", "待接单");
-  toast("支付成功，订单待接单");
+  pushServiceNotification(order.orderNo, "提交成功", "待接单");
+  toast("提交成功，订单待接单");
   navigate("paymentResult");
 }
 
 function submitFlightReport(form) {
   const fields = Object.fromEntries(new FormData(form).entries());
+  const now = new Date();
   const report = {
-    reportNo: `BB${Date.now()}`,
+    reportNo: generateFlightReportNo(now),
+    entrustedSubject: fields.entrustedSubject.trim(),
     pilot: fields.pilot.trim(),
-    modelLicense: fields.modelLicense.trim(),
-    sorties: Number(fields.sorties),
-    duration: fields.duration.trim(),
-    reportTime: fields.reportTime.trim(),
+    pilotPhone: fields.pilotPhone.trim(),
+    droneModel: fields.droneModel.trim(),
+    serialNo: fields.serialNo.trim(),
+    modelLicense: `${fields.droneModel.trim()} / ${fields.serialNo.trim()}`,
+    flightPlan: fields.flightPlan.trim(),
+    flightArea: fields.flightArea.trim(),
+    flightAltitude: fields.flightAltitude.trim(),
+    taskNature: fields.taskNature.trim(),
+    reportStatement: fields.reportStatement.trim(),
+    sorties: 1,
+    duration: fields.flightPlan.trim(),
+    reportTime: formatDateTime(now),
     status: "待确认"
   };
   state.flightReports = [report, ...state.flightReports];
@@ -390,17 +403,17 @@ function setPilotType(type) {
   state.pilotJoinType = type;
   if (type === "company") state.pilotCompanyMode = "existing";
   state.pilotAgreement = false;
-  render();
+  render(true);
 }
 
 function setPilotCompanyMode(mode) {
   state.pilotCompanyMode = mode;
-  render();
+  render(true);
 }
 
 function togglePilotAgreement() {
   state.pilotAgreement = !state.pilotAgreement;
-  render();
+  render(true);
 }
 
 function toggleOperatorAgreement() {
@@ -449,6 +462,7 @@ document.addEventListener("click", (event) => {
   if (action.dataset.action === "contact-phone") return chooseContact("phone");
   if (action.dataset.action === "contact-wechat") return chooseContact("wechat");
   if (action.dataset.action === "homepage-nav-link") return openHomepageNavLink(action.dataset.link, action.dataset.jumpType);
+  if (action.dataset.action === "case-open") return openCase(action.dataset.id);
   if (action.dataset.action === "order-filter") return filterOrders(action.dataset.filter);
   if (action.dataset.action === "report-filter") return filterReports(action.dataset.filter);
   if (action.dataset.action === "review-filter") return filterProductReviews(action.dataset.filter);
@@ -457,7 +471,6 @@ document.addEventListener("click", (event) => {
   if (action.dataset.action === "pilot-order-open") return openAssignedPilotOrder(action.dataset.id);
   if (action.dataset.action === "pilot-order-complete") return completeAssignedPilotOrder(action.dataset.id);
   if (action.dataset.action === "product-spec") return selectProductSpec(Number(action.dataset.index));
-  if (action.dataset.action === "pay-product-order") return payProductOrder();
   if (action.dataset.action === "invoice-tab") return setInvoiceTab(action.dataset.tab);
   if (action.dataset.action === "invoice-toggle") return toggleInvoiceOrder(action.dataset.id);
   if (action.dataset.action === "invoice-submit") return submitInvoice();

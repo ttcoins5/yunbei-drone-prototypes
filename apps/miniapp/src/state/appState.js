@@ -1,9 +1,10 @@
-import { hoistingProducts } from "../data/catalog.js?v=nav-banner-1";
+import { hoistingProducts } from "../data/catalog.js?v=detail-page-icon-1";
 
 export const state = {
   page: location.hash.replace("#/", "") || "home",
   history: [],
   selectedProduct: hoistingProducts[0],
+  selectedCaseId: "case-hospital-hoisting",
   productListMode: "hoisting",
   productReviewFilter: "全部",
   selectedSpecIndex: 0,
@@ -21,6 +22,37 @@ export const state = {
   },
   selectedOrderNo: "ORD17811004481206569",
   orders: [
+    {
+      orderNo: "ORD1781687808948",
+      status: "待接单",
+      tab: "待接单",
+      time: "2026-06-17 17:16",
+      title: "无人机巡检服务",
+      spec: "信息提交",
+      price: 0,
+      count: 1,
+      paid: 0,
+      serviceType: "园区巡检",
+      contactName: "云北用户",
+      contactPhone: "13888888821",
+      address: "上海市 浦东新区 张江低空产业园 6 号楼",
+      remark: "需巡检园区屋面、连廊与设备平台",
+      requirementSnapshot: {
+        templateName: "巡检服务模板",
+        fields: [
+          { label: "登记联系人", type: "text", value: "云北用户" },
+          { label: "联系电话", type: "text", value: "13888888821" },
+          { label: "服务类型", type: "select", value: "园区巡检" },
+          { label: "巡检区域", type: "address", value: "上海市 浦东新区 张江低空产业园 6 号楼" },
+          { label: "巡检时间", type: "timeSlot", value: "2026-06-20 09:00-11:00" },
+          { label: "需求说明", type: "textarea", value: "需巡检园区屋面、连廊与设备平台" }
+        ]
+      },
+      timeline: [
+        { time: "2026-06-17 17:16", title: "订单提交", desc: "已提交无人机巡检服务需求" },
+        { time: "2026-06-17 17:20", title: "待接单", desc: "后台正在确认需求信息并安排服务" }
+      ]
+    },
     {
       orderNo: "ORD17811004481206569",
       status: "已取消",
@@ -305,8 +337,17 @@ export const state = {
   flightReports: [
     {
       reportNo: "BB20260615001",
-      pilot: "林先生",
-      modelLicense: "DJI M350 RTK / CAAC-A01236",
+      entrustedSubject: "宁波市自然资源和规划局奉化分局",
+      pilot: "苏炜",
+      pilotPhone: "18356570510",
+      droneModel: "DJI Mavic 3E",
+      serialNo: "1581F5FHD23CF00D5",
+      flightPlan: "2026 年 6 月 12 日 12:00-14:00",
+      flightArea: "萧王庙街道云溪村",
+      flightAltitude: "120 米",
+      taskNature: "测绘",
+      reportStatement: "特此报备",
+      modelLicense: "DJI Mavic 3E / 1581F5FHD23CF00D5",
       sorties: 3,
       duration: "2小时30分",
       reportTime: "2026-06-15 09:30",
@@ -314,8 +355,17 @@ export const state = {
     },
     {
       reportNo: "BB20260612008",
+      entrustedSubject: "东太湖农服中心",
       pilot: "周先生",
-      modelLicense: "植保 T60 / CAAC-A00821",
+      pilotPhone: "13888889993",
+      droneModel: "植保 T60",
+      serialNo: "T60-20260612008",
+      flightPlan: "2026-06-12 08:00-12:10",
+      flightArea: "苏州市吴江区东太湖农服中心",
+      flightAltitude: "60 米",
+      taskNature: "植保飞防",
+      reportStatement: "特此报备",
+      modelLicense: "植保 T60 / T60-20260612008",
       sorties: 5,
       duration: "4小时10分",
       reportTime: "2026-06-12 16:20",
@@ -323,8 +373,17 @@ export const state = {
     },
     {
       reportNo: "BB20260610003",
+      entrustedSubject: "张江低空产业园",
       pilot: "林先生",
-      modelLicense: "行业测绘 M3E / CAAC-A01236",
+      pilotPhone: "13888888821",
+      droneModel: "行业测绘 M3E",
+      serialNo: "M3E-20260610003",
+      flightPlan: "2026-06-10 09:00-11:00",
+      flightArea: "上海市浦东新区张江低空产业园 6 号楼",
+      flightAltitude: "100 米",
+      taskNature: "园区巡检",
+      reportStatement: "特此报备",
+      modelLicense: "行业测绘 M3E / M3E-20260610003",
       sorties: 2,
       duration: "1小时45分",
       reportTime: "2026-06-10 11:05",

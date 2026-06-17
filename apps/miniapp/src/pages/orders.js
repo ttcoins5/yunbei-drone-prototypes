@@ -1,5 +1,5 @@
 import { shell } from "../components/layout.js?v=profile-auto-role-1";
-import { state } from "../state/appState.js?v=nav-banner-1";
+import { state } from "../state/appState.js?v=order-list-density-1";
 
 const orderTabs = ["全部", "待付款", "待接单", "待服务", "待评价", "已取消"];
 
@@ -29,11 +29,23 @@ function hasUnreadServiceNotification() {
 }
 
 function orderCard(order) {
+  const hasSpec = order.spec && order.spec !== "信息提交";
+  const metaRows = [
+    order.contactName ? `联系人：${order.contactName}` : "",
+    order.contactPhone ? `联系方式：${order.contactPhone}` : "",
+    hasSpec ? `规格：${order.spec}` : ""
+  ].filter(Boolean);
+  const paymentFoot = Number(order.paid) > 0
+    ? `<div class="order-card-foot">
+      <strong>实付款: ￥${order.paid}</strong>
+    </div>`
+    : "";
+
   return `<button class="order-card" data-action="order-open" data-id="${order.orderNo}">
     <div class="order-card-head">
       <span>
         <b>${order.orderNo}</b>
-        <small>下单时间: ${order.time}</small>
+        <small>${order.time}</small>
       </span>
       <em>${order.status}</em>
     </div>
@@ -41,13 +53,12 @@ function orderCard(order) {
       <div class="order-thumb"></div>
       <div>
         <h3>${order.title}</h3>
-        <p>规格: ${order.spec}</p>
+        <div class="order-card-meta">
+          ${metaRows.map(item => `<p>${item}</p>`).join("")}
+        </div>
       </div>
     </div>
-    <div class="order-card-foot">
-      <span>￥${order.price} <i>× ${order.count}</i></span>
-      <strong>实付款: ￥${order.paid}</strong>
-    </div>
+    ${paymentFoot}
   </button>`;
 }
 
@@ -143,7 +154,7 @@ export function serviceNotificationsPage() {
       <p>${notificationText(item)}</p>
       ${item.isRead ? "" : '<i class="service-notification-dot"></i>'}
     </button>`).join("") : `<div class="order-empty"><b>暂无服务通知</b><p>订单状态变更会在这里提醒您</p></div>`}
-  </div>`, { title: "服务通知", back: true, tab: "messages" });
+  </div>`, { title: "消息", tab: "messages" });
 }
 
 export function orderDetailPage() {

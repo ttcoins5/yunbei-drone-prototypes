@@ -1,10 +1,10 @@
-import { hoistingProducts, products } from "../data/catalog.js?v=nav-banner-1";
+import { products } from "../data/catalog.js?v=detail-page-icon-1";
 import { shell } from "../components/layout.js?v=profile-auto-role-1";
-import { productCard } from "../components/productCard.js";
-import { state } from "../state/appState.js?v=nav-banner-1";
+import { productCard } from "../components/productCard.js?v=all-products-1";
+import { state } from "../state/appState.js?v=order-list-density-1";
 
 export function currentProducts() {
-  return state.productListMode === "hoisting" ? hoistingProducts : products;
+  return products;
 }
 
 function currentSpec() {
@@ -24,6 +24,100 @@ function productReviews(product) {
   return product.reviews || [
     { user: "林先生", rating: 5, content: "设备稳定，平台沟通及时，需求确认流程清晰。", time: "2026-06-12 15:20" }
   ];
+}
+
+function enabledSections(detailPage) {
+  return [...(detailPage?.sections || [])]
+    .filter(section => section.enabled !== false)
+    .sort((a, b) => (a.sort || 0) - (b.sort || 0));
+}
+
+function detailHero(product, detailPage) {
+  const hero = detailPage?.hero || {};
+  const image = hero.bannerImage || product.image;
+  const media = image
+    ? `<img class="detail-template-image" src="${image}" alt="${hero.title || product.name}">`
+    : `<span class="detail-template-icon">${(hero.title || product.name).slice(0, 1)}</span>`;
+  return `<section class="detail-template-hero ${detailPage?.templateType || "service"}">
+    ${media}
+    <h2>${hero.title || product.name}</h2>
+    <p>${hero.subtitle || product.desc || "填写信息后由平台确认服务方案"}</p>
+  </section>`;
+}
+
+function sectionTitle(title) {
+  return `<h3><i></i>${title}</h3>`;
+}
+
+function renderGridSection(section) {
+  const items = section.items || [];
+  return `<section class="detail-template-card">${sectionTitle(section.title)}
+    <div class="detail-grid-items">${items.map((item, index) => `<span><b>${item.icon || ["⌃", "⚙", "⌂", "⚑"][index % 4]}</b><em>${item.title || item}</em></span>`).join("")}</div>
+  </section>`;
+}
+
+function renderChecklistSection(section) {
+  return `<section class="detail-template-card">${sectionTitle(section.title)}
+    <ul class="detail-check-list">${(section.items || []).map(item => `<li>${item}</li>`).join("")}</ul>
+  </section>`;
+}
+
+function renderFeeSection(section) {
+  return `<section class="detail-template-card">${sectionTitle(section.title)}
+    <div class="detail-fee-list">${(section.items || []).map(item => `<div><span>${item.name}</span><strong>${item.price}</strong></div>`).join("")}</div>
+  </section>`;
+}
+
+function renderFeatureSection(section) {
+  return `<section class="detail-template-card">${sectionTitle(section.title)}
+    <div class="detail-feature-list">${(section.items || []).map(item => `<article><b>${item.title}</b><p>${item.content}</p></article>`).join("")}</div>
+  </section>`;
+}
+
+function renderContactSection(section) {
+  return `<section class="detail-template-card">${sectionTitle(section.title)}
+    <div class="detail-contact-list">
+      ${section.phone ? `<div><i>☎</i><span><small>联系电话</small><b>${section.phone}</b></span><button data-action="contact-phone">拨打</button></div>` : ""}
+      ${section.backupPhone ? `<div><i>☎</i><span><small>咨询热线</small><b>${section.backupPhone}</b></span><button data-action="contact-phone">拨打</button></div>` : ""}
+      ${section.address ? `<div><i>⌖</i><span><small>联系地址</small><b>${section.address}</b></span></div>` : ""}
+    </div>
+  </section>`;
+}
+
+function renderEventInfoSection(section) {
+  const rows = [
+    ["赛事时间", section.date],
+    ["赛事地点", section.address],
+    ["报名截止", section.deadline],
+    ["赛事组别", (section.groups || []).join(" / ")]
+  ].filter(([, value]) => value);
+  return `<section class="detail-template-card">${sectionTitle(section.title)}
+    <div class="detail-info-list">${rows.map(([label, value]) => `<div><small>${label}</small><b>${value}</b></div>`).join("")}</div>
+  </section>`;
+}
+
+function renderDetailSection(section) {
+  if (section.type === "grid") return renderGridSection(section);
+  if (section.type === "checklist" || section.type === "condition") return renderChecklistSection(section);
+  if (section.type === "fee") return renderFeeSection(section);
+  if (section.type === "feature") return renderFeatureSection(section);
+  if (section.type === "contact") return renderContactSection(section);
+  if (section.type === "eventInfo") return renderEventInfoSection(section);
+  return `<section class="detail-template-card">${sectionTitle(section.title)}
+    <p>${section.content || "详情信息整理中，请联系客服了解更多。"}</p>
+  </section>`;
+}
+
+function detailBottomBar(detailPage) {
+  const cta = detailPage?.cta || { text: "立即下单", actionType: "order" };
+  const attrs = cta.actionType === "external"
+    ? `data-action="toast" data-message="已打开${cta.text || "外部服务"}"`
+    : `data-route="orderConfirm"`;
+  return `<div class="product-bottom-bar detail-template-bottom">
+    <button data-action="contact-sheet">客服</button>
+    <button data-action="contact-phone">电话</button>
+    <button ${attrs}>${cta.text || "立即下单"}</button>
+  </div>`;
 }
 
 export function selectedRequirementTemplate(product = state.selectedProduct) {
@@ -77,58 +171,31 @@ function requirementFormFields(template, defaultAddress) {
 
 export function productsPage() {
   const visibleProducts = currentProducts();
-  const title = state.productListMode === "hoisting" ? "服务项目" : "商品服务";
 
-  return shell(`<div class="list-page"><div class="filter-row"><button class="active">销量优先</button><button data-action="toast" data-message="已切换为价格筛选">价格</button><button data-action="toast" data-message="已打开商品筛选">筛选</button></div><div class="product-grid">${visibleProducts.map((product, index) => productCard(product, index)).join("")}</div></div>`, { title, back: true, tab: "products" });
+  return shell(`<div class="list-page products-list-page">
+    <section class="list-page-head">
+      <span><small>ALL PRODUCTS</small><h2>全部商品</h2></span>
+      <em>共 ${visibleProducts.length} 项</em>
+    </section>
+    <div class="product-grid">${visibleProducts.map((product, index) => productCard(product, index)).join("")}</div>
+  </div>`, { title: "全部商品", back: true, tab: "products" });
 }
 
 export function productDetailPage() {
   const product = state.selectedProduct;
-  const spec = currentSpec();
-  const specs = product.specs || [spec];
-  const reviews = productReviews(product);
-  const firstReview = reviews[0];
+  const detailPage = product.detailPage || {
+    templateType: "service",
+    hero: { title: product.name, subtitle: product.desc },
+    sections: [{ id: "intro", type: "intro", title: "服务介绍", content: product.detail, sort: 1 }],
+    cta: { text: "立即下单", actionType: "order" }
+  };
 
-  return shell(`<div class="product-detail-page">
-    <section class="product-visual">
-      <img src="${product.image}" alt="${product.name}">
-      <span>1 / 4</span>
-    </section>
-    <section class="product-main">
-      <div class="product-price-row">
-        <strong>¥${spec.price.toLocaleString()}</strong>
-      </div>
-      <div class="product-title-row">
-        <h2>${product.name}</h2>
-        <button data-action="toast" data-message="已生成分享卡片">分享 ↗</button>
-      </div>
-      <p>已售 ${product.sales}</p>
-    </section>
-    <section class="product-spec-panel">
-      <h3>选择规格</h3>
-      <div class="product-specs">
-        ${specs.map((item, index) => `<button class="${index === state.selectedSpecIndex ? "active" : ""}" data-action="product-spec" data-index="${index}">${item.name}</button>`).join("")}
-      </div>
-      <p>${spec.desc}</p>
-    </section>
-    <section class="product-review">
-      <div><b>用户评价（${product.reviewCount || reviews.length}）</b><button data-route="productReviews">查看全部 ›</button></div>
-      <article class="product-review-item">
-        <span class="review-avatar">${firstReview.user.slice(0, 1)}</span>
-        <b>${firstReview.user}</b>
-        <i>${stars(firstReview.rating)}</i>
-        <small>${firstReview.content}</small>
-      </article>
-    </section>
-    <section class="product-description">
-      <h3>${state.productListMode === "hoisting" ? "服务信息" : "商品详情"}</h3>
-      <p>${product.detail || "适用于工程测绘、城市巡检等专业场景。下单后按后台表单配置填写联系人、联系方式和需求信息，平台确认后进入接单与履约流程。"}</p>
-    </section>
-    <div class="product-bottom-bar">
-      <button data-action="contact-sheet">客服</button>
-      <button data-action="contact-phone">电话</button>
-      <button data-route="orderConfirm">立即下单</button>
+  return shell(`<div class="product-detail-page detail-template-page ${detailPage.templateType}">
+    ${detailHero(product, detailPage)}
+    <div class="detail-template-body">
+      ${enabledSections(detailPage).map(renderDetailSection).join("")}
     </div>
+    ${detailBottomBar(detailPage)}
   </div>`, { title: "商品详情", back: true, tab: "products" });
 }
 
@@ -175,16 +242,14 @@ export function orderConfirmPage() {
       ${requirementFormFields(template, defaultAddress)}
     </section>
     <section class="confirm-card">
-      <div class="confirm-title"><b>商品信息</b><small>支持在线支付</small></div>
+      <div class="confirm-title"><b>商品信息</b><small>提交后由平台联系确认</small></div>
       <div class="confirm-product">
         <img src="${product.image}" alt="${product.name}">
         <span><b>${product.name}</b><small>${spec.name} · ${spec.desc}</small></span>
-        <strong>¥${spec.price.toLocaleString()}</strong>
       </div>
     </section>
     <div class="confirm-pay-bar">
-      <span><small>实付款</small><b>¥${spec.price.toLocaleString()}</b></span>
-      <button type="submit">提交并支付</button>
+      <button type="submit">提交需求</button>
     </div>
   </form>`, { title: "确认订单", back: true, tab: "products" });
 }
@@ -193,29 +258,21 @@ export function paymentPage() {
   const order = state.pendingProductOrder;
   const product = state.selectedProduct;
   const spec = currentSpec();
-  const amount = order?.amount || spec.price;
   const orderNo = order?.orderNo || "ORD20260615001";
 
   return shell(`<div class="payment-page">
     <section class="payment-total-card">
-      <small>需支付金额</small>
-      <b>¥${amount.toLocaleString()}</b>
+      <small>当前订单无需在线支付</small>
+      <b>提交成功</b>
       <p>${product.name} · ${order?.specName || spec.name}</p>
       <p>订单号：${orderNo}</p>
     </section>
-    <section class="payment-methods">
-      <button class="payment-method active" data-action="toast" data-message="已选择微信支付">
-        <i>微</i>
-        <span><b>微信支付</b></span>
-        <em>✓</em>
-      </button>
-    </section>
-    <p class="payment-notice">支付成功后订单进入待接单，平台会根据需求信息、规格和服务地址安排后台接单与履约。</p>
+    <p class="payment-notice">平台会根据需求信息、规格和服务地址安排后台接单与后续履约。</p>
     <div class="payment-pay-bar">
-      <span><small>合计支付</small><b>¥${amount.toLocaleString()}</b></span>
-      <button data-action="pay-product-order">确认支付</button>
+      <span><small>订单状态</small><b>待接单</b></span>
+      <button data-route="orders">查看订单</button>
     </div>
-  </div>`, { title: "支付", back: true, tab: "products" });
+  </div>`, { title: "订单提交", back: true, tab: "products" });
 }
 
 export function paymentResultPage() {
@@ -226,13 +283,12 @@ export function paymentResultPage() {
   return shell(`<div class="payment-result-page">
     <section class="payment-success">
       <i>✓</i>
-      <h2>支付成功</h2>
-      <p>订单已进入待接单状态，后台将根据服务需求处理接单并派单。</p>
+      <h2>提交成功</h2>
+      <p>订单已进入待接单状态，后台将根据服务需求处理接单并尽快与您联系。</p>
     </section>
     <section class="payment-order-card">
       <b>${order?.orderNo || "ORD20260615001"}</b>
       <p>${product.name} · ${spec.name}</p>
-      <strong>¥${spec.price.toLocaleString()}</strong>
       <span>状态：待接单</span>
     </section>
     <div class="payment-actions">

@@ -1,6 +1,6 @@
 import { icon } from "../components/icons.js";
 import { shell } from "../components/layout.js?v=profile-auto-role-1";
-import { state } from "../state/appState.js?v=nav-banner-1";
+import { state } from "../state/appState.js?v=order-list-density-1";
 
 function addressCard(address) {
   return `<article class="address-card ${address.isDefault ? "is-default" : ""}">
@@ -97,7 +97,6 @@ export function invoicePage() {
       <label>发票类型<input value="增值税普通发票"></label>
       <label>发票抬头<input value="上海云北低空科技有限公司"></label>
       <label>纳税人识别号<input placeholder="请输入税号"></label>
-      <label>接收邮箱<input value="finance@example.com"></label>
     </div>
     <div class="invoice-submit-bar">
       <span><small>已选 ${state.selectedInvoiceOrders.length} 单</small><b>￥${selectedTotal.toLocaleString()}</b></span>
@@ -179,14 +178,16 @@ function flightReportCard(report) {
       <em>${report.status}</em>
     </div>
     <div class="flight-report-grid">
-      <span><small>起飞飞手</small><strong>${report.pilot}</strong></span>
-      <span><small>飞行架次</small><strong>${report.sorties} 架次</strong></span>
-      <span><small>机型执照</small><strong>${report.modelLicense}</strong></span>
-      <span><small>飞行时长</small><strong>${report.duration}</strong></span>
+      <span><small>委托主体</small><strong>${report.entrustedSubject || "—"}</strong></span>
+      <span><small>飞手信息</small><strong>${report.pilot}${report.pilotPhone ? ` · ${report.pilotPhone}` : ""}</strong></span>
+      <span><small>设备信息</small><strong>${report.droneModel || report.modelLicense} · ${report.serialNo || "—"}</strong></span>
+      <span><small>飞行计划</small><strong>${report.flightPlan || report.reportTime}</strong></span>
+      <span><small>区域/地点</small><strong>${report.flightArea || "—"}</strong></span>
+      <span><small>高度/性质</small><strong>${report.flightAltitude || "—"} · ${report.taskNature || "—"}</strong></span>
     </div>
     <div class="flight-report-foot">
-      <p>报备时间：${report.reportTime}</p>
-      <button type="button" data-action="toast" data-message="报备详情原型待补充">查看详情</button>
+      <p>${report.reportStatement || "特此报备"} · 提交：${report.reportTime}</p>
+      <button type="button" data-action="toast" data-message="已查看报备字段：委托主体、飞手信息、设备信息、飞行计划、区域、高度、任务性质">查看详情</button>
     </div>
   </article>`;
 }
@@ -210,15 +211,19 @@ export function reportPage() {
       <p>提交飞行报备后进入平台确认流程，可在历史记录中查看待确认和已确认状态。</p>
     </section>
     <section class="flight-report-form">
-      <div class="flight-report-title"><b>新增报备</b><small>报备编号由系统自动生成</small></div>
-      <label>报备编号<input name="reportNo" readonly value="系统自动生成"></label>
-      <label>起飞飞手<input name="pilot" required value="林先生" placeholder="请输入认证飞手姓名"></label>
-      <label>机型执照<input name="modelLicense" required value="DJI M350 RTK / CAAC-A01236" placeholder="请输入机型与执照编号"></label>
+      <div class="flight-report-title"><b>新增报备</b><small>提交成功后生成报备编号</small></div>
+      <label>委托主体<input name="entrustedSubject" required value="宁波市自然资源和规划局奉化分局" placeholder="请输入委托单位或委托人"></label>
+      <label>飞手信息<input name="pilot" required value="苏炜" placeholder="请输入飞手姓名"></label>
+      <label>联系方式<input name="pilotPhone" required type="tel" value="18356570510" placeholder="请输入飞手联系方式"></label>
+      <label>无人机型号<input name="droneModel" required value="DJI Mavic 3E" placeholder="请输入无人机型号"></label>
+      <label>序列号<input name="serialNo" required value="1581F5FHD23CF00D5" placeholder="请输入无人机序列号"></label>
+      <label>飞行计划<input name="flightPlan" required value="2026 年 6 月 12 日 12:00-14:00" placeholder="请输入飞行日期和起止时间"></label>
       <div class="flight-report-two">
-        <label>飞行架次<input name="sorties" required type="number" min="1" value="1"></label>
-        <label>飞行时长<input name="duration" required value="1小时30分"></label>
+        <label>区域/具体地点<input name="flightArea" required value="萧王庙街道云溪村" placeholder="请输入具体位置"></label>
+        <label>高度<input name="flightAltitude" required value="120 米" placeholder="如 120 米"></label>
       </div>
-      <label>报备时间<input name="reportTime" required value="2026-06-18 09:00"></label>
+      <label>任务性质<input name="taskNature" required value="测绘" placeholder="如 测绘 / 巡检 / 航拍"></label>
+      <label>报备说明<textarea name="reportStatement" required placeholder="请输入报备说明">特此报备</textarea></label>
       <button class="primary-action" type="submit">提交报备</button>
     </section>
     <section class="flight-report-history">
@@ -260,29 +265,10 @@ function deviceFields(prefix = "") {
   </div>`;
 }
 
-const pilotCompanies = [
-  "上海云北低空科技有限公司",
-  "宁波泰安宏业交通科技有限公司",
-  "杭州低空智航科技有限公司",
-  "苏州巡航无人机服务有限公司"
-];
-
 function pilotCompanyFields() {
-  return state.pilotCompanyMode === "create" ? `<div class="pilot-section">
-    <div class="pilot-section-title"><b>创建公司</b><small>未找到所属公司时补充主体信息</small></div>
+  return `<div class="pilot-section">
+    <div class="pilot-section-title"><b>公司信息</b><small>选择公司主体时仅需填写公司名称</small></div>
     ${formField("公司名称", "请输入公司名称")}
-    ${formField("联系电话", "请输入公司联系电话", "13888888821", "tel")}
-    ${formField("所在区域", "请选择省市区", "上海市 浦东新区")}
-    <label>地址<textarea required placeholder="请输入详细地址、办公地址或经营地址"></textarea></label>
-    ${uploadField("上传水印营业执照", "请上传带平台水印的营业执照")}
-  </div>` : `<div class="pilot-section">
-    <div class="pilot-section-title"><b>选择所属公司</b><small>输入关键词可搜索已有公司</small></div>
-    <label class="company-select-field">所属公司
-      <input required list="pilot-company-options" placeholder="搜索并选择已有公司" value="上海云北低空科技有限公司">
-      <datalist id="pilot-company-options">
-        ${pilotCompanies.map(company => `<option value="${company}"></option>`).join("")}
-      </datalist>
-    </label>
   </div>`;
 }
 
@@ -293,8 +279,6 @@ function pilotPersonalFields() {
     ${formField("联系电话", "请输入联系电话", "13888888821", "tel")}
     ${formField("出生年月", "请选择出生年月", "", "month")}
     ${formField("所在区域", "请选择省市区", "上海市 浦东新区")}
-    ${uploadField("上传身份证正面", "请上传身份证人像面")}
-    ${uploadField("上传身份证反面", "请上传身份证国徽面")}
     ${uploadField("上传无人机操作执照", "请上传 CAAC 或对应操作执照")}
     ${uploadField("上传无人机照片", "请上传无人机实物照片")}
   </div>`;
@@ -307,16 +291,13 @@ function pilotPage() {
     <div class="form-intro"><b>飞手加入</b><p>个人信息为必填资料；若所属主体为公司，还需要选择或补充公司信息。</p></div>
     ${pilotPersonalFields()}
     <div class="pilot-section">
-      <div class="pilot-section-title"><b>所属主体</b><small>若归属公司，继续选择或创建公司</small></div>
+      <div class="pilot-section-title"><b>所属主体</b><small>若归属公司，仅补充公司名称</small></div>
       <div class="pilot-type-tabs">
         <button type="button" class="${state.pilotJoinType === "personal" ? "active" : ""}" data-action="pilot-type" data-type="personal">个人主体</button>
         <button type="button" class="${isCompany ? "active" : ""}" data-action="pilot-type" data-type="company">公司主体</button>
       </div>
     </div>
-    ${isCompany ? `<div class="pilot-company-tabs">
-      <button type="button" class="${state.pilotCompanyMode === "existing" ? "active" : ""}" data-action="pilot-company-mode" data-mode="existing">选择所属公司</button>
-      <button type="button" class="${state.pilotCompanyMode === "create" ? "active" : ""}" data-action="pilot-company-mode" data-mode="create">创建公司</button>
-    </div>${pilotCompanyFields()}` : ""}
+    ${isCompany ? pilotCompanyFields() : ""}
     ${deviceFields()}
     <label class="pilot-agreement">
       <button type="button" class="${state.pilotAgreement ? "checked" : ""}" data-action="pilot-agreement" aria-pressed="${state.pilotAgreement}"></button>

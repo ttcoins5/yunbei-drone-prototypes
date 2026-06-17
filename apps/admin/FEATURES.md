@@ -34,6 +34,7 @@
 | 工作台 | `dashboard` | `js/modules/dashboard.js` | `docs/features/dashboard.md` | 已完成 |
 | 小程序配置 / 轮播图配置 | `carousel` | `js/modules/carousel.js` | `docs/features/carousel.md` | 已完成 |
 | 小程序配置 / 导航配置 | `homepage-nav` | `js/modules/homepage-nav.js` | `docs/features/homepage-nav.md` | 已完成 |
+| 小程序配置 / 案例展示配置 | `case-showcase`、`case-showcase-edit` | `js/modules/case-showcase.js` | `docs/features/case-showcase.md` | 已完成 |
 | 用户 | `users`、`user-detail` | `js/modules/users.js` | `docs/features/users.md` | 已完成 |
 | 商品 | `categories`、`products`、`product-edit` | `js/modules/catalog.js` | `docs/features/catalog.md` | 已完成 |
 | 订单 | `orders`、`order-detail` | `js/modules/orders.js` | `docs/features/orders.md` | 已完成 |

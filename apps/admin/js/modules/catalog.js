@@ -14,7 +14,143 @@ function productFields(list) {
   return list.map((field, index) => ({ ...field, sort: index + 1 }));
 }
 
-function productItem(id, name, category, fields, desc, price = "0", needPilot = true) {
+function catalogEscape(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function productIcon(name) {
+  return `../../shared/assets/product-icons/${name}`;
+}
+
+function detailSection(id, type, title, extra = {}) {
+  return { id, type, title, enabled: true, sort: extra.sort || 1, ...extra };
+}
+
+function detailContactSection(sort = 99) {
+  return detailSection("contact", "contact", "联系方式", {
+    phone: "0577-55558188",
+    backupPhone: "0577-88360168",
+    address: "浙江省温州市鹿城区七都街道青鹿空间204室",
+    sort
+  });
+}
+
+const serviceDetailDefaults = {
+  p1: {
+    subtitle: "智能巡检 · 精准采集 · 高效交付",
+    intro: "提供专业无人机巡检服务，适用于园区、楼宇、航线、设备等场景。",
+    items: ["楼宇巡检", "园区巡检", "航线巡检", "设备巡检"],
+    advantages: ["航线规划清晰", "高清影像采集", "问题点位标注", "巡检报告交付"]
+  },
+  p2: {
+    subtitle: "快速配送 · 安全可靠 · 覆盖全城",
+    intro: "无人机物流服务利用先进的无人机技术，为城市和偏远地区提供快速、高效的物资配送服务。",
+    items: ["城市配送", "紧急物资", "医疗运输", "特殊货物"],
+    advantages: ["2小时快速响应", "全程GPS跟踪", "专业团队操作", "全程保险覆盖"]
+  },
+  p3: {
+    subtitle: "高空作业 · 精准操控 · 安全高效",
+    intro: "提供专业的无人机吊运服务，适用于高空作业、建筑施工、设备安装等场景。",
+    items: ["高空吊运", "设备安装", "建筑施工", "特殊作业"],
+    advantages: ["专业吊运设备", "精准操控技术", "严格安全规范", "经验丰富团队"]
+  },
+  p4: {
+    subtitle: "创意编队 · 活动传播 · 视觉震撼",
+    intro: "提供无人机编队表演方案设计、航线编排、现场执行和安全保障服务。",
+    items: ["方案策划", "图案编排", "现场执行", "安全保障"],
+    advantages: ["定制化创意方案", "多规模机群支持", "活动传播效果强", "现场执行经验丰富"]
+  },
+  p5: {
+    subtitle: "设备托管 · 运维保养 · 资产管理",
+    intro: "为企业和个人无人机提供托管、检测、保养、维修协调和飞行资产管理服务。",
+    items: ["设备托管", "定期检测", "维护保养", "资产管理"],
+    advantages: ["标准化仓储管理", "定期健康检查", "维修保养协同", "设备档案清晰"]
+  }
+};
+
+function serviceDetailPage(id, name) {
+  const config = serviceDetailDefaults[id] || serviceDetailDefaults.p3;
+  return {
+    templateType: "service",
+    hero: { title: name, subtitle: config.subtitle, icon: id },
+    sections: [
+      detailSection("intro", "intro", "服务介绍", { content: config.intro, sort: 1 }),
+      detailSection("items", "grid", "服务项目", { items: config.items.map(title => ({ title })), sort: 2 }),
+      detailSection("advantages", "checklist", "服务优势", { items: config.advantages, sort: 3 }),
+      detailContactSection(4)
+    ],
+    cta: { text: "立即下单", actionType: "order" }
+  };
+}
+
+function trainingDetailPage(id, name) {
+  const isChild = id === "p9";
+  return {
+    templateType: "training",
+    hero: { title: name, subtitle: isChild ? "兴趣启蒙 · 实操体验 · 竞赛培养" : "专业培训 · 证书认证 · 实操教学" },
+    sections: [
+      detailSection("conditions", "condition", isChild ? "适合对象" : "报名条件", {
+        items: isChild ? ["6-16 岁青少年", "对无人机或科技课程感兴趣", "家长同意报名并配合安全要求"] : ["中华人民共和国公民", "年满16周岁以上，70周岁以下", "初中以上文化程度", "身体健康，具备无人机操控所需能力"],
+        sort: 1
+      }),
+      detailSection("fees", "fee", isChild ? "课程费用" : "培训费用", {
+        items: isChild ? [{ name: "无人机启蒙体验课", price: "199元/次" }, { name: "少儿无人机系统课", price: "3980元/期" }] : [{ name: "小型无人机-多旋翼-视距内", price: "7800元/人" }, { name: "小型无人机-多旋翼-超视距", price: "11800元/人" }],
+        sort: 2
+      }),
+      detailSection("features", "feature", "教学特色", { items: [{ title: "权威认证", content: "围绕执照考试要求组织课程和实操训练。" }, { title: "全面课程", content: "覆盖基础知识、飞行操作、维护保养和法规。" }], sort: 3 }),
+      detailContactSection(4)
+    ],
+    cta: { text: "立即报名", actionType: "signup" }
+  };
+}
+
+function eventDetailPage(name) {
+  return {
+    templateType: "event",
+    hero: { title: name, subtitle: "赛事报名 · 规则透明 · 专业组织", icon: "competition" },
+    sections: [
+      detailSection("intro", "intro", "赛事介绍", { content: "面向无人机爱好者、院校和行业团队提供赛事报名、组别登记和活动组织服务。", sort: 1 }),
+      detailSection("eventInfo", "eventInfo", "赛事信息", { date: "2026年暑期档", address: "温州低空经济示范区", groups: ["成人组", "青少年组", "团体组"], deadline: "赛前7日截止报名", sort: 2 }),
+      detailSection("fees", "fee", "报名费用", { items: [{ name: "个人报名", price: "线下确认" }, { name: "团体报名", price: "线下确认" }], sort: 3 }),
+      detailContactSection(4)
+    ],
+    cta: { text: "立即报名", actionType: "signup" }
+  };
+}
+
+function externalDetailPage(name) {
+  return {
+    templateType: "external",
+    hero: { title: name, subtitle: "点击跳转 · 即时配送 · 便捷下单", icon: "takeout" },
+    sections: [
+      detailSection("intro", "intro", "服务说明", { content: "无人机外卖配送为独立配送业务入口，点击下方按钮进入配送服务。", sort: 1 }),
+      detailSection("external", "externalLink", "跳转提示", { content: "外卖配送涉及商家、地址、餐品和配送链路，首版作为独立业务入口处理。", externalUrl: "https://microapp.zndkfx.com", sort: 2 }),
+      detailContactSection(3)
+    ],
+    cta: { text: "去配送", actionType: "external", externalUrl: "https://microapp.zndkfx.com" }
+  };
+}
+
+function detailPageFor(id, name) {
+  if (id === "p8" || id === "p9") return trainingDetailPage(id, name);
+  if (id === "p7") return eventDetailPage(name);
+  if (id === "p6") return externalDetailPage(name);
+  return serviceDetailPage(id, name);
+}
+
+function detailPageForTemplate(templateType, id, name) {
+  if (templateType === "training") return trainingDetailPage(id === "p9" ? "p9" : "p8", name);
+  if (templateType === "event") return eventDetailPage(name);
+  if (templateType === "external") return externalDetailPage(name);
+  return serviceDetailPage(id || "p3", name);
+}
+
+function productItem(id, name, category, fields, desc, price = "0", needPilot = true, icon = "") {
+  const iconName = icon ? icon.split("/").pop() : "";
   return {
     id,
     code: `SP${String(26000 + Number(id.replace("p", ""))).padStart(5, "0")}`,
@@ -25,16 +161,16 @@ function productItem(id, name, category, fields, desc, price = "0", needPilot = 
     properties: { onlinePay: false, needPilot },
     requirementFields: fields,
     specs: [{ name: "信息提交", price }],
-    images: [],
+    images: icon ? [{ id: `${id}-icon`, name: iconName, url: icon }] : [],
     intro: `<p>${desc}</p>`,
+    detailPage: detailPageFor(id, name),
     displayedReviewIds: []
   };
 }
 
 state.categories = [
   { id: "c1", name: "无人机服务", description: "巡检、物流、吊运、表演、托管等无人机服务", productCount: 5, sort: 1, enabled: true },
-  { id: "c2", name: "无人机外卖配送", description: "外卖配送跳转入口", productCount: 1, sort: 2, enabled: true },
-  { id: "c3", name: "培训教育与赛事举办", description: "无人机赛事、飞手培训、少儿培训信息填写", productCount: 3, sort: 3, enabled: true }
+  { id: "c3", name: "培训教育", description: "无人机赛事、飞手培训、少儿培训信息填写", productCount: 3, sort: 2, enabled: true }
 ];
 
 state.products = [
@@ -46,7 +182,7 @@ state.products = [
     reqField("inspectionTime", "巡检时间", "text", true),
     reqField("remark", "需求说明"),
     reqField("exampleImage", "例图", "image")
-  ]), "填写巡检区域、时间和需求说明，平台根据需求安排无人机巡检服务。"),
+  ]), "填写巡检区域、时间和需求说明，平台根据需求安排无人机巡检服务。", "0", true, productIcon("icon-inspection.png")),
   productItem("p2", "无人机物流服务", "无人机服务", productFields([
     reqField("contactName", "登记联系人", "text", true),
     reqField("contactPhone", "联系电话", "text", true),
@@ -63,7 +199,7 @@ state.products = [
     reqField("cargoPhoto", "货物照片", "image"),
     reqField("remark", "备注说明"),
     reqField("exampleImage", "例图", "image")
-  ]), "填写货物、起运点、目的地和运输时效，平台确认后安排无人机物流服务。"),
+  ]), "填写货物、起运点、目的地和运输时效，平台确认后安排无人机物流服务。", "0", true, productIcon("icon-logistics.png")),
   productItem("p3", "无人机吊运服务", "无人机服务", productFields([
     reqField("contactName", "登记联系人", "text", true),
     reqField("contactPhone", "联系电话", "text", true),
@@ -73,7 +209,7 @@ state.products = [
     reqField("height", "吊运高度（m）", "text", true),
     reqField("remark", "需求说明"),
     reqField("exampleImage", "例图", "image")
-  ]), "填写吊运物品、重量、高度和作业地点，平台评估现场条件后安排服务。"),
+  ]), "填写吊运物品、重量、高度和作业地点，平台评估现场条件后安排服务。", "0", true, productIcon("icon-hoisting.png")),
   productItem("p4", "无人机表演服务", "无人机服务", productFields([
     reqField("contactName", "登记联系人", "text", true),
     reqField("contactPhone", "联系电话", "text", true),
@@ -83,7 +219,7 @@ state.products = [
     reqField("backupDate", "是否备用雨天/延期日期"),
     reqField("scale", "表演规模", "select", true, { options: ["100 架以内", "100-300 架", "300 架以上", "待方案确认"] }),
     reqField("exampleImage", "例图", "image")
-  ]), "填写表演目的、日期、时段和规模，平台根据活动需求制定无人机表演方案。"),
+  ]), "填写表演目的、日期、时段和规模，平台根据活动需求制定无人机表演方案。", "0", true, productIcon("icon-performance.png")),
   productItem("p5", "无人机托管服务", "无人机服务", productFields([
     reqField("contactName", "登记联系人", "text", true),
     reqField("contactPhone", "联系电话", "text", true),
@@ -92,11 +228,8 @@ state.products = [
     reqField("duration", "托管时长", "select", true, { options: ["1 个月", "3 个月", "6 个月", "12 个月"] }),
     reqField("remark", "需求说明"),
     reqField("exampleImage", "例图", "image")
-  ]), "填写托管机型、数量和时长，平台提供设备托管与运维管理服务。", "0", false),
-  productItem("p6", "无人机外卖配送", "无人机外卖配送", productFields([
-    reqField("jumpTip", "跳转说明", "text", false, { placeholder: "点击任意地方即可跳转" })
-  ]), "点击任意地方即可跳转到无人机外卖配送服务。", "0", false),
-  productItem("p7", "无人机赛事", "培训教育与赛事举办", productFields([
+  ]), "填写托管机型、数量和时长，平台提供设备托管与运维管理服务。", "0", false, productIcon("icon-hosting.png")),
+  productItem("p7", "无人机赛事", "培训教育", productFields([
     reqField("registerType", "注册类型", "select", true, { options: ["个人", "单位", "学校", "机构"] }),
     reqField("organization", "单位名称", "text", true),
     reqField("name", "姓名", "text", true),
@@ -106,8 +239,8 @@ state.products = [
     reqField("phone", "联系电话", "text", true),
     reqField("email", "电子邮箱"),
     reqField("remark", "备注")
-  ]), "填写赛事报名信息，适用于无人机赛事报名和资料登记。", "0", false),
-  productItem("p8", "飞手培训", "培训教育与赛事举办", productFields([
+  ]), "填写赛事报名信息，适用于无人机赛事报名和资料登记。", "0", false, productIcon("icon-competition.png")),
+  productItem("p8", "飞手培训", "培训教育", productFields([
     reqField("name", "姓名", "text", true),
     reqField("phone", "联系电话", "text", true),
     reqField("gender", "性别", "select", true, { options: ["男", "女"] }),
@@ -118,8 +251,8 @@ state.products = [
     reqField("hasBase", "有无基础", "select", true, { options: ["有基础", "无基础"] }),
     reqField("remark", "需求说明"),
     reqField("exampleImage", "例图", "image")
-  ]), "填写飞手培训报名信息，平台根据考试机型和基础情况安排培训。", "0", false),
-  productItem("p9", "少儿培训", "培训教育与赛事举办", productFields([
+  ]), "填写飞手培训报名信息，平台根据考试机型和基础情况安排培训。", "0", false, productIcon("icon-pilot-training.png")),
+  productItem("p9", "少儿培训", "培训教育", productFields([
     reqField("name", "姓名", "text", true),
     reqField("gender", "性别", "select", true, { options: ["男", "女"] }),
     reqField("age", "年龄", "text", true),
@@ -130,7 +263,7 @@ state.products = [
     reqField("interest", "感兴趣方向", "select", true, { options: ["飞行体验", "编程控制", "竞赛训练", "航拍创作"] }),
     reqField("classTime", "上课时间", "text", true),
     reqField("intent", "报名意向", "select", true, { options: ["试听", "短期课", "长期班"] })
-  ]), "填写少儿培训报名信息，便于课程顾问匹配课程和上课时间。", "0", false)
+  ]), "填写少儿培训报名信息，便于课程顾问匹配课程和上课时间。", "0", false, productIcon("icon-child-training.png"))
 ];
 state.editingProductId = null;
 state.newProductDraft = null;
@@ -141,6 +274,7 @@ state.productEditor = null;
 state.productToolbar = null;
 state.deletingCategoryId = null;
 state.deletingProductId = null;
+state.productIconObjectUrls = [];
 
 const requirementFieldTypes = ["text", "select", "image"];
 
@@ -291,6 +425,10 @@ function ensureProductShape(product) {
   if (!product.specs) product.specs = [{ name: "标准服务", price: "0" }];
   if (!product.images) product.images = [];
   if (!product.displayedReviewIds) product.displayedReviewIds = [];
+  if (!product.detailPage) product.detailPage = detailPageFor(product.id || "p3", product.name || "未命名商品");
+  if (!product.detailPage.hero) product.detailPage.hero = { title: product.name || "未命名商品", subtitle: "" };
+  if (!product.detailPage.cta) product.detailPage.cta = { text: product.detailPage.templateType === "external" ? "去配送" : "立即下单", actionType: product.detailPage.templateType === "external" ? "external" : "order" };
+  if (!Array.isArray(product.detailPage.sections)) product.detailPage.sections = [];
   if (!product.requirementFields?.length) product.requirementFields = defaultRequirementFields();
   product.requirementFields = product.requirementFields.map(normalizeRequirementField);
   return product;
@@ -310,6 +448,7 @@ function createEmptyProduct() {
     specs: [{ name: "标准服务", price: "0" }],
     images: [],
     intro: "<p></p>",
+    detailPage: detailPageFor("p3", "未命名商品"),
     displayedReviewIds: []
   });
 }
@@ -355,7 +494,10 @@ function categoriesPage() {
 
 function productThumb(product) {
   const first = product.images?.[0];
-  return thumb(Boolean(first), { title: first ? first.name : "暂无图片" });
+  if (first?.url) {
+    return `<span class="thumb" title="${catalogEscape(first.name)}"><img src="${catalogEscape(first.url)}" alt="${catalogEscape(product.name)}"></span>`;
+  }
+  return thumb(Boolean(first), { title: first ? first.name : "暂无图标" });
 }
 
 function initProductEditor() {
@@ -370,17 +512,22 @@ function initProductEditor() {
 }
 
 function productImagesPanel(product) {
-  const images = product.images || [];
-  const rows = images.map((item, index) => `<div class="media-row media-row--sort">
-    <div class="drag">☷</div>
-    <div class="media-preview">图</div>
-    <div class="media-meta"><strong>${item.name}</strong><span class="muted">${index === 0 ? "列表默认展示此图" : `轮播第 ${index + 1} 张`}</span></div>
-    ${rowActions({ moveAction: "move-product-image", deleteAction: "delete-product-image", id: item.id, index, total: images.length })}
-  </div>`).join("");
-  return panel("轮播图管理", `<div class="toolbar" style="margin-bottom:14px">
-    ${button("上传图片","add-product-image","primary")}
-    <span class="muted">最多 9 张 · 第一张为列表封面与详情首图</span>
-  </div><div class="media-list">${rows || `<p class="empty">暂无轮播图，请上传</p>`}</div>`);
+  const icon = product.images?.[0];
+  const preview = icon?.url
+    ? `<img src="${catalogEscape(icon.url)}" alt="${catalogEscape(icon.name || product.name)}">`
+    : "图";
+  const row = icon ? `<div class="media-row media-row--icon">
+    <div class="media-preview">${preview}</div>
+    <div class="media-meta"><strong>${catalogEscape(icon.name)}</strong><span class="muted">用于商品列表与小程序商品卡片展示</span></div>
+    <div class="row-actions">
+      ${button("替换图标", "add-product-image", "small")}
+      ${button("删除", "delete-product-image", "small danger", `data-id="${icon.id}"`)}
+    </div>
+  </div>` : "";
+  return panel("图标管理", `<div class="toolbar" style="margin-bottom:14px">
+    ${button(icon ? "替换图标" : "上传图标","add-product-image","primary")}
+    <span class="muted">单张图标 · 用于列表封面、小程序商品卡片与商品详情页头图</span>
+  </div><div class="media-list">${row || `<p class="empty">暂无图标，请上传</p>`}</div>`);
 }
 
 function productDraftKey(product) {
@@ -523,7 +670,6 @@ function productsPage() {
     item.name,
     item.category,
     item.specs.length,
-    `${activeRequirementFields(item).length} 个字段`,
     formatProductAttrs(item),
     tag(item.status),
     productActions(item)
@@ -532,7 +678,7 @@ function productsPage() {
     <input placeholder="商品名称 / 编号"><select><option>全部分类</option>${state.categories.map(item => `<option>${item.name}</option>`).join("")}</select>
     <select><option>全部状态</option><option>已上架</option><option>已下架</option></select>${button("查询","filter","primary")}
     <span class="spacer"></span>${button("创建商品","create-product","primary")}
-  </div>${paginatedTable("products", ["商品图","商品编号","商品名称","分类","规格数","需求字段","业务属性","状态","操作"], rows, "products-table")}`);
+  </div>${paginatedTable("products", ["商品图","商品编号","商品名称","分类","规格数","业务属性","状态","操作"], rows, "products-table")}`);
 }
 
 function propertyRow(label, key, product) {
@@ -565,19 +711,16 @@ function productEditPage() {
 async function handleAddProductImage() {
   const product = activeProduct();
   if (!product.images) product.images = [];
-  if (product.images.length >= 9) {
-    toast("轮播图最多上传 9 张");
-    return;
-  }
-  const files = await pickLocalFile({ accept: "image/*", multiple: true });
-  if (!files.length) return;
-  const slots = 9 - product.images.length;
-  files.slice(0, slots).forEach((file, index) => {
-    product.images.push({ id: `pi${Date.now() + index}`, name: file.name });
-  });
+  const files = await pickLocalFile({ accept: "image/*" });
+  const file = files[0];
+  if (!file) return;
+  const previousUrl = product.images[0]?.url;
+  if (previousUrl?.startsWith("blob:")) URL.revokeObjectURL(previousUrl);
+  const url = URL.createObjectURL(file);
+  state.productIconObjectUrls.push(url);
+  product.images = [{ id: product.images[0]?.id || `pi${Date.now()}`, name: file.name, url }];
   render();
-  if (files.length > slots) toast(`最多还可上传 ${slots} 张，已添加 ${slots} 张`);
-  else toast(`已选择 ${Math.min(files.length, slots)} 张图片`);
+  toast("商品图标已更新");
 }
 
 function readProductFormFromPage() {
@@ -706,7 +849,7 @@ DroneAdmin.registerModule({
     "summary": "管理平台全部商品 / 服务，含上架状态与业务属性概览。",
     "operations": [
       "按名称、编号、分类、状态筛选商品",
-      "列表默认展示轮播图第一张作为商品封面",
+      "列表默认展示商品图标作为商品封面",
       "点击「创建商品」或列表「编辑」进入商品编辑页",
       "点击「删除」：仅当关联订单数为 0 时可删除，否则提示「该商品已有关联订单，不可删除」",
       "删除前弹出确认框，确认后永久移除商品（原型模拟）",
@@ -715,7 +858,7 @@ DroneAdmin.registerModule({
     "fields": [
       [
         "商品图",
-        "轮播图第一张，无图时显示「暂无」"
+        "商品图标，无图时显示「暂无」"
       ],
       [
         "商品编号",
@@ -748,9 +891,9 @@ DroneAdmin.registerModule({
     ]
   },
   "product-edit": {
-    "summary": "创建或编辑商品，配置轮播图、富文本介绍、评价展示、规格价格、业务属性及需求采集字段。",
+    "summary": "创建或编辑商品，配置单张商品图标、富文本介绍、评价展示、规格价格、业务属性及需求采集字段。",
     "operations": [
-      "上传 / 排序 / 删除轮播图，第一张为列表封面与详情首图",
+      "上传 / 替换 / 删除商品图标，用于列表封面、小程序商品卡片与商品详情页头图",
       "商品介绍使用 Element Admin 常用的 WangEditor 富文本组件编辑",
       "评价管理：分页浏览订单评价列表，多选后随「保存商品」一并生效；默认全不展示",
       "添加 / 删除规格，每个规格独立定价",
@@ -767,8 +910,8 @@ DroneAdmin.registerModule({
         "决定商品归属与小程序分类入口"
       ],
       [
-        "轮播图",
-        "商品详情顶部轮播，最多 9 张，顺序可调"
+        "商品图标",
+        "单张图片，用于列表封面、小程序商品卡片与商品详情页头图"
       ],
       [
         "商品介绍",
@@ -944,19 +1087,11 @@ DroneAdmin.registerModule({
     },
     "delete-product-image": function (target) {
       const product = activeProduct();
+          const removing = product.images.find(item => item.id === target.dataset.id);
+          if (removing?.url?.startsWith("blob:")) URL.revokeObjectURL(removing.url);
           product.images = product.images.filter(item => item.id !== target.dataset.id);
           render();
-          toast("轮播图已删除");
-    },
-    "move-product-image": function (target) {
-      const product = activeProduct();
-          const index = product.images.findIndex(item => item.id === target.dataset.id);
-          const next = index + Number(target.dataset.dir);
-          if (next >= 0 && next < product.images.length) {
-            [product.images[index], product.images[next]] = [product.images[next], product.images[index]];
-            render();
-            toast("轮播图顺序已更新");
-          }
+          toast("商品图标已删除");
     },
     "select-all-reviews": function (target) {
       const product = activeProduct();

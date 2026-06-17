@@ -1,4 +1,4 @@
-import { state } from "../state/appState.js?v=nav-banner-1";
+import { state } from "../state/appState.js?v=order-list-density-1";
 
 function contactSheet() {
   if (!state.showContactSheet) return "";
@@ -34,7 +34,7 @@ export function shell(content, options = {}) {
       <nav class="tabbar">
         <button class="${tab === "home" ? "active" : ""}" data-route="home"><b>⌂</b>首页</button>
         <button class="${tab === "orders" ? "active" : ""}" data-route="orders"><b>≡</b>订单</button>
-        <button class="${tab === "messages" ? "active" : ""}" data-route="messages"><b>✉</b>消息</button>
+        <button class="${tab === "messages" ? "active" : ""}" data-route="serviceNotifications"><b>✉</b>消息</button>
         <button class="${tab === "profile" ? "active" : ""}" data-route="profile"><b>♙</b>我的</button>
       </nav>
       ${contactSheet()}

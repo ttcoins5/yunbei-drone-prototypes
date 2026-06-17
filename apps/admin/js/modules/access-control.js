@@ -2,6 +2,7 @@ const permissionCatalog = DroneAdmin.data.permissionCatalog = [
   { id: "dashboard", group: "工作台", label: "工作台" },
   { id: "carousel", group: "小程序配置", label: "轮播图配置" },
   { id: "homepage-nav", group: "小程序配置", label: "导航配置" },
+  { id: "case-showcase", group: "小程序配置", label: "案例展示配置" },
   { id: "users", group: "用户管理", label: "用户列表" },
   { id: "admin-users", group: "系统权限", label: "后台用户" },
   { id: "roles", group: "系统权限", label: "角色管理" },
@@ -31,7 +32,7 @@ const adminRoles = DroneAdmin.data.adminRoles = [
     id: "role-ops",
     name: "运营管理员",
     description: "负责商品、订单、首页和运营内容维护。",
-    permissions: ["dashboard", "carousel", "homepage-nav", "categories", "products", "orders", "operator-applications", "feedbacks", "invoices", "about"],
+    permissions: ["dashboard", "carousel", "homepage-nav", "case-showcase", "categories", "products", "orders", "operator-applications", "feedbacks", "invoices", "about"],
     locked: false
   },
   {

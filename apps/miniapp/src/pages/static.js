@@ -1,5 +1,37 @@
 import { shell } from "../components/layout.js?v=profile-auto-role-1";
-import { state } from "../state/appState.js?v=nav-banner-1";
+import { state } from "../state/appState.js?v=order-list-density-1";
+
+const defaultAboutConfig = {
+  name: "四川奉飞飞无人机科技有限公司",
+  phone: "028-8888 6626",
+  address: "四川省成都市高新区天府软件园",
+  intro: "<p><strong>四川奉飞飞无人机科技有限公司</strong>专注于无人机行业服务、飞手协作、技术培训与企业解决方案。</p><ul><li>低空经济综合服务</li><li>飞手协作与任务派发</li><li>企业级无人机应用解决方案</li></ul>"
+};
+
+function aboutConfig() {
+  try {
+    const saved = JSON.parse(localStorage.getItem("droneAboutConfig") || "null");
+    return saved && typeof saved === "object" ? { ...defaultAboutConfig, ...saved } : defaultAboutConfig;
+  } catch (error) {
+    return defaultAboutConfig;
+  }
+}
+
+function plainTextFromRich(html) {
+  return String(html || "")
+    .replace(/<li>/gi, " · ")
+    .replace(/<[^>]+>/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
 
 export function contactPage() {
   return shell(`<div class="about-page">
@@ -189,19 +221,29 @@ export function pilotOrderDetailPage() {
 }
 
 export function aboutPage() {
+  const about = aboutConfig();
+  const introText = plainTextFromRich(about.intro);
+  const name = escapeHtml(about.name);
+  const phone = escapeHtml(about.phone || "—");
+  const address = escapeHtml(about.address || "—");
   return shell(`<div class="about-company-page">
     <section class="company-intro">
       <span class="brand-mark"><i></i><i></i><i></i></span>
       <small>ABOUT FENGFEIFEI</small>
-      <h2>宁波泰安宏业交通科技有限公司</h2>
-      <p>公司围绕低空经济与交通科技场景，提供无人机设备、飞行服务、行业作业与运营支持，为企业客户打造更高效、更可靠的一站式服务体验。</p>
+      <h2>${name}</h2>
+      <p>${escapeHtml(introText || "公司围绕低空经济场景，提供无人机设备、飞行服务、行业作业与运营支持。")}</p>
     </section>
     <section class="company-story">
-      <img src="../../shared/assets/hero-image2.png" alt="宁波泰安宏业交通科技有限公司服务场景">
+      <img src="../../shared/assets/hero-image2.png" alt="${name}服务场景">
       <div>
         <b>连接设备、飞手与行业需求</b>
         <p>平台以标准化服务流程承接巡检、测绘、农业植保、物资吊运等低空作业需求，帮助客户从需求提交、方案确认到服务交付形成清晰闭环。</p>
       </div>
+    </section>
+    <section class="company-contact">
+      <b>联系方式</b>
+      <p><i>☎</i><span><small>联系电话</small><strong>${phone}</strong></span></p>
+      <p><i>⌖</i><span><small>联系地址</small><strong>${address}</strong></span></p>
     </section>
   </div>`, { title: "关于我们", back: true, tab: "profile" });
 }

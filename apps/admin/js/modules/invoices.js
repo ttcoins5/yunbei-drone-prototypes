@@ -1,8 +1,8 @@
-state.viewingInvoiceId = "FP26061307";
+state.viewingInvoiceId = "FP20260613007";
 
 const invoiceRecords = DroneAdmin.data.invoiceRecords = [
   {
-    "id": "FP26061307",
+    "id": "FP20260613007",
     "user": "云航科技",
     "title": "四川云航科技有限公司",
     "orderCount": 3,
@@ -14,7 +14,7 @@ const invoiceRecords = DroneAdmin.data.invoiceRecords = [
     "type": "增值税普通发票"
   },
   {
-    "id": "FP26061303",
+    "id": "FP20260613003",
     "user": "唐先生",
     "title": "个人",
     "orderCount": 1,
@@ -26,7 +26,7 @@ const invoiceRecords = DroneAdmin.data.invoiceRecords = [
     "type": "增值税普通发票"
   },
   {
-    "id": "FP26061002",
+    "id": "FP20260610002",
     "user": "张女士",
     "title": "个人",
     "orderCount": 2,
@@ -38,7 +38,7 @@ const invoiceRecords = DroneAdmin.data.invoiceRecords = [
     "type": "增值税普通发票"
   },
   {
-    "id": "FP26060901",
+    "id": "FP20260609001",
     "user": "华景物业",
     "title": "华景物业有限公司",
     "orderCount": 1,
@@ -50,7 +50,7 @@ const invoiceRecords = DroneAdmin.data.invoiceRecords = [
     "type": "增值税普通发票"
   },
   {
-    "id": "FP26060804",
+    "id": "FP20260608004",
     "user": "林先生",
     "title": "个人",
     "orderCount": 1,
@@ -83,7 +83,9 @@ function invoiceDetailPage() {
     ? `${button("驳回","reject-invoice","danger")}${button("审核通过","approve-invoice","primary")}`
     : invoice.status === "待上传" ? button("上传发票文件","upload-invoice","primary") : "";
   return panel("申请信息", detailGrid([
-    ["申请编号", invoice.id], ["申请用户", invoice.user], ["发票类型", invoice.type], ["发票抬头", invoice.title],
+    ["申请编号", invoice.id],
+    ["编号生成规则", "FP + 申请日期（YYYYMMDD）+ 当日3位流水号；如 FP20260618001 表示 2026-06-18 第 001 笔开票申请。", true],
+    ["申请用户", invoice.user], ["发票类型", invoice.type], ["发票抬头", invoice.title],
     ["税号", invoice.taxNo], ["申请金额", invoice.amount], ["接收邮箱", invoice.email], ["当前状态", tag(invoice.status)]
   ]), routeButton("返回发票列表","invoices",""))
   + panel("关联订单", table(["订单号","商品/服务","完成时间","可开票金额"], [
@@ -122,7 +124,7 @@ DroneAdmin.registerModule({
     "fields": [
       [
         "申请编号",
-        "发票申请唯一编号"
+        "发票申请唯一编号，生成规则：FP + 申请日期（YYYYMMDD）+ 当日3位流水号"
       ],
       [
         "用户",
@@ -156,7 +158,7 @@ DroneAdmin.registerModule({
     "fields": [
       [
         "申请信息",
-        "抬头、税号、金额、接收邮箱等开票要素"
+        "申请编号、编号生成规则、抬头、税号、金额、接收邮箱等开票要素"
       ],
       [
         "关联订单",

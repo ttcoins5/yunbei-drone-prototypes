@@ -89,6 +89,7 @@ const orderRecords = DroneAdmin.data.orderRecords = [
     "user": "李先生",
     "service": "园区航拍测绘",
     "amount": "¥2,800",
+    "priceChangeLogs": [],
     "needPilot": true,
     "status": "待付款",
     "onlinePay": true,
@@ -245,11 +246,14 @@ function orderStatusCell(order) {
 }
 
 function orderListActions(order) {
+  const price = order.status === "待付款"
+    ? button("改价", "edit-order-price", "small", `data-order-id="${order.id}"`)
+    : "";
   const assign = order.needPilot && order.status === "待派单"
     ? button("去派单", "assign-pilots", "small primary", `data-order-id="${order.id}"`)
     : "";
   const detail = `<button class="button small" data-route="order-detail" data-order-id="${order.id}">查看详情</button>`;
-  return `<div class="row-actions">${assign}${detail}</div>`;
+  return `<div class="row-actions">${price}${assign}${detail}</div>`;
 }
 
 function orderSteps(order) {
@@ -276,7 +280,9 @@ function ordersPage() {
 
 function orderDetailPage() {
   const order = activeOrder();
+  const canEditPrice = order.status === "待付款";
   const canAssignPilot = order.needPilot && ["待派单", "待服务"].includes(order.status);
+  const priceAction = canEditPrice ? button("修改金额", "edit-order-price", "small primary", `data-order-id="${order.id}"`) : "";
   const pilotAction = canAssignPilot
     ? (order.status === "待派单" ? button("分配飞手", "assign-pilots", "primary") : button("调整飞手", "assign-pilots", "small"))
     : "";
@@ -286,13 +292,18 @@ function orderDetailPage() {
   const pilotPanel = order.needPilot
     ? panel("飞手分配与履约", pilots, pilotAction)
     : "";
+  const logs = order.priceChangeLogs?.length
+    ? table(["操作时间","操作人","原金额","新金额","改价原因"], order.priceChangeLogs.map(item => [item.time, item.operator, item.oldAmount, item.newAmount, item.reason]))
+    : `<p class="empty">暂无改价记录。仅未付款订单允许由超级管理员改价。</p>`;
   return panel("订单状态", `<div class="steps steps--flow">${orderSteps(order)}</div>
     <p class="muted order-flow-summary">本单流转：${orderFlowSummary(order)}</p>`, routeButton("返回订单列表","orders",""))
   + panel("订单信息快照", detailGrid([
     ["订单号", order.id], ["用户", order.user], ["商品/服务", order.service], ["订单金额", order.amount],
     ["在线支付", order.onlinePay ? "是（下单快照）" : "否（下单快照）"],
-    ["需要飞手", order.needPilot ? "是（下单快照）" : "否（下单快照）"]
-  ]))
+    ["需要飞手", order.needPilot ? "是（下单快照）" : "否（下单快照）"],
+    ["改价规则", canEditPrice ? tag("未付款可改价") : "付款后不可改价", true]
+  ]), priceAction)
+  + panel("改价记录", logs)
   + orderRequirementPanel(order)
   + pilotPanel;
 }
@@ -315,6 +326,7 @@ DroneAdmin.registerModule({
       "列表状态列 hover 可查看该单完整流转路径",
       "状态颜色：待付款/待评价=橙色，待派单=红色（需管理员操作），待服务/待交付=蓝色，已完成=绿色",
       "需飞手且待派单的订单，列表显示「去派单」，点击直接弹窗指派飞手（与详情「分配飞手」同一逻辑）",
+      "待付款订单显示「改价」，仅超级管理员可修改金额并形成改价记录",
       "点击「查看详情」进入订单详情，顶部步骤条展示动态流转进度",
       "待服务阶段在详情页「调整飞手」修改名单，状态不变"
     ],
@@ -333,7 +345,7 @@ DroneAdmin.registerModule({
       ],
       [
         "金额",
-        "订单应付金额，线下报价类显示文案"
+        "订单应付金额；待付款订单可由超级管理员改价，付款后不可改"
       ],
       [
         "需要飞手",
@@ -371,6 +383,7 @@ DroneAdmin.registerModule({
       "顶部步骤条按下单快照（在线支付 / 飞手服务）动态生成，非固定 5 步",
       "步骤条下方展示本单完整流转路径摘要",
       "「订单信息快照」展示金额与业务属性（下单时保存，不可改）",
+      "未付款订单详情可点击「修改金额」，需填写新金额和改价原因，保存后生成留痕记录",
       "订单详情展示「需求信息快照」，字段来自下单时的商品表单配置",
       "需飞手服务时展示「飞手分配与履约」面板：待派单显示「分配飞手」，待服务显示「调整飞手」",
       "列表「去派单」与详情「分配飞手」为同一指派弹窗；调整飞手仅改名单，不改变订单状态",
@@ -384,6 +397,10 @@ DroneAdmin.registerModule({
       [
         "订单信息快照",
         "订单号、用户、商品、金额、在线支付、飞手需求（均为下单快照）"
+      ],
+      [
+        "改价记录",
+        "记录超级管理员改价的操作时间、原金额、新金额和改价原因"
       ],
       [
         "需求信息快照",
@@ -405,6 +422,52 @@ DroneAdmin.registerModule({
     "order-detail": orderDetailPage
   },
   actions: {
+    "edit-order-price": function (target) {
+      if (target.dataset.orderId) state.viewingOrderId = target.dataset.orderId;
+      const order = activeOrder();
+      if (order.status !== "待付款") {
+        toast("付款后不可改价，仅未付款订单可操作");
+        return;
+      }
+      modal("订单改价", `${formGrid([
+        { label: "订单号", html: `<input value="${order.id}" readonly>` },
+        { label: "当前金额", html: `<input value="${order.amount}" readonly>` },
+        { label: "新金额", html: `<input name="newAmount" value="${order.amount.replace(/[^\d.]/g, "") || ""}" placeholder="请输入新金额">` },
+        { label: "操作角色", html: `<input value="超级管理员" readonly>` },
+        { label: "改价原因", wide: true, html: `<textarea name="priceReason" placeholder="请输入改价原因">客户需求变更，重新核算服务报价</textarea>` }
+      ])}<p class="muted" style="margin:12px 0 0">规则：仅未付款订单允许改价；付款后不可改价；操作会记录操作人、时间、原金额、新金额和原因。</p>`,
+      `${button("取消","close-modal")}${button("确认改价","confirm-price-change","primary")}`, true);
+    },
+    "confirm-price-change": function (target) {
+      const order = activeOrder();
+      if (order.status !== "待付款") {
+        toast("付款后不可改价");
+        return;
+      }
+      const newAmountInput = document.querySelector("input[name='newAmount']");
+      const reasonInput = document.querySelector("textarea[name='priceReason']");
+      const numeric = Number(newAmountInput?.value);
+      if (!Number.isFinite(numeric) || numeric <= 0) {
+        toast("请输入有效的新金额");
+        return;
+      }
+      const oldAmount = order.amount;
+      const newAmount = `¥${numeric.toLocaleString()}`;
+      order.amount = newAmount;
+      order.priceChangeLogs = [
+        {
+          time: new Date().toLocaleString("zh-CN", { hour12: false }),
+          operator: "超级管理员",
+          oldAmount,
+          newAmount,
+          reason: reasonInput?.value?.trim() || "未填写"
+        },
+        ...(order.priceChangeLogs || [])
+      ];
+      closeModal();
+      render();
+      toast("订单金额已修改并留痕");
+    },
     "assign-pilots": function (target) {
       if (target.dataset.orderId) state.viewingOrderId = target.dataset.orderId;
           const order = activeOrder();

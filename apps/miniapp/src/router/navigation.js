@@ -1,9 +1,15 @@
-import { routes } from "./routes.js?v=message-clean-2";
-import { state } from "../state/appState.js?v=nav-banner-1";
+import { routes } from "./routes.js?v=invoice-email-removed-1";
+import { state } from "../state/appState.js?v=order-list-density-1";
 
-export function render() {
+export function render(preserveScroll = false) {
   if (!routes[state.page]) state.page = "home";
+  const content = preserveScroll ? document.querySelector(".page-content") : null;
+  const scrollTop = content?.scrollTop || 0;
   document.getElementById("app").innerHTML = routes[state.page]();
+  if (preserveScroll) {
+    const nextContent = document.querySelector(".page-content");
+    if (nextContent) nextContent.scrollTop = scrollTop;
+  }
 }
 
 export function navigate(page, remember = true) {
