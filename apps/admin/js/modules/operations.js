@@ -57,7 +57,7 @@ const feedbackRecords = DroneAdmin.data.feedbackRecords = [
     id: "FB26061408",
     user: "云航科技",
     phone: "028-55****90",
-    content: "预约服务提交后希望展示预计响应时间，方便内部安排。",
+    content: "服务需求提交后希望展示预计响应时间，方便内部安排。",
     images: ["订单截图.png"],
     submittedAt: "2026-06-14 18:12",
     source: "小程序"

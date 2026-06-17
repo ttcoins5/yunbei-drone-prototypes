@@ -116,7 +116,7 @@ DroneAdmin.registerModule({
   "task-detail"
 ],
   titles: {
-  "tasks": "任务需求与意愿",
+  "tasks": "任务大厅",
   "task-detail": "任务详情"
 },
   docs: {

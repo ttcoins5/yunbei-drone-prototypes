@@ -1,5 +1,5 @@
 import { shell } from "../components/layout.js?v=profile-auto-role-1";
-import { state } from "../state/appState.js?v=pilot-default-2";
+import { state } from "../state/appState.js?v=nav-banner-1";
 
 export function contactPage() {
   return shell(`<div class="about-page">
@@ -102,7 +102,7 @@ function assignedPilotOrderList() {
       <div class="assigned-order-main">
         <span><small>商品/服务</small><b>${order.productName}</b></span>
         <span><small>用户</small><b>${order.user}</b></span>
-        <span><small>预约时间</small><b>${order.bookingDate} ${order.bookingTime}</b></span>
+        <span><small>服务时间</small><b>${order.bookingDate} ${order.bookingTime}</b></span>
         <span><small>订单金额</small><b>¥${order.amount.toLocaleString()}</b></span>
       </div>
       <p>${order.bookingAddress}</p>
@@ -127,6 +127,21 @@ function pilotOrderInfoGrid(order) {
   </section>`;
 }
 
+function pilotRequirementFields(order) {
+  const fields = order.requirementSnapshot?.fields;
+  if (!fields?.length) {
+    return `<div class="pilot-order-fields">
+      <span><small>联系手机号</small><b>${order.contactPhone}</b></span>
+      <span><small>服务地址</small><b>${order.bookingAddress}</b></span>
+      <span><small>信息备注</small><b>${order.infoRemark}</b></span>
+    </div>
+    <div class="pilot-photo-file"><i>图</i><span>${order.remarkPhoto}</span></div>`;
+  }
+  return `<div class="pilot-order-fields">
+    ${fields.map(field => `<span><small>${field.label}</small><b>${field.displayValue || field.value || "—"}${field.unit ? ` ${field.unit}` : ""}</b></span>`).join("")}
+  </div>`;
+}
+
 export function pilotOrderDetailPage() {
   const order = selectedAssignedOrder();
   if (!order) {
@@ -141,8 +156,8 @@ export function pilotOrderDetailPage() {
       <h2>${order.status}</h2>
       <p>${order.orderNo} · ${order.productName}</p>
       <div>
-        <span><small>预约日期</small><b>${order.bookingDate}</b></span>
-        <span><small>预约时段</small><b>${order.bookingTime}</b></span>
+        <span><small>服务日期</small><b>${order.bookingDate}</b></span>
+        <span><small>服务时段</small><b>${order.bookingTime}</b></span>
       </div>
     </section>
     <section class="pilot-order-card">
@@ -150,13 +165,8 @@ export function pilotOrderDetailPage() {
       ${pilotOrderInfoGrid(order)}
     </section>
     <section class="pilot-order-card">
-      <div class="pilot-order-title"><b>预约信息</b><small>按下单快照展示</small></div>
-      <div class="pilot-order-fields">
-        <span><small>联系手机号</small><b>${order.contactPhone}</b></span>
-        <span><small>预约地址</small><b>${order.bookingAddress}</b></span>
-        <span><small>信息备注</small><b>${order.infoRemark}</b></span>
-      </div>
-      <div class="pilot-photo-file"><i>图</i><span>${order.remarkPhoto}</span></div>
+      <div class="pilot-order-title"><b>需求信息</b><small>${order.requirementSnapshot?.templateName || "按下单快照展示"}</small></div>
+      ${pilotRequirementFields(order)}
     </section>
     <section class="pilot-order-card">
       <div class="pilot-order-title"><b>订单进度</b><small>${order.progress.length} 条记录</small></div>

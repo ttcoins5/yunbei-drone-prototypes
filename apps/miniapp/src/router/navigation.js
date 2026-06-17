@@ -1,5 +1,5 @@
-import { routes } from "./routes.js?v=pilot-default-2";
-import { state } from "../state/appState.js?v=pilot-default-2";
+import { routes } from "./routes.js?v=message-clean-2";
+import { state } from "../state/appState.js?v=nav-banner-1";
 
 export function render() {
   if (!routes[state.page]) state.page = "home";

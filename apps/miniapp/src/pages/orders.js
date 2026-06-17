@@ -1,5 +1,5 @@
 import { shell } from "../components/layout.js?v=profile-auto-role-1";
-import { state } from "../state/appState.js?v=pilot-default-2";
+import { state } from "../state/appState.js?v=nav-banner-1";
 
 const orderTabs = ["全部", "待付款", "待接单", "待服务", "待评价", "已取消"];
 
@@ -51,6 +51,34 @@ function orderCard(order) {
   </button>`;
 }
 
+function requirementSnapshotGrid(snapshot) {
+  if (!snapshot?.fields?.length) return "";
+  return `<section class="order-detail-card">
+    <div class="order-detail-title"><b>需求信息</b><small>${snapshot.templateName || "下单快照"}</small></div>
+    <div class="order-detail-grid">
+      ${snapshot.fields.map(field => `<span class="${field.type === "textarea" || field.type === "image" || String(field.value).length > 18 ? "wide" : ""}">
+        <small>${field.label}</small><b>${field.displayValue || field.value || "—"}${field.unit ? ` ${field.unit}` : ""}</b>
+      </span>`).join("")}
+    </div>
+  </section>`;
+}
+
+function resolvedRequirementSnapshot(order) {
+  if (order.requirementSnapshot?.fields?.length) {
+    return order.requirementSnapshot;
+  }
+
+  return {
+    templateName: "下单快照",
+    fields: [
+      { label: "登记联系人", type: "text", value: order.contactName || "—" },
+      { label: "联系电话", type: "text", value: order.contactPhone || "—" },
+      { label: "服务地址", type: "address", value: order.address || "—" },
+      { label: "备注说明", type: "textarea", value: order.remark || "—" }
+    ]
+  };
+}
+
 export function ordersPage() {
   const list = visibleOrders();
 
@@ -77,14 +105,6 @@ export function messagesPage() {
       desc: latestNotification ? notificationText(latestNotification) : "订单状态变更会在这里提醒您",
       time: latestNotification?.time || "",
       unread: hasUnreadServiceNotification()
-    },
-    {
-      route: "products",
-      tone: "deal",
-      mark: "惠",
-      title: "优惠活动",
-      desc: "无人机保养季，预约检测享限时优惠",
-      time: "10:20"
     },
     {
       route: "contactWechat",
@@ -131,6 +151,7 @@ export function orderDetailPage() {
   if (!order) {
     return shell(`<div class="order-detail-page"><div class="order-empty"><b>暂无订单详情</b><p>请先从订单列表中选择一笔订单。</p></div></div>`, { title: "订单详情", back: true, tab: "orders" });
   }
+  const requirementSnapshot = resolvedRequirementSnapshot(order);
 
   return shell(`<div class="order-detail-page">
     <section class="order-detail-hero ${order.tab === "已取消" ? "cancelled" : ""}">
@@ -153,24 +174,7 @@ export function orderDetailPage() {
         </span>
       </div>
     </section>
-    <section class="order-detail-card">
-      <div class="order-detail-title"><b>联系人与地址</b><small>平台上门前将电话确认</small></div>
-      <div class="order-detail-grid">
-        <span><small>联系人</small><b>${order.contactName}</b></span>
-        <span><small>联系电话</small><b>${order.contactPhone}</b></span>
-        <span class="wide"><small>服务地址</small><b>${order.address}</b></span>
-        <span class="wide"><small>备注说明</small><b>${order.remark}</b></span>
-      </div>
-    </section>
-    <section class="order-detail-card">
-      <div class="order-detail-title"><b>费用明细</b><small>${order.count} 份服务</small></div>
-      <div class="order-detail-price">
-        <span><small>单价</small><b>￥${order.price}</b></span>
-        <span><small>数量</small><b>${order.count}</b></span>
-        <span><small>合计</small><b>￥${order.price * order.count}</b></span>
-        <span><small>实付款</small><b class="accent">￥${order.paid}</b></span>
-      </div>
-    </section>
+    ${requirementSnapshotGrid(requirementSnapshot)}
     <section class="order-detail-card">
       <div class="order-detail-title"><b>订单进度</b><small>${order.timeline.length} 条记录</small></div>
       <div class="order-progress">

@@ -1,0 +1,349 @@
+<mxfile host="app.diagrams.net" agent="Codex">
+  <diagram id="drone-commerce-swimlane" name="无人机商城三角色泳道流程图">
+    <mxGraphModel dx="1647" dy="1023" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="3640" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" parent="1" style="rounded=0;fillColor=#f5f7fa;strokeColor=none;" value="" vertex="1">
+          <mxGeometry height="3640" width="1440" as="geometry" />
+        </mxCell>
+        <mxCell id="3" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=12;fillColor=#07152f;strokeColor=#07152f;fontColor=#ffffff;fontSize=30;fontStyle=1;align=left;verticalAlign=middle;spacingLeft=28;" value="无人机商城订单、派单与开票业务流程&lt;br&gt;&lt;font style=&quot;font-size: 17px; color: rgb(220, 230, 245); font-weight: normal;&quot;&gt;三角色泳道总览 · 正常主流程 · 普通用户服务派单与企业订单后台履约 （）&lt;/font&gt;" vertex="1">
+          <mxGeometry height="108" width="1380" x="30" y="24" as="geometry" />
+        </mxCell>
+        <mxCell id="4" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=0;fillColor=#ffffff;strokeColor=#cbd3df;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="3470" width="420" x="40" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="5" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=0;fillColor=#fffdf8;strokeColor=#cbd3df;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="3470" width="420" x="510" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="6" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=0;fillColor=#f8fbff;strokeColor=#cbd3df;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="3470" width="420" x="980" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="7" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=0;fillColor=#102649;strokeColor=#102649;fontColor=#ffffff;fontSize=24;fontStyle=1;align=center;verticalAlign=middle;" value="小程序用户" vertex="1">
+          <mxGeometry height="62" width="420" x="40" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="8" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=0;fillColor=#102649;strokeColor=#102649;fontColor=#ffffff;fontSize=24;fontStyle=1;align=center;verticalAlign=middle;" value="后台管理员" vertex="1">
+          <mxGeometry height="62" width="420" x="510" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="9" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=0;fillColor=#102649;strokeColor=#102649;fontColor=#ffffff;fontSize=24;fontStyle=1;align=center;verticalAlign=middle;" value="飞手" vertex="1">
+          <mxGeometry height="62" width="420" x="980" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="10" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=12;fillColor=#f2c86b;strokeColor=#d5a94e;fontSize=21;fontStyle=1;align=left;spacingLeft=20;verticalAlign=middle;" value="阶段一：商品配置与飞手入驻" vertex="1">
+          <mxGeometry height="42" width="1360" x="40" y="226" as="geometry" />
+        </mxCell>
+        <mxCell id="11" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=12;fillColor=#f2c86b;strokeColor=#d5a94e;fontSize=21;fontStyle=1;align=left;spacingLeft=20;verticalAlign=middle;" value="阶段二：用户下单" vertex="1">
+          <mxGeometry height="42" width="1360" x="40" y="1124" as="geometry" />
+        </mxCell>
+        <mxCell id="12" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=12;fillColor=#f2c86b;strokeColor=#d5a94e;fontSize=21;fontStyle=1;align=left;spacingLeft=20;verticalAlign=middle;" value="阶段三：接单与履约" vertex="1">
+          <mxGeometry height="42" width="1360" x="40" y="1834" as="geometry" />
+        </mxCell>
+        <mxCell id="13" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=12;fillColor=#f2c86b;strokeColor=#d5a94e;fontSize=21;fontStyle=1;align=left;spacingLeft=20;verticalAlign=middle;" value="阶段四：评价与完成" vertex="1">
+          <mxGeometry height="42" width="1360" x="40" y="2964" as="geometry" />
+        </mxCell>
+        <mxCell id="14" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=12;fillColor=#f2c86b;strokeColor=#d5a94e;fontSize=21;fontStyle=1;align=left;spacingLeft=20;verticalAlign=middle;" value="阶段五：合并开票" vertex="1">
+          <mxGeometry height="42" width="1360" x="40" y="3340" as="geometry" />
+        </mxCell>
+        <mxCell id="15" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#fffaf0;strokeColor=#d5a94e;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;" value="创建商品分类&lt;br&gt;&lt;font style=&quot;font-size: 14px; font-weight: normal; color: rgb(102, 112, 133);&quot;&gt;服务类&lt;/font&gt;" vertex="1">
+          <mxGeometry height="70" width="265" x="587.5" y="286" as="geometry" />
+        </mxCell>
+        <mxCell id="16" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#fffaf0;strokeColor=#d5a94e;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;" value="创建或编辑商品&lt;br&gt;&lt;font style=&quot;font-size: 14px; font-weight: normal; color: rgb(102, 112, 133);&quot;&gt;选择所属分类 · 名称 · 详情 · 价格 · 上下架&lt;/font&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="70" width="322.5" x="557.5" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="q6W90w6urZo52qcIp8jd-91" edge="1" parent="1" source="17" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#65758c;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#65758c;labelBackgroundColor=#f5f7fa;" target="16" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="17" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#fffaf0;strokeColor=#d5a94e;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;" value="配置商品分类属性&lt;br&gt;&lt;font style=&quot;font-size: 14px; font-weight: normal; color: rgb(102, 112, 133);&quot;&gt;面向用户类型 · 是否需要飞手服务&lt;br&gt;是否需要预约 · 是否需要在线支付&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 14px; font-weight: normal; color: rgb(102, 112, 133);&quot;&gt;（吊运、农业、高空清洗、农业、无人机保养、无人机共享电池站、无人机保险、无人机销售及租赁、空域代办等不规则产品及服务）&lt;/font&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="130" width="340" x="550" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="18" edge="1" parent="1" source="15" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#65758c;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#65758c;labelBackgroundColor=#f5f7fa" target="17" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="20" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#f1f7ff;strokeColor=#4b83c4;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;" value="申请加入飞手" vertex="1">
+          <mxGeometry height="50" width="300" x="1040" y="286" as="geometry" />
+        </mxCell>
+        <mxCell id="21" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rhombus;fillColor=#ffffff;strokeColor=#4b83c4;strokeWidth=2.2;fontSize=16;fontStyle=1;align=center;verticalAlign=middle;spacing=6;shadow=1;" value="飞手所属主体&lt;br&gt;是否为公司？" vertex="1">
+          <mxGeometry height="100" width="220" x="1080" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="pilot-personal-info" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#f1f7ff;strokeColor=#4b83c4;strokeWidth=2;fontSize=16;fontStyle=1;align=center;verticalAlign=middle;spacing=6;shadow=1;" value="填写飞手个人信息&lt;br&gt;&lt;font style=&quot;font-size: 12px; font-weight: normal; color: rgb(102, 112, 133);&quot;&gt;申请人 · 联系电话&lt;br&gt;出生年月 · 所在区域，&lt;/font&gt;" vertex="1">
+          <mxGeometry height="92" width="300" x="1040" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="pilot-company-info" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#eef7ff;strokeColor=#246db5;strokeWidth=2;fontSize=16;fontStyle=1;align=center;verticalAlign=middle;spacing=6;shadow=1;" value="额外填写 / 选择所属公司信息&lt;br&gt;&lt;font style=&quot;font-size:12px;font-weight:normal;color:#667085&quot;&gt;选择已有公司或填写公司名称&lt;br&gt;联系电话 · 所在区域&lt;/font&gt;" vertex="1">
+          <mxGeometry height="94" width="300" x="1060" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="22" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#f1f7ff;strokeColor=#4b83c4;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;" value="上传资质与设备资料&lt;br&gt;&lt;font style=&quot;font-size:13px;font-weight:normal;color:#667085&quot;&gt;身份证正反面 · 操作执照 · 无人机照片&lt;br&gt;机型 · 序列号 · 唯一识别码&lt;/font&gt;" vertex="1">
+          <mxGeometry height="94" width="380" x="1000" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="23" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#f1f7ff;strokeColor=#4b83c4;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;" value="勾选入驻协议并提交申请" vertex="1">
+          <mxGeometry height="50" width="340" x="1020" y="870" as="geometry" />
+        </mxCell>
+        <mxCell id="24" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#fffaf0;strokeColor=#d5a94e;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;" value="审核飞手入驻申请&lt;br&gt;&lt;font style=&quot;font-size: 13px; font-weight: normal; color: rgb(102, 112, 133);&quot;&gt;核验身份、执照与设备信息（后台可以直接创建飞手）&lt;/font&gt;" vertex="1">
+          <mxGeometry height="76" width="340" x="550" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="25" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rhombus;fillColor=#ffffff;strokeColor=#52657f;strokeWidth=2.2;fontSize=16;fontStyle=1;align=center;verticalAlign=middle;spacing=6;shadow=1;" value="审核是否通过？" vertex="1">
+          <mxGeometry height="104" width="220" x="610" y="800" as="geometry" />
+        </mxCell>
+        <mxCell id="26" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#ddf4e8;strokeColor=#4a9b70;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;" value="审核通过&lt;br&gt;&lt;font style=&quot;font-size:13px;font-weight:normal;color:#667085&quot;&gt;进入可分配飞手池&lt;/font&gt;" vertex="1">
+          <mxGeometry height="62" width="300" x="1040" y="972" as="geometry" />
+        </mxCell>
+        <mxCell id="27" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#fff2f0;strokeColor=#d46a5f;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;" value="审核不通过&lt;br&gt;&lt;font style=&quot;font-size:13px;font-weight:normal;color:#667085&quot;&gt;退回修改资料后重新提交&lt;/font&gt;" vertex="1">
+          <mxGeometry height="64" width="340" x="550" y="972" as="geometry" />
+        </mxCell>
+        <mxCell id="28" edge="1" parent="1" source="20" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#246db5;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#246db5;labelBackgroundColor=#f5f7fa" target="pilot-personal-info" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="29" edge="1" parent="1" source="pilot-personal-info" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#246db5;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#246db5;labelBackgroundColor=#f5f7fa" target="21" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="pilot-company-edge" edge="1" parent="1" source="21" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#246db5;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#246db5;labelBackgroundColor=#f5f7fa" target="pilot-company-info" value="是：公司">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="pilot-personal-upload-edge" edge="1" parent="1" source="21" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#246db5;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#246db5;labelBackgroundColor=#f5f7fa" target="22" value="否：个人">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1030" y="530" />
+              <mxPoint x="1030" y="710" />
+              <mxPoint x="1190" y="710" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pilot-company-upload-edge" edge="1" parent="1" source="pilot-company-info" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#246db5;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#246db5;labelBackgroundColor=#f5f7fa" target="22" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="30" edge="1" parent="1" source="22" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#246db5;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#246db5;labelBackgroundColor=#f5f7fa" target="23" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="31" edge="1" parent="1" source="23" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#246db5;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#246db5;labelBackgroundColor=#f5f7fa" target="24" value="提交审核">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="32" edge="1" parent="1" source="24" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d5a94e;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#d5a94e;labelBackgroundColor=#f5f7fa" target="25" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="33" edge="1" parent="1" source="25" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4a9b70;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#4a9b70;labelBackgroundColor=#f5f7fa" target="26" value="通过">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="34" edge="1" parent="1" source="25" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d46a5f;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#d46a5f;labelBackgroundColor=#f5f7fa" target="27" value="不通过">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="35" edge="1" parent="1" source="27" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d46a5f;strokeWidth=3;endArrow=block;endFill=1;dashed=1;fontFamily=PingFang SC;fontSize=14;fontColor=#d46a5f;labelBackgroundColor=#f5f7fa" target="21" value="修改后重新提交">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="940" y="972" />
+              <mxPoint x="940" y="410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="36" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#ffffff;strokeColor=#9aa8bc;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;" value="浏览分类与商品详情&lt;br&gt;&lt;font style=&quot;font-size:14px;font-weight:normal;color:#667085&quot;&gt;选择商品或预约服务&lt;/font&gt;" vertex="1">
+          <mxGeometry height="78" width="290" x="105" y="1202" as="geometry" />
+        </mxCell>
+        <mxCell id="booking-required-decision" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rhombus;fillColor=#ffffff;strokeColor=#52657f;strokeWidth=2.2;fontSize=15;fontStyle=1;align=center;verticalAlign=middle;spacing=6;shadow=1;" value="是否需要预约？" vertex="1">
+          <mxGeometry height="108" width="180" x="60" y="1310" as="geometry" />
+        </mxCell>
+        <mxCell id="37" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#ffffff;strokeColor=#9aa8bc;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;" value="填写预约信息并提交&lt;br&gt;&lt;font style=&quot;font-size:14px;font-weight:normal;color:#667085&quot;&gt;时间、地址、手机号、备注图片&lt;/font&gt;" vertex="1">
+          <mxGeometry height="86" width="190" x="260" y="1321" as="geometry" />
+        </mxCell>
+        <mxCell id="38" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rhombus;fillColor=#ffffff;strokeColor=#52657f;strokeWidth=2.2;fontSize=16;fontStyle=1;align=center;verticalAlign=middle;spacing=6;shadow=1;" value="支持在线支付？" vertex="1">
+          <mxGeometry height="130" width="210" x="145" y="1448" as="geometry" />
+        </mxCell>
+        <mxCell id="39" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=45;fillColor=#eef4fc;strokeColor=#246db5;strokeWidth=2.5;fontSize=18;fontStyle=1;align=center;verticalAlign=middle;shadow=1;" value="待付款" vertex="1">
+          <mxGeometry height="62" width="210" x="70" y="1630" as="geometry" />
+        </mxCell>
+        <mxCell id="40" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#ffffff;strokeColor=#9aa8bc;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;" value="用户完成支付" vertex="1">
+          <mxGeometry height="66" width="210" x="70" y="1726" as="geometry" />
+        </mxCell>
+        <mxCell id="41" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=45;fillColor=#fffaf0;strokeColor=#d5a94e;strokeWidth=2.5;fontSize=18;fontStyle=1;align=center;verticalAlign=middle;shadow=1;" value="待接单" vertex="1">
+          <mxGeometry height="62" width="280" x="580" y="1910" as="geometry" />
+        </mxCell>
+        <mxCell id="42" edge="1" parent="1" source="36" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#65758c;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#65758c;labelBackgroundColor=#f5f7fa" target="booking-required-decision" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="booking-required-yes-edge" edge="1" parent="1" source="booking-required-decision" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#246db5;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#246db5;labelBackgroundColor=#f5f7fa" target="37" value="是">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="booking-required-no-edge" edge="1" parent="1" source="booking-required-decision" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d5a94e;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#d5a94e;labelBackgroundColor=#f5f7fa" target="38" value="否">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="95" y="1430" />
+              <mxPoint x="95" y="1513" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="43" edge="1" parent="1" source="37" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#65758c;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#65758c;labelBackgroundColor=#f5f7fa" target="38" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="44" edge="1" parent="1" source="38" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#246db5;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#246db5;labelBackgroundColor=#f5f7fa" target="39" value="是">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="45" edge="1" parent="1" source="39" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#246db5;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#246db5;labelBackgroundColor=#f5f7fa" target="40" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="46" edge="1" parent="1" source="40" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#246db5;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#246db5;labelBackgroundColor=#f5f7fa" target="48" value="支付成功">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="520" y="1759" />
+              <mxPoint x="545" y="1698" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="47" edge="1" parent="1" source="38" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d5a94e;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#d5a94e;labelBackgroundColor=#f5f7fa" target="48" value="否：直接生成订单">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="545" y="1513" />
+              <mxPoint x="545" y="1698" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="48" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rhombus;fillColor=#ffffff;strokeColor=#52657f;strokeWidth=2.2;fontSize=16;fontStyle=1;align=center;verticalAlign=middle;spacing=6;shadow=1;" value="订单是否需要&lt;br&gt;飞手服务？" vertex="1">
+          <mxGeometry height="136" width="230" x="605" y="1630" as="geometry" />
+        </mxCell>
+        <mxCell id="51" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#f3faf6;strokeColor=#4a9b70;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;dashed=1;" value="任务大厅：后台独立发布需求&lt;br&gt;&lt;font style=&quot;font-size:13px;font-weight:normal;color:#667085&quot;&gt;仅发布独立服务需求，不关联商品订单&lt;/font&gt;" vertex="1">
+          <mxGeometry height="82" width="360" x="540" y="2800" as="geometry" />
+        </mxCell>
+        <mxCell id="52" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#f3faf6;strokeColor=#4a9b70;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;dashed=1;" value="飞手浏览需求并提交接单意愿&lt;br&gt;&lt;font style=&quot;font-size: 13px; font-weight: normal; color: rgb(102, 112, 133);&quot;&gt;仅表达意愿，作信息收集展示&lt;/font&gt;" vertex="1">
+          <mxGeometry height="82" width="340" x="1020" y="2800" as="geometry" />
+        </mxCell>
+        <mxCell id="53" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#f1f7ff;strokeColor=#246db5;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;" value="后台在商品订单中直接分配飞手&lt;br&gt;&lt;font style=&quot;font-size:13px;font-weight:normal;color:#667085&quot;&gt;仅选择审核通过的一个或多个飞手&lt;/font&gt;" vertex="1">
+          <mxGeometry height="82" width="360" x="540" y="2108" as="geometry" />
+        </mxCell>
+        <mxCell id="bgxLY4_kcGx1vsoO5tdp-94" edge="1" parent="1" source="54" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeWidth=4;curved=0;strokeColor=#246DB5;fontFamily=PingFang SC;fontSize=14;fontColor=#246db5;labelBackgroundColor=#f5f7fa;" target="56" value="已分配飞手：执行服务">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="990" y="2289" />
+              <mxPoint x="990" y="2231" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="54" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=45;fillColor=#eef4fc;strokeColor=#246db5;strokeWidth=2.5;fontSize=18;fontStyle=1;align=center;verticalAlign=middle;shadow=1;" value="商品订单：待服务" vertex="1">
+          <mxGeometry height="62" width="280" x="580" y="2258" as="geometry" />
+        </mxCell>
+        <mxCell id="56" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#f1f7ff;strokeColor=#4b83c4;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;" value="执行服务并在订单中提交完成&lt;br&gt;&lt;font style=&quot;font-size:14px;font-weight:normal;color:#667085&quot;&gt;每位飞手完成后更新履约结果&lt;/font&gt;" vertex="1">
+          <mxGeometry height="82" width="320" x="1030" y="2190" as="geometry" />
+        </mxCell>
+        <mxCell id="57" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rhombus;fillColor=#f1f7ff;strokeColor=#246db5;strokeWidth=2.2;fontSize=16;fontStyle=1;align=center;verticalAlign=middle;spacing=6;shadow=1;" value="全部已分配飞手&lt;br&gt;均完成订单服务？" vertex="1">
+          <mxGeometry height="120" width="260" x="1060" y="2320" as="geometry" />
+        </mxCell>
+        <mxCell id="58" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#fffaf0;strokeColor=#d5a94e;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;" value="无需飞手的订单由后台完成交付&lt;br&gt;&lt;font style=&quot;font-size:13px;font-weight:normal;color:#667085&quot;&gt;后台确认服务或商品交付完成&lt;/font&gt;" vertex="1">
+          <mxGeometry height="76" width="360" x="540" y="2615" as="geometry" />
+        </mxCell>
+        <mxCell id="59" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=45;fillColor=#fffaf0;strokeColor=#d5a94e;strokeWidth=2.5;fontSize=18;fontStyle=1;align=center;verticalAlign=middle;shadow=1;" value="待评价" vertex="1">
+          <mxGeometry height="62" width="280" x="110" y="2680" as="geometry" />
+        </mxCell>
+        <mxCell id="60" edge="1" parent="1" source="48" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#246db5;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#246db5;labelBackgroundColor=#f5f7fa" target="41" value="是：需要飞手接单">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="61" edge="1" parent="1" source="41" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#246db5;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#246db5;labelBackgroundColor=#f5f7fa" target="53" value="后台处理接单并派单">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="64" edge="1" parent="1" source="51" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4a9b70;strokeWidth=2.5;endArrow=block;endFill=1;dashed=1;fontFamily=PingFang SC;fontSize=13;fontColor=#4a9b70;labelBackgroundColor=#f5f7fa" target="52" value="独立收集接单意愿">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="66" edge="1" parent="1" source="26" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#4a9b70;strokeWidth=3;endArrow=block;endFill=1;dashed=1;fontFamily=PingFang SC;fontSize=14;fontColor=#4a9b70;labelBackgroundColor=#f5f7fa" target="53" value="获得任务分配资格">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="950" y="1003" />
+              <mxPoint x="950" y="2080" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="67" edge="1" parent="1" source="53" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#246db5;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#246db5;labelBackgroundColor=#f5f7fa" target="54" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="70" edge="1" parent="1" source="56" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#246db5;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#246db5;labelBackgroundColor=#f5f7fa" target="57" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="72" edge="1" parent="1" source="57" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#246db5;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#246db5;labelBackgroundColor=#f5f7fa" target="59" value="是">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1190" y="2740" />
+              <mxPoint x="390" y="2740" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="73" edge="1" parent="1" source="48" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d5a94e;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#d5a94e;labelBackgroundColor=#f5f7fa" target="54" value="否：直接待服务">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="920" y="1698" />
+              <mxPoint x="920" y="2289" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="no-pilot-delivery-edge" edge="1" parent="1" source="54" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d5a94e;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#d5a94e;labelBackgroundColor=#f5f7fa;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="58" value="无需飞手：后台交付">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="2289" />
+              <mxPoint x="500" y="2653" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="74" edge="1" parent="1" source="58" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d5a94e;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#d5a94e;labelBackgroundColor=#f5f7fa" target="59" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="450" y="2653" />
+              <mxPoint x="450" y="2711" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="75" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#ffffff;strokeColor=#9aa8bc;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;" value="收到待评价通知&lt;br&gt;&lt;font style=&quot;font-size:14px;font-weight:normal;color:#667085&quot;&gt;提交评价或等待评价期限&lt;/font&gt;" vertex="1">
+          <mxGeometry height="74" width="290" x="105" y="3042" as="geometry" />
+        </mxCell>
+        <mxCell id="76" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rhombus;fillColor=#ffffff;strokeColor=#52657f;strokeWidth=2.2;fontSize=16;fontStyle=1;align=center;verticalAlign=middle;spacing=6;shadow=1;" value="用户已评价？" vertex="1">
+          <mxGeometry height="116" width="200" x="150" y="3154" as="geometry" />
+        </mxCell>
+        <mxCell id="77" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=45;fillColor=#ddf4e8;strokeColor=#4a9b70;strokeWidth=2.5;fontSize=18;fontStyle=1;align=center;verticalAlign=middle;shadow=1;" value="已完成" vertex="1">
+          <mxGeometry height="62" width="280" x="580" y="3181" as="geometry" />
+        </mxCell>
+        <mxCell id="78" edge="1" parent="1" source="59" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#65758c;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#65758c;labelBackgroundColor=#f5f7fa" target="75" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="79" edge="1" parent="1" source="75" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#65758c;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#65758c;labelBackgroundColor=#f5f7fa" target="76" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="80" edge="1" parent="1" source="76" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#246db5;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#246db5;labelBackgroundColor=#f5f7fa" target="77" value="是：提交评价">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="81" edge="1" parent="1" source="76" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7c8ca3;strokeWidth=3;endArrow=block;endFill=1;dashed=1;fontFamily=PingFang SC;fontSize=14;fontColor=#7c8ca3;labelBackgroundColor=#f5f7fa" target="77" value="否：超时自动完成">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="250" y="3302" />
+              <mxPoint x="545" y="3302" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="82" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#ffffff;strokeColor=#9aa8bc;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;" value="进入发票中心并勾选订单&lt;br&gt;&lt;font style=&quot;font-size:14px;font-weight:normal;color:#667085&quot;&gt;一个或多个已完成且未开票订单&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="360" x="50" y="3420" as="geometry" />
+        </mxCell>
+        <mxCell id="83" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rhombus;fillColor=#ffffff;strokeColor=#52657f;strokeWidth=2.2;fontSize=16;fontStyle=1;align=center;verticalAlign=middle;spacing=6;shadow=1;" value="同一用户、抬头&lt;br&gt;且同一税率？" vertex="1">
+          <mxGeometry height="112" width="300" x="570" y="3404" as="geometry" />
+        </mxCell>
+        <mxCell id="84" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#fffaf0;strokeColor=#d5a94e;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;" value="生成合并申请并审核开票&lt;br&gt;&lt;font style=&quot;font-size:14px;font-weight:normal;color:#667085&quot;&gt;一张发票关联多个订单&lt;/font&gt;" vertex="1">
+          <mxGeometry height="80" width="320" x="1030" y="3410" as="geometry" />
+        </mxCell>
+        <mxCell id="85" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=1;arcSize=16;fillColor=#ffffff;strokeColor=#9aa8bc;strokeWidth=2;fontSize=17;fontStyle=1;align=center;verticalAlign=middle;spacing=8;shadow=1;" value="用户查看 / 下载发票" vertex="1">
+          <mxGeometry height="52" width="320" x="1030" y="3520" as="geometry" />
+        </mxCell>
+        <mxCell id="86" parent="1" style="fontFamily=PingFang SC;fontColor=#172033;html=1;whiteSpace=wrap;rounded=0;fillColor=none;strokeColor=none;fontSize=14;fontColor=#667085;align=center;verticalAlign=middle;" value="校验不通过：返回重新选择订单（异常分支不展开）" vertex="1">
+          <mxGeometry height="28" width="420" x="510" y="3538" as="geometry" />
+        </mxCell>
+        <mxCell id="87" edge="1" parent="1" source="77" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d5a94e;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#d5a94e;labelBackgroundColor=#f5f7fa" target="82" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="720" y="3340" />
+              <mxPoint x="250" y="3340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="88" edge="1" parent="1" source="82" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d5a94e;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#d5a94e;labelBackgroundColor=#f5f7fa" target="83" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="89" edge="1" parent="1" source="83" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d5a94e;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#d5a94e;labelBackgroundColor=#f5f7fa" target="84" value="通过">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="90" edge="1" parent="1" source="84" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d5a94e;strokeWidth=3;endArrow=block;endFill=1;fontFamily=PingFang SC;fontSize=14;fontColor=#d5a94e;labelBackgroundColor=#f5f7fa" target="85" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="91" parent="1" style="rounded=1;arcSize=12;fillColor=#07152f;strokeColor=#07152f;" value="" vertex="1">
+          <mxGeometry height="28" width="1360" x="40" y="3600" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

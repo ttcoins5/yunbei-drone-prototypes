@@ -7,7 +7,6 @@ const orderRecords = DroneAdmin.data.orderRecords = [
     "service": "高空清洗服务",
     "amount": "¥1,599",
     "needPilot": true,
-    "needAppointment": true,
     "status": "待派单",
     "onlinePay": true,
     "assignedPilots": [],
@@ -20,6 +19,19 @@ const orderRecords = DroneAdmin.data.orderRecords = [
       "remarkPhoto": {
         "name": "北侧外立面.jpg"
       }
+    },
+    "requirementSnapshot": {
+      "templateName": "吊运服务模板",
+      "fields": [
+        { "label": "登记联系人", "type": "text", "value": "林先生" },
+        { "label": "联系电话", "type": "text", "value": "139****5528" },
+        { "label": "吊运物品", "type": "text", "value": "外立面清洗设备" },
+        { "label": "物品重量", "type": "number", "value": "28", "unit": "kg" },
+        { "label": "作业地点", "type": "address", "value": "成都市武侯区某园区 3 号楼" },
+        { "label": "吊运高度", "type": "number", "value": "42", "unit": "m" },
+        { "label": "需求说明", "type": "textarea", "value": "重点清洗北侧玻璃幕墙，现场有停车位。" },
+        { "label": "现场照片", "type": "image", "value": "北侧外立面.jpg" }
+      ]
     }
   },
   {
@@ -28,7 +40,6 @@ const orderRecords = DroneAdmin.data.orderRecords = [
     "service": "园区航拍测绘",
     "amount": "¥3,600",
     "needPilot": true,
-    "needAppointment": true,
     "status": "待派单",
     "onlinePay": true,
     "assignedPilots": [],
@@ -41,6 +52,18 @@ const orderRecords = DroneAdmin.data.orderRecords = [
       "remarkPhoto": {
         "name": "东门入口.jpg"
       }
+    },
+    "requirementSnapshot": {
+      "templateName": "巡检服务模板",
+      "fields": [
+        { "label": "登记联系人", "type": "text", "value": "华景物业" },
+        { "label": "联系电话", "type": "text", "value": "138****6626" },
+        { "label": "服务类型", "type": "select", "value": "园区巡检" },
+        { "label": "巡检区域", "type": "address", "value": "成都市高新区天府软件园" },
+        { "label": "巡检时间", "type": "timeSlot", "value": "2026-06-15 14:00-16:00" },
+        { "label": "需求说明", "type": "textarea", "value": "需避开午间员工休息时间，从东门进入。" },
+        { "label": "例图/附件", "type": "image", "value": "东门入口.jpg" }
+      ]
     }
   },
   {
@@ -49,7 +72,6 @@ const orderRecords = DroneAdmin.data.orderRecords = [
     "service": "无人机保养检测",
     "amount": "¥899",
     "needPilot": false,
-    "needAppointment": true,
     "status": "待交付",
     "onlinePay": true,
     "assignedPilots": [],
@@ -68,7 +90,6 @@ const orderRecords = DroneAdmin.data.orderRecords = [
     "service": "园区航拍测绘",
     "amount": "¥2,800",
     "needPilot": true,
-    "needAppointment": true,
     "status": "待付款",
     "onlinePay": true,
     "assignedPilots": [],
@@ -87,7 +108,6 @@ const orderRecords = DroneAdmin.data.orderRecords = [
     "service": "高空清洗服务",
     "amount": "线下报价",
     "needPilot": true,
-    "needAppointment": true,
     "status": "待派单",
     "onlinePay": false,
     "assignedPilots": [],
@@ -108,7 +128,6 @@ const orderRecords = DroneAdmin.data.orderRecords = [
     "service": "空域代办服务",
     "amount": "线下报价",
     "needPilot": false,
-    "needAppointment": false,
     "status": "已完成",
     "onlinePay": false,
     "assignedPilots": []
@@ -119,7 +138,6 @@ const orderRecords = DroneAdmin.data.orderRecords = [
     "service": "园区巡检服务",
     "amount": "¥6,400",
     "needPilot": true,
-    "needAppointment": true,
     "status": "待评价",
     "onlinePay": true,
     "assignedPilots": [
@@ -147,7 +165,6 @@ const orderRecords = DroneAdmin.data.orderRecords = [
     "service": "高空清洗服务",
     "amount": "¥899",
     "needPilot": true,
-    "needAppointment": true,
     "status": "已完成",
     "onlinePay": true,
     "assignedPilots": [],
@@ -167,7 +184,7 @@ function activeOrder() {
 }
 
 function formatOrderAppointmentBrief(order) {
-  if (!order.needAppointment || !order.appointment) return "—";
+  if (!order.appointment) return "—";
   const { date, slot } = order.appointment;
   return [date, slot].filter(Boolean).join(" ");
 }
@@ -181,17 +198,16 @@ function orderRemarkPhoto(order) {
   </button>`;
 }
 
-function orderAppointmentPanel(order) {
-  if (!order.needAppointment) return "";
-  const appt = order.appointment || {};
-  return panel("预约信息", detailGrid([
-    ["预约日期", appt.date || "—"],
-    ["预约时段", appt.slot || "—"],
-    ["联系手机号", appt.phone || "—"],
-    ["预约地址", appt.address || "—", true],
-    ["信息备注", `<span class="order-remark-text">${appt.remark || "—"}</span>`, true],
-    ["备注照片", orderRemarkPhoto(order), true]
-  ]));
+function orderRequirementPanel(order) {
+  const snapshot = order.requirementSnapshot;
+  if (!snapshot?.fields?.length) return "";
+  return panel("需求信息快照", `<p class="muted" style="margin:0 0 12px">模板：${snapshot.templateName || "未命名模板"}。以下内容为下单时保存的 JSON 快照，商品字段后续修改不影响本单。</p>${detailGrid(
+    snapshot.fields.map(field => [
+      field.label,
+      `${field.value || "—"}${field.unit ? ` ${field.unit}` : ""}`,
+      field.type === "textarea" || field.type === "image" || String(field.value || "").length > 18
+    ])
+  )}`);
 }
 
 function getOrderFlow(order) {
@@ -275,10 +291,9 @@ function orderDetailPage() {
   + panel("订单信息快照", detailGrid([
     ["订单号", order.id], ["用户", order.user], ["商品/服务", order.service], ["订单金额", order.amount],
     ["在线支付", order.onlinePay ? "是（下单快照）" : "否（下单快照）"],
-    ["需要飞手", order.needPilot ? "是（下单快照）" : "否（下单快照）"],
-    ["需要预约", order.needAppointment ? "是（下单快照）" : "否（下单快照）"]
+    ["需要飞手", order.needPilot ? "是（下单快照）" : "否（下单快照）"]
   ]))
-  + orderAppointmentPanel(order)
+  + orderRequirementPanel(order)
   + pilotPanel;
 }
 
@@ -345,18 +360,18 @@ DroneAdmin.registerModule({
         "订单生成 → 待交付 → 待评价 → 已完成"
       ],
       [
-        "需要预约",
-        "不影响列表状态与步骤条，仅详情页展示「预约信息」面板"
+        "需求信息快照",
+        "用户下单时按后台表单配置提交的联系人、联系方式和服务需求字段"
       ]
     ]
   },
   "order-detail": {
-    "summary": "查看单笔订单动态流转、信息快照、预约信息及飞手分配情况。",
+    "summary": "查看单笔订单动态流转、信息快照、需求信息快照及飞手分配情况。",
     "operations": [
       "顶部步骤条按下单快照（在线支付 / 飞手服务）动态生成，非固定 5 步",
       "步骤条下方展示本单完整流转路径摘要",
       "「订单信息快照」展示金额与业务属性（下单时保存，不可改）",
-      "商品需预约时展示「预约信息」面板；无需预约则不展示",
+      "订单详情展示「需求信息快照」，字段来自下单时的商品表单配置",
       "需飞手服务时展示「飞手分配与履约」面板：待派单显示「分配飞手」，待服务显示「调整飞手」",
       "列表「去派单」与详情「分配飞手」为同一指派弹窗；调整飞手仅改名单，不改变订单状态",
       "无需飞手时跳过派单节点，使用「待交付」并隐藏飞手面板"
@@ -368,11 +383,11 @@ DroneAdmin.registerModule({
       ],
       [
         "订单信息快照",
-        "订单号、用户、商品、金额、在线支付、飞手需求、预约需求（均为下单快照）"
+        "订单号、用户、商品、金额、在线支付、飞手需求（均为下单快照）"
       ],
       [
-        "预约信息",
-        "仅需要预约时展示；含日期、时段、联系手机号、地址、备注、备注照片（1 张）"
+        "需求信息快照",
+        "默认包含联系人、联系方式；其他字段由后台商品表单配置决定"
       ],
       [
         "待交付",

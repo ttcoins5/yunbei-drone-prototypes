@@ -1,6 +1,6 @@
 import { icon } from "../components/icons.js";
 import { shell } from "../components/layout.js?v=profile-auto-role-1";
-import { state } from "../state/appState.js?v=pilot-default-2";
+import { state } from "../state/appState.js?v=nav-banner-1";
 
 function addressCard(address) {
   return `<article class="address-card ${address.isDefault ? "is-default" : ""}">

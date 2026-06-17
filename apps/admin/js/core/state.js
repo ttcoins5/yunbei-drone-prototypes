@@ -1,11 +1,15 @@
 const menu = [
   { id: "dashboard", label: "工作台", icon: "台" },
-  { id: "homepage", label: "首页配置", icon: "首", children: [
+  { id: "homepage", label: "小程序配置", icon: "小", children: [
     { id: "carousel", label: "轮播图配置" },
     { id: "homepage-nav", label: "导航配置" }
   ]},
   { id: "users", label: "用户管理", icon: "用", children: [
     { id: "users", label: "用户列表" }
+  ]},
+  { id: "access", label: "系统权限", icon: "权", children: [
+    { id: "admin-users", label: "后台用户" },
+    { id: "roles", label: "角色管理" }
   ]},
   { id: "categories", label: "商品管理", icon: "商", children: [
     { id: "categories", label: "商品分类管理" },
@@ -22,15 +26,17 @@ const menu = [
   { id: "pilot-applications", label: "飞手管理", icon: "飞", children: [
     { id: "pilot-applications", label: "入驻申请" },
     { id: "pilots", label: "已认证飞手" },
-    { id: "flight-reports", label: "飞行报备管理" },
-    { id: "tasks", label: "任务需求与意愿" }
+    { id: "flight-reports", label: "飞行报备管理" }
   ]},
+  { id: "tasks", label: "任务大厅", icon: "任" },
   { id: "invoices", label: "发票中心", icon: "票" },
   { id: "about", label: "关于我们", icon: "企" }
 ];
 
 const navRouteAlias = {
   "user-detail": "users",
+  "admin-user-edit": "admin-users",
+  "role-edit": "roles",
   "product-edit": "products",
   "order-detail": "orders",
   "training-detail": "training",
@@ -55,6 +61,9 @@ const state = {
   "assignedPilots": [],
   "listPages": {},
   "docPanelOpen": null,
+  "currentAdminUserId": "admin-1",
+  "editingAdminUserId": null,
+  "editingRoleId": null,
   "richEditor": null,
   "richEditorToolbar": null
 };

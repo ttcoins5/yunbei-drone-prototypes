@@ -1,7 +1,7 @@
-import { hoistingProducts, products } from "../data/catalog.js";
+import { hoistingProducts, products } from "../data/catalog.js?v=nav-banner-1";
 import { shell } from "../components/layout.js?v=profile-auto-role-1";
 import { productCard } from "../components/productCard.js";
-import { state } from "../state/appState.js?v=pilot-default-2";
+import { state } from "../state/appState.js?v=nav-banner-1";
 
 export function currentProducts() {
   return state.productListMode === "hoisting" ? hoistingProducts : products;
@@ -22,13 +22,62 @@ function stars(rating = 5) {
 
 function productReviews(product) {
   return product.reviews || [
-    { user: "林先生", rating: 5, content: "设备稳定，平台沟通及时，预约流程清晰。", time: "2026-06-12 15:20" }
+    { user: "林先生", rating: 5, content: "设备稳定，平台沟通及时，需求确认流程清晰。", time: "2026-06-12 15:20" }
   ];
+}
+
+export function selectedRequirementTemplate(product = state.selectedProduct) {
+  const fields = product.requirementFields?.length ? product.requirementFields : [
+    { key: "contactName", label: "登记联系人", type: "text", required: true, placeholder: "请输入联系人", sort: 1 },
+    { key: "contactPhone", label: "联系电话", type: "text", required: true, placeholder: "请输入联系电话", sort: 2 }
+  ];
+  return {
+    id: product.id || "product-fields",
+    name: `${product.name || "商品"}需求字段`,
+    serviceType: product.serviceType || product.category || "服务需求",
+    fields: fields.map((field, index) => ({
+      ...field,
+      type: ["text", "select", "image"].includes(field.type) ? field.type : "text",
+      sort: field.sort || index + 1
+    }))
+  };
+}
+
+function defaultRequirementValue(field, defaultAddress) {
+  if (field.key === "contactName") return defaultAddress?.name || state.userProfile.nickname || "";
+  if (field.key === "contactPhone") return defaultAddress?.phone || state.userProfile.phone || "";
+  return "";
+}
+
+function requirementFieldInput(field, value) {
+  const name = `requirement_${field.key}`;
+  const required = field.required ? " required" : "";
+  const placeholder = field.placeholder ? ` placeholder="${field.placeholder}"` : "";
+  if (field.type === "select") {
+    return `<select name="${name}"${required}>
+      <option value="">请选择${field.label}</option>
+      ${(field.options || []).map(option => `<option${option === value ? " selected" : ""}>${option}</option>`).join("")}
+    </select>`;
+  }
+  if (field.type === "image") {
+    return `<span class="requirement-upload"><input name="${name}" type="file" accept="image/*"${required}><em>${field.placeholder || "上传图片"}</em><small>支持 JPG / PNG</small></span>`;
+  }
+  return `<input name="${name}" type="text" value="${value}"${required}${placeholder}>`;
+}
+
+function requirementFormFields(template, defaultAddress) {
+  const fields = [...template.fields].sort((a, b) => a.sort - b.sort);
+  return fields.map(field => {
+    const value = defaultRequirementValue(field, defaultAddress);
+    return `<label class="requirement-field"><span class="requirement-field-head"><span>${field.label}${field.required ? `<i>*</i>` : ""}</span>${field.unit ? `<small>${field.unit}</small>` : ""}</span>
+      ${requirementFieldInput(field, value)}
+    </label>`;
+  }).join("");
 }
 
 export function productsPage() {
   const visibleProducts = currentProducts();
-  const title = state.productListMode === "hoisting" ? "吊运服务" : "热销商品";
+  const title = state.productListMode === "hoisting" ? "服务项目" : "商品服务";
 
   return shell(`<div class="list-page"><div class="filter-row"><button class="active">销量优先</button><button data-action="toast" data-message="已切换为价格筛选">价格</button><button data-action="toast" data-message="已打开商品筛选">筛选</button></div><div class="product-grid">${visibleProducts.map((product, index) => productCard(product, index)).join("")}</div></div>`, { title, back: true, tab: "products" });
 }
@@ -48,13 +97,12 @@ export function productDetailPage() {
     <section class="product-main">
       <div class="product-price-row">
         <strong>¥${spec.price.toLocaleString()}</strong>
-        <em>支持预约</em>
       </div>
       <div class="product-title-row">
         <h2>${product.name}</h2>
         <button data-action="toast" data-message="已生成分享卡片">分享 ↗</button>
       </div>
-      <p>已售 ${product.sales} · ${product.location || "四川成都"}</p>
+      <p>已售 ${product.sales}</p>
     </section>
     <section class="product-spec-panel">
       <h3>选择规格</h3>
@@ -73,8 +121,8 @@ export function productDetailPage() {
       </article>
     </section>
     <section class="product-description">
-      <h3>${state.productListMode === "hoisting" ? "吊运信息" : "商品详情"}</h3>
-      <p>${product.detail || "适用于工程测绘、城市巡检等专业场景。下单后填写预约时间与服务地址，平台确认订单后进入接单与履约流程。"}</p>
+      <h3>${state.productListMode === "hoisting" ? "服务信息" : "商品详情"}</h3>
+      <p>${product.detail || "适用于工程测绘、城市巡检等专业场景。下单后按后台表单配置填写联系人、联系方式和需求信息，平台确认后进入接单与履约流程。"}</p>
     </section>
     <div class="product-bottom-bar">
       <button data-action="contact-sheet">客服</button>
@@ -119,14 +167,12 @@ export function orderConfirmPage() {
   const product = state.selectedProduct;
   const spec = currentSpec();
   const defaultAddress = state.addressBook.find(item => item.isDefault) || state.addressBook[0];
+  const template = selectedRequirementTemplate(product);
 
   return shell(`<form class="order-confirm-page" data-form="product-order">
     <section class="confirm-card">
-      <div class="confirm-title"><b>预约信息</b><small>提交后生成待付款订单</small></div>
-      <label>预约时间<input name="time" required value="2026-06-18 09:00"></label>
-      <label>服务地址<input name="address" required value="${defaultAddress ? `${defaultAddress.region} ${defaultAddress.detail}` : ""}"></label>
-      <label>联系电话<input name="phone" required value="13888888821"></label>
-      <label>备注说明<textarea name="remark" placeholder="可补充作业需求、现场条件或图片说明"></textarea></label>
+      <div class="confirm-title"><b>需求信息</b><small>${template.name} · 提交后保存快照</small></div>
+      ${requirementFormFields(template, defaultAddress)}
     </section>
     <section class="confirm-card">
       <div class="confirm-title"><b>商品信息</b><small>支持在线支付</small></div>
@@ -164,7 +210,7 @@ export function paymentPage() {
         <em>✓</em>
       </button>
     </section>
-    <p class="payment-notice">支付成功后订单进入待接单，平台会根据吊运信息、规格和服务地址安排后台接单与飞手履约。</p>
+    <p class="payment-notice">支付成功后订单进入待接单，平台会根据需求信息、规格和服务地址安排后台接单与履约。</p>
     <div class="payment-pay-bar">
       <span><small>合计支付</small><b>¥${amount.toLocaleString()}</b></span>
       <button data-action="pay-product-order">确认支付</button>

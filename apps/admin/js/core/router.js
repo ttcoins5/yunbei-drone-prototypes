@@ -45,9 +45,17 @@ function loginPage() {
 
 function sidebar() {
   const activeRoute = navActiveRoute();
+  const visibleMenu = menu.map(item => {
+    const children = item.children || [];
+    if (!children.length) return canAccessRoute(item.id) ? item : null;
+    const visibleChildren = children.filter(child => canAccessRoute(child.id));
+    return visibleChildren.length ? { ...item, children: visibleChildren } : null;
+  }).filter(Boolean);
+  const adminUser = currentAdminUser();
+  const adminRole = currentAdminRole();
   return `<aside class="sidebar">
     <div class="brand">${logo()}<div><strong>奉飞飞无人机平台</strong><small>后台管理原型</small></div></div>
-    <nav class="nav">${menu.map(item => {
+    <nav class="nav">${visibleMenu.map(item => {
       const children = item.children || [];
       const parentActive = !children.length
         ? activeRoute === item.id
@@ -57,7 +65,7 @@ function sidebar() {
         ${children.length ? `<div class="nav-children">${children.map(child => `<button class="nav-child ${activeRoute === child.id ? "active" : ""}" data-route="${child.id}">${child.label}</button>`).join("")}</div>` : ""}
       </div>`;
     }).join("")}</nav>
-    <div class="sidebar-foot"><div class="admin-chip"><span class="avatar">管</span><span>平台管理员<br><small>单一管理员视角</small></span></div></div>
+    <div class="sidebar-foot"><div class="admin-chip"><span class="avatar">${adminUser.name.slice(0, 1)}</span><span>${adminUser.name}<br><small>${adminRole.name}</small></span></div></div>
   </aside>`;
 }
 
@@ -86,6 +94,10 @@ function render() {
     });
     return;
   }
+  if (!canAccessRoute(state.page)) {
+    state.page = firstAllowedRoute();
+    location.hash = `#/${state.page}`;
+  }
   destroyRichEditor();
   app.innerHTML = `<div class="shell">${sidebar()}<main class="main">${topbar()}<div class="page-layout"><div class="page">${pageContent()}</div>${docPanel()}</div></main></div>`;
   const afterRender = DroneAdmin.afterRender[state.page];
@@ -94,6 +106,10 @@ function render() {
 
 function navigate(route) {
   if (route === state.page) return;
+  if (!canAccessRoute(route)) {
+    toast("当前角色无权访问该页面");
+    route = firstAllowedRoute();
+  }
   state.history.push(state.page);
   state.page = route;
   location.hash = `#/${route}`;

@@ -32,8 +32,8 @@
 | 模块 | 路由 | 代码 | 文档 | 状态 |
 |------|------|------|------|------|
 | 工作台 | `dashboard` | `js/modules/dashboard.js` | `docs/features/dashboard.md` | 已完成 |
-| 首页配置 / 轮播图配置 | `carousel` | `js/modules/carousel.js` | `docs/features/carousel.md` | 已完成 |
-| 首页配置 / 导航配置 | `homepage-nav` | `js/modules/homepage-nav.js` | `docs/features/homepage-nav.md` | 已完成 |
+| 小程序配置 / 轮播图配置 | `carousel` | `js/modules/carousel.js` | `docs/features/carousel.md` | 已完成 |
+| 小程序配置 / 导航配置 | `homepage-nav` | `js/modules/homepage-nav.js` | `docs/features/homepage-nav.md` | 已完成 |
 | 用户 | `users`、`user-detail` | `js/modules/users.js` | `docs/features/users.md` | 已完成 |
 | 商品 | `categories`、`products`、`product-edit` | `js/modules/catalog.js` | `docs/features/catalog.md` | 已完成 |
 | 订单 | `orders`、`order-detail` | `js/modules/orders.js` | `docs/features/orders.md` | 已完成 |
@@ -42,7 +42,7 @@
 | 飞手入驻 | `pilot-applications`、`pilot-review` | `js/modules/pilot-onboarding.js` | `docs/features/pilot-onboarding.md` | 已完成 |
 | 已认证飞手 | `pilots`、`pilot-detail` | `js/modules/pilots.js` | `docs/features/pilots.md` | 已完成 |
 | 飞行报备 | `flight-reports`、`flight-report-detail` | `js/modules/flight-reports.js` | `docs/features/flight-reports.md` | 已完成 |
-| 任务需求 | `tasks`、`task-detail` | `js/modules/tasks.js` | `docs/features/tasks.md` | 已完成 |
+| 任务大厅 | `tasks`、`task-detail` | `js/modules/tasks.js` | `docs/features/tasks.md` | 已完成 |
 | 发票 | `invoices`、`invoice-detail` | `js/modules/invoices.js` | `docs/features/invoices.md` | 已完成 |
 | 关于我们 | `about` | `js/modules/about.js` | `docs/features/about.md` | 已完成 |
 
@@ -74,10 +74,10 @@
 | 日期 | 变更摘要 | 影响范围 |
 |------|----------|----------|
 | 2026-06-15 | 新增运营商申请和意见反馈信息收集模块 | 运营管理 |
-| 2026-06-15 | 使用生成式图片升级手机首页品牌 banner、分类悬浮卡片和固定快捷入口 | 首页配置 |
-| 2026-06-15 | 合并轮播图与首页导航配置，使用同一台手机预览完整首页 | 首页配置 |
+| 2026-06-15 | 使用生成式图片升级手机首页品牌 banner、分类悬浮卡片和固定快捷入口 | 小程序配置 |
+| 2026-06-15 | 合并轮播图与首页导航配置，使用同一台手机预览完整首页 | 小程序配置 |
 | 2026-06-15 | 新增首页导航配置固定模板、实时预览、入口编辑和页面说明 | 首页导航配置 |
-| 2026-06-16 | 拆分首页配置父级菜单，恢复独立轮播图配置，并将导航配置改为固定 8 项后台列表 | 首页配置 |
+| 2026-06-16 | 拆分小程序配置父级菜单，恢复独立轮播图配置，并将导航配置改为固定 8 项后台列表 | 小程序配置 |
 | 2026-06-15 | 新增后台与微信小程序页面功能总清单及业务规则确认表 | 产品范围 |
 | 2026-06-15 | 将单体 `app.js` 拆为 core + 12 个业务模块；建立模块注册、事件分发和低 Token 文档接力结构 | 全局 |
 | 2026-06-14 | 建立 V1 原型功能清单 | 全局 |

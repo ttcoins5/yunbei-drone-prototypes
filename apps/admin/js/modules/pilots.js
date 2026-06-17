@@ -193,7 +193,7 @@ function pilotDetailPage() {
   ]), routeButton("返回飞手列表","pilots",""))
   + pilotCompanyPanel(pilot.company)
   + pilotQualificationPanel(pilot)
-  + panel("分配订单及个人完成状态", table(["订单号","服务","预约时间","订单状态","个人状态"], [
+  + panel("分配订单及个人完成状态", table(["订单号","服务","服务时间","订单状态","个人状态"], [
     ["YB26061318","园区航拍测绘",formatOrderAppointmentBrief(orderRecords.find(item => item.id === "YB26061318")),statusTag("待服务"),tag("服务中")],
     ["YB26060809","园区巡检","—",statusTag("已完成"),tag("已完成")]
   ]));

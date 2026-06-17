@@ -1,8 +1,8 @@
-import { hoistingProducts } from "./src/data/catalog.js";
-import { state } from "./src/state/appState.js?v=pilot-default-2";
-import { navigate, render } from "./src/router/navigation.js?v=pilot-default-2";
+import { hoistingProducts } from "./src/data/catalog.js?v=nav-banner-1";
+import { state } from "./src/state/appState.js?v=nav-banner-1";
+import { navigate, render } from "./src/router/navigation.js?v=message-clean-2";
 import { toast } from "./src/utils/toast.js";
-import { currentProducts } from "./src/pages/products.js";
+import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=nav-banner-1";
 
 function formatDateTime(date = new Date()) {
   const year = date.getFullYear();
@@ -29,7 +29,22 @@ function pushServiceNotification(orderNo, fromStatus, toStatus, time = formatDat
 
 function resolveHomepageNavLink(link, jumpType) {
   if (jumpType === "external") return { type: "external", value: link };
-  if (link.includes("/pages/services/hoisting/index")) return { type: "hoisting" };
+  const serviceMap = {
+    "/pages/services/inspection/index": "inspection",
+    "/pages/services/logistics/index": "logistics",
+    "/pages/services/hoisting/index": "hoisting",
+    "/pages/services/performance/index": "performance",
+    "/pages/services/hosting/index": "hosting",
+    "/pages/services/takeout/index": "takeout",
+    "/pages/services/rental/index": "hosting",
+    "/pages/training/competition/index": "competition",
+    "/pages/training/children/index": "child-training",
+    "/pages/training/index": "pilot-training",
+    "/pages/categories/index": "categories"
+  };
+  const productId = serviceMap[link];
+  if (productId === "categories") return { type: "categories" };
+  if (productId) return { type: "product-list", productId };
   return { type: "disabled" };
 }
 
@@ -39,12 +54,16 @@ function openHomepageNavLink(link, jumpType) {
     toast(`后台配置链接：${target.value}`);
     return;
   }
-  if (target.type === "hoisting") {
+  if (target.type === "product-list") {
     state.productListMode = "hoisting";
-    state.selectedProduct = hoistingProducts[0];
+    state.selectedProduct = hoistingProducts.find(item => item.id === target.productId) || hoistingProducts[0];
     state.selectedSpecIndex = 0;
     state.productReviewFilter = "全部";
     navigate("products");
+    return;
+  }
+  if (target.type === "categories") {
+    navigate("categories");
     return;
   }
   toast("暂未开通");
@@ -236,19 +255,51 @@ function selectProductSpec(index) {
 }
 
 function submitProductOrder(form) {
-  const fields = Object.fromEntries(new FormData(form).entries());
+  const formData = new FormData(form);
+  const fields = Object.fromEntries(formData.entries());
   const spec = state.selectedProduct.specs?.[state.selectedSpecIndex] || state.selectedProduct;
   const orderNo = `ORD${Date.now()}`;
+  const template = selectedRequirementTemplate(state.selectedProduct);
+  const requirementFields = [...template.fields].sort((a, b) => a.sort - b.sort).map(field => {
+    const raw = formData.get(`requirement_${field.key}`);
+    const isFile = field.type === "image";
+    const value = isFile ? (raw?.name || "") : String(raw || "").trim();
+    return {
+      key: field.key,
+      label: field.label,
+      type: field.type,
+      value,
+      displayValue: value,
+      unit: field.unit || "",
+      required: Boolean(field.required)
+    };
+  });
+  const missing = requirementFields.find(field => field.required && !field.value);
+  if (missing) {
+    toast(`请填写${missing.label}`);
+    return;
+  }
+  const findValue = (...keys) => requirementFields.find(field => keys.includes(field.key))?.value || "";
+  const contactName = findValue("contactName") || state.userProfile.nickname;
+  const contactPhone = findValue("contactPhone") || state.userProfile.phone;
+  const address = findValue("workAddress", "area", "startAddress", "endAddress") || "";
+  const remark = findValue("remark") || "暂无备注";
   state.pendingProductOrder = {
     orderNo,
     status: "待接单",
     productName: state.selectedProduct.name,
     specName: spec.name,
     amount: spec.price,
-    time: fields.time,
-    address: fields.address,
-    phone: fields.phone,
-    remark: fields.remark
+    contactName,
+    contactPhone,
+    address,
+    remark,
+    requirementSnapshot: {
+      templateId: template.id,
+      templateName: template.name,
+      serviceType: template.serviceType,
+      fields: requirementFields
+    }
   };
   navigate("payment");
 }
@@ -271,13 +322,14 @@ function payProductOrder() {
       price: order.amount,
       count: 1,
       paid: order.amount,
-      serviceType: "预约服务",
-      contactName: order.phone.trim() ? "云北用户" : "",
-      contactPhone: order.phone.trim(),
-      address: order.address.trim(),
-      remark: order.remark.trim() || "暂无备注",
+      serviceType: order.requirementSnapshot?.serviceType || "需求服务",
+      contactName: order.contactName,
+      contactPhone: order.contactPhone,
+      address: order.address,
+      remark: order.remark,
+      requirementSnapshot: order.requirementSnapshot,
       timeline: [
-        { time: formatDateTime(), title: "订单提交", desc: "已提交预约需求并完成支付" },
+        { time: formatDateTime(), title: "订单提交", desc: "已提交服务需求并完成支付" },
         { time: formatDateTime(), title: "待接单", desc: "订单已支付成功，等待平台接单" }
       ]
     },

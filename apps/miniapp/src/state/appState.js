@@ -1,4 +1,4 @@
-import { hoistingProducts } from "../data/catalog.js";
+import { hoistingProducts } from "../data/catalog.js?v=nav-banner-1";
 
 export const state = {
   page: location.hash.replace("#/", "") || "home",
@@ -36,6 +36,19 @@ export const state = {
       contactPhone: "13888886661",
       address: "上海市 黄浦区 复兴中路 521 号",
       remark: "夜间加急配送，需到院区西门交接",
+      requirementSnapshot: {
+        templateName: "吊运服务模板",
+        fields: [
+          { label: "登记联系人", type: "text", value: "张医生" },
+          { label: "联系电话", type: "text", value: "13888886661" },
+          { label: "吊运物品", type: "text", value: "医疗冷链箱" },
+          { label: "物品重量", type: "number", value: "68", unit: "kg" },
+          { label: "作业地点", type: "address", value: "上海市 黄浦区 复兴中路 521 号" },
+          { label: "吊运高度", type: "number", value: "28", unit: "m" },
+          { label: "需求说明", type: "textarea", value: "夜间加急配送，需到院区西门交接" },
+          { label: "现场照片", type: "image", value: "院区西门交接点.jpg" }
+        ]
+      },
       timeline: [
         { time: "2026-06-10 22:07", title: "订单提交", desc: "已提交医疗物品吊运需求" },
         { time: "2026-06-10 22:16", title: "平台受理", desc: "客服已确认需求与配送地址" },
@@ -57,10 +70,22 @@ export const state = {
       contactPhone: "13888887772",
       address: "上海市 浦东新区 张江低空产业园 6 号楼",
       remark: "重点查看幕墙、屋面机组和西侧连廊",
+      requirementSnapshot: {
+        templateName: "巡检服务模板",
+        fields: [
+          { label: "登记联系人", type: "text", value: "李工" },
+          { label: "联系电话", type: "text", value: "13888887772" },
+          { label: "服务类型", type: "select", value: "园区巡检" },
+          { label: "巡检区域", type: "address", value: "上海市 浦东新区 张江低空产业园 6 号楼" },
+          { label: "巡检时间", type: "timeSlot", value: "2026-06-18 14:00-16:00" },
+          { label: "需求说明", type: "textarea", value: "重点查看幕墙、屋面机组和西侧连廊" },
+          { label: "例图/附件", type: "image", value: "巡检范围示意.jpg" }
+        ]
+      },
       timeline: [
         { time: "2026-06-12 09:30", title: "订单提交", desc: "已提交园区楼宇巡检需求" },
         { time: "2026-06-12 10:00", title: "支付完成", desc: "订单已支付，等待平台调度" },
-        { time: "2026-06-15 18:40", title: "待服务", desc: "已分配飞手，等待按预约时间上门" }
+        { time: "2026-06-15 18:40", title: "待服务", desc: "已分配飞手，等待按服务时间上门" }
       ]
     },
     {
@@ -78,6 +103,18 @@ export const state = {
       contactPhone: "13888889993",
       address: "苏州市 吴江区 东太湖路 88 号",
       remark: "租赁 3 天，需附带双电池与充电器",
+      requirementSnapshot: {
+        templateName: "租赁需求模板",
+        fields: [
+          { label: "登记联系人", type: "text", value: "周老师" },
+          { label: "联系电话", type: "text", value: "13888889993" },
+          { label: "租赁机型", type: "text", value: "行业测绘机" },
+          { label: "租赁时长", type: "text", value: "3 天" },
+          { label: "服务地址", type: "address", value: "苏州市 吴江区 东太湖路 88 号" },
+          { label: "配件需求", type: "text", value: "双电池、充电器" },
+          { label: "备注说明", type: "textarea", value: "租赁 3 天，需附带双电池与充电器" }
+        ]
+      },
       timeline: [
         { time: "2026-06-13 14:15", title: "订单提交", desc: "已提交行业测绘机租赁需求" },
         { time: "2026-06-13 14:22", title: "支付完成", desc: "订单已支付，等待商家接单" },
@@ -161,18 +198,30 @@ export const state = {
       amount: 1599,
       onlinePay: "是（下单快照）",
       needPilot: "是（下单快照）",
-      needBooking: "是（下单快照）",
       bookingDate: "2026-06-14",
       bookingTime: "09:00-11:00",
       contactPhone: "139****5528",
       bookingAddress: "成都市武侯区某园区 3 号楼",
       infoRemark: "重点清洗北侧玻璃幕墙，现场有停车位。",
       remarkPhoto: "北侧外立面.jpg",
+      requirementSnapshot: {
+        templateName: "吊运服务模板",
+        fields: [
+          { label: "登记联系人", type: "text", value: "林先生" },
+          { label: "联系电话", type: "text", value: "139****5528" },
+          { label: "吊运物品", type: "text", value: "外立面清洗设备" },
+          { label: "物品重量", type: "number", value: "28", unit: "kg" },
+          { label: "作业地点", type: "address", value: "成都市武侯区某园区 3 号楼" },
+          { label: "吊运高度", type: "number", value: "42", unit: "m" },
+          { label: "需求说明", type: "textarea", value: "重点清洗北侧玻璃幕墙，现场有停车位。" },
+          { label: "现场照片", type: "image", value: "北侧外立面.jpg" }
+        ]
+      },
       status: "待完成",
       assignedTime: "2026-06-13 18:20",
       progress: [
         { time: "2026-06-13 18:20", title: "后台派单", desc: "平台已将订单分配给当前飞手" },
-        { time: "2026-06-14 08:30", title: "等待服务", desc: "请按预约时间到达服务地址" }
+        { time: "2026-06-14 08:30", title: "等待服务", desc: "请按服务时间到达服务地址" }
       ]
     },
     {
@@ -183,13 +232,24 @@ export const state = {
       amount: 880,
       onlinePay: "是（下单快照）",
       needPilot: "是（下单快照）",
-      needBooking: "是（下单快照）",
       bookingDate: "2026-06-18",
       bookingTime: "14:00-16:00",
       contactPhone: "138****2091",
       bookingAddress: "宁波市鄞州区低空经济产业园 2 号楼",
       infoRemark: "需要拍摄屋顶机组、排水沟和东侧连廊。",
       remarkPhoto: "屋面点位示意.jpg",
+      requirementSnapshot: {
+        templateName: "巡检服务模板",
+        fields: [
+          { label: "登记联系人", type: "text", value: "陈女士" },
+          { label: "联系电话", type: "text", value: "138****2091" },
+          { label: "服务类型", type: "select", value: "园区巡检" },
+          { label: "巡检区域", type: "address", value: "宁波市鄞州区低空经济产业园 2 号楼" },
+          { label: "巡检时间", type: "timeSlot", value: "2026-06-18 14:00-16:00" },
+          { label: "需求说明", type: "textarea", value: "需要拍摄屋顶机组、排水沟和东侧连廊。" },
+          { label: "例图/附件", type: "image", value: "屋面点位示意.jpg" }
+        ]
+      },
       status: "待完成",
       assignedTime: "2026-06-15 10:45",
       progress: [
@@ -205,7 +265,6 @@ export const state = {
       amount: 1260,
       onlinePay: "是（下单快照）",
       needPilot: "是（下单快照）",
-      needBooking: "是（下单快照）",
       bookingDate: "2026-06-12",
       bookingTime: "07:30-10:30",
       contactPhone: "137****6180",

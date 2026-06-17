@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="820" viewBox="0 0 1440 820">
+  <rect width="1440" height="820" fill="#f5f7fb"/>
+  <rect width="214" height="820" fill="#ffffff"/>
+  <path d="M214 0v820" stroke="#d9e1ea"/>
+  <text x="72" y="54" fill="#111827" font-size="20" font-weight="700">奉飞飞后台</text>
+  <circle cx="40" cy="47" r="18" fill="#1f6feb"/>
+  <path d="M31 47h18M40 38v18" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+  <g font-size="16" fill="#596574">
+    <text x="62" y="128">工作台</text>
+    <text x="62" y="190">小程序配置</text>
+    <text x="62" y="252">用户管理</text>
+    <rect x="16" y="286" width="184" height="50" rx="8" fill="#eef5ff" stroke="#1f6feb"/>
+    <text x="62" y="317" fill="#1f6feb" font-weight="700">商品管理</text>
+    <text x="62" y="376">订单管理</text>
+    <text x="62" y="438">飞手管理</text>
+    <text x="62" y="500">发票中心</text>
+  </g>
+  <text x="250" y="58" fill="#111827" font-size="26" font-weight="800">编辑商品 / 无人机吊运服务</text>
+  <rect x="250" y="86" width="830" height="72" rx="8" fill="#fff" stroke="#d8e0ea"/>
+  <g font-size="15" fill="#111827">
+    <text x="282" y="130">商品名称：无人机吊运服务</text>
+    <text x="520" y="130">分类：飞行服务</text>
+    <text x="716" y="130">上架状态：</text>
+    <text x="800" y="130" fill="#16a34a" font-weight="700">已上架</text>
+    <text x="930" y="130">需要飞手：是</text>
+  </g>
+  <rect x="250" y="182" width="830" height="530" rx="10" fill="#fff" stroke="#d8e0ea"/>
+  <text x="282" y="222" fill="#111827" font-size="22" font-weight="800">需求采集字段</text>
+  <text x="282" y="270" fill="#374151" font-size="16">模板选择</text>
+  <rect x="370" y="246" width="226" height="42" rx="6" fill="#fff" stroke="#cfd8e3"/>
+  <text x="394" y="272" fill="#111827" font-size="15">吊运服务模板</text>
+  <path d="M566 262l8 8 8-8" fill="none" stroke="#4b5563" stroke-width="2"/>
+  <rect x="614" y="250" width="148" height="34" rx="5" fill="#e9f8ef" stroke="#bde8cb"/>
+  <text x="630" y="272" fill="#166534" font-size="14">当前商品已复制微调</text>
+  <text x="790" y="272" fill="#6b7280" font-size="14">订单生成时保存字段快照</text>
+  <rect x="282" y="310" width="150" height="42" rx="6" fill="#1f6feb"/>
+  <text x="305" y="337" fill="#fff" font-size="15" font-weight="700">复制并编辑模板</text>
+  <rect x="448" y="310" width="100" height="42" rx="6" fill="#fff" stroke="#cfd8e3"/>
+  <text x="470" y="337" fill="#111827" font-size="15">新增字段</text>
+  <rect x="564" y="310" width="140" height="42" rx="6" fill="#fff" stroke="#cfd8e3"/>
+  <text x="588" y="337" fill="#111827" font-size="15">预览小程序表单</text>
+  <rect x="282" y="370" width="770" height="302" fill="#fff" stroke="#d8e0ea"/>
+  <rect x="282" y="370" width="770" height="44" fill="#f8fafc"/>
+  <g fill="#374151" font-size="14" font-weight="700">
+    <text x="314" y="398">排序</text>
+    <text x="392" y="398">字段名称</text>
+    <text x="514" y="398">字段类型</text>
+    <text x="622" y="398">必填</text>
+    <text x="704" y="398">提示文案</text>
+    <text x="884" y="398">单位/选项</text>
+    <text x="984" y="398">操作</text>
+  </g>
+  <g font-size="14" fill="#111827">
+    <g transform="translate(0,432)"><text x="326" y="0">1</text><text x="392" y="0">登记联系人</text><text x="526" y="0">文本</text><text x="622" y="0" fill="#dc2626">必填</text><text x="704" y="0">请输入联系人</text><text x="914" y="0">-</text><text x="966" y="0" fill="#1f6feb">编辑</text><text x="1010" y="0" fill="#dc2626">删除</text></g>
+    <g transform="translate(0,470)"><text x="326" y="0">2</text><text x="392" y="0">联系电话</text><text x="526" y="0">文本</text><text x="622" y="0" fill="#dc2626">必填</text><text x="704" y="0">请输入联系电话</text><text x="914" y="0">-</text><text x="966" y="0" fill="#1f6feb">编辑</text><text x="1010" y="0" fill="#dc2626">删除</text></g>
+    <g transform="translate(0,508)"><text x="326" y="0">3</text><text x="392" y="0">吊运物品</text><text x="526" y="0">文本</text><text x="622" y="0" fill="#dc2626">必填</text><text x="704" y="0">请输入吊运物品名称</text><text x="914" y="0">-</text><text x="966" y="0" fill="#1f6feb">编辑</text><text x="1010" y="0" fill="#dc2626">删除</text></g>
+    <g transform="translate(0,546)"><text x="326" y="0">4</text><text x="392" y="0">物品重量</text><text x="526" y="0">数字</text><text x="622" y="0" fill="#dc2626">必填</text><text x="704" y="0">请输入重量</text><text x="904" y="0">kg</text><text x="966" y="0" fill="#1f6feb">编辑</text><text x="1010" y="0" fill="#dc2626">删除</text></g>
+    <g transform="translate(0,584)"><text x="326" y="0">5</text><text x="392" y="0">作业地点</text><text x="526" y="0">地址</text><text x="622" y="0" fill="#dc2626">必填</text><text x="704" y="0">请输入作业地点</text><text x="914" y="0">-</text><text x="966" y="0" fill="#1f6feb">编辑</text><text x="1010" y="0" fill="#dc2626">删除</text></g>
+    <g transform="translate(0,622)"><text x="326" y="0">6</text><text x="392" y="0">吊运高度</text><text x="526" y="0">数字</text><text x="622" y="0" fill="#dc2626">必填</text><text x="704" y="0">请输入吊运高度</text><text x="908" y="0">m</text><text x="966" y="0" fill="#1f6feb">编辑</text><text x="1010" y="0" fill="#dc2626">删除</text></g>
+    <g transform="translate(0,660)"><text x="326" y="0">7</text><text x="392" y="0">需求说明</text><text x="526" y="0">多行说明</text><text x="622" y="0">非必填</text><text x="704" y="0">请补充现场环境</text><text x="914" y="0">-</text><text x="966" y="0" fill="#1f6feb">编辑</text><text x="1010" y="0" fill="#dc2626">删除</text></g>
+  </g>
+  <rect x="1108" y="86" width="292" height="626" rx="24" fill="#fff" stroke="#d8e0ea"/>
+  <rect x="1124" y="108" width="260" height="582" rx="18" fill="#f8fafc" stroke="#e5e7eb"/>
+  <text x="1220" y="154" fill="#111827" font-size="17" font-weight="800">确认订单</text>
+  <rect x="1144" y="188" width="220" height="410" rx="10" fill="#fff" stroke="#e5e7eb"/>
+  <text x="1160" y="222" fill="#111827" font-size="18" font-weight="800">需求信息</text>
+  <g font-size="13">
+    <text x="1160" y="262" fill="#dc2626">*</text><text x="1174" y="262" fill="#111827">登记联系人</text><rect x="1250" y="242" width="94" height="30" rx="4" fill="#fff" stroke="#e5e7eb"/>
+    <text x="1160" y="310" fill="#dc2626">*</text><text x="1174" y="310" fill="#111827">联系电话</text><rect x="1250" y="290" width="94" height="30" rx="4" fill="#fff" stroke="#e5e7eb"/>
+    <text x="1160" y="358" fill="#dc2626">*</text><text x="1174" y="358" fill="#111827">吊运物品</text><rect x="1250" y="338" width="94" height="30" rx="4" fill="#fff" stroke="#e5e7eb"/>
+    <text x="1160" y="406" fill="#dc2626">*</text><text x="1174" y="406" fill="#111827">物品重量</text><rect x="1250" y="386" width="94" height="30" rx="4" fill="#fff" stroke="#e5e7eb"/>
+    <text x="1160" y="454" fill="#dc2626">*</text><text x="1174" y="454" fill="#111827">作业地点</text><rect x="1250" y="434" width="94" height="30" rx="4" fill="#fff" stroke="#e5e7eb"/>
+    <text x="1160" y="502" fill="#dc2626">*</text><text x="1174" y="502" fill="#111827">吊运高度</text><rect x="1250" y="482" width="94" height="30" rx="4" fill="#fff" stroke="#e5e7eb"/>
+    <text x="1160" y="550" fill="#111827">现场照片</text><rect x="1250" y="526" width="60" height="52" rx="6" fill="#fff" stroke="#d8e0ea" stroke-dasharray="4 4"/><text x="1272" y="558" fill="#6b7280" font-size="22">+</text>
+  </g>
+  <rect x="1144" y="618" width="220" height="46" rx="7" fill="#1f6feb"/>
+  <text x="1220" y="648" fill="#fff" font-size="17" font-weight="800">提交并支付</text>
+  <rect x="250" y="734" width="1190" height="86" fill="#fff" stroke="#d8e0ea"/>
+  <rect x="990" y="756" width="160" height="44" rx="6" fill="#fff" stroke="#1f6feb"/>
+  <text x="1038" y="784" fill="#111827" font-size="17">保存商品</text>
+  <rect x="1170" y="756" width="170" height="44" rx="6" fill="#1f6feb"/>
+  <text x="1218" y="784" fill="#fff" font-size="17">保存并上架</text>
+</svg>

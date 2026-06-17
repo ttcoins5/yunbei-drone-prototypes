@@ -1,145 +1,178 @@
+function reqField(key, label, type = "text", required = false, extra = {}) {
+  return {
+    key,
+    label,
+    type,
+    required,
+    placeholder: extra.placeholder || (type === "image" ? `上传${label}` : `请输入${label}`),
+    options: extra.options,
+    sort: extra.sort || 1
+  };
+}
+
+function productFields(list) {
+  return list.map((field, index) => ({ ...field, sort: index + 1 }));
+}
+
+function productItem(id, name, category, fields, desc, price = "0", needPilot = true) {
+  return {
+    id,
+    code: `SP${String(26000 + Number(id.replace("p", ""))).padStart(5, "0")}`,
+    name,
+    category,
+    status: "已上架",
+    orderCount: 0,
+    properties: { onlinePay: false, needPilot },
+    requirementFields: fields,
+    specs: [{ name: "信息提交", price }],
+    images: [],
+    intro: `<p>${desc}</p>`,
+    displayedReviewIds: []
+  };
+}
+
 state.categories = [
-  {
-    "id": "c1",
-    "name": "上门服务",
-    "description": "无人机上门清洗、测绘、巡检等现场服务",
-    "icon": "../shared/assets/icons/category-onsite.png",
-    "productCount": 12,
-    "sort": 1,
-    "enabled": true
-  },
-  {
-    "id": "c2",
-    "name": "维修保养",
-    "description": "设备保养、故障检测与维修服务",
-    "icon": "../shared/assets/icons/category-repair.png",
-    "productCount": 6,
-    "sort": 2,
-    "enabled": true
-  },
-  {
-    "id": "c3",
-    "name": "代办服务",
-    "description": "空域申请、资质代办等代理服务",
-    "icon": "../shared/assets/icons/category-agency.png",
-    "productCount": 4,
-    "sort": 3,
-    "enabled": true
-  },
-  {
-    "id": "c4",
-    "name": "企业服务",
-    "description": "面向企业的定制化无人机解决方案",
-    "icon": "../shared/assets/icons/category-enterprise.png",
-    "productCount": 0,
-    "sort": 4,
-    "enabled": true
-  }
+  { id: "c1", name: "无人机服务", description: "巡检、物流、吊运、表演、托管等无人机服务", productCount: 5, sort: 1, enabled: true },
+  { id: "c2", name: "无人机外卖配送", description: "外卖配送跳转入口", productCount: 1, sort: 2, enabled: true },
+  { id: "c3", name: "培训教育与赛事举办", description: "无人机赛事、飞手培训、少儿培训信息填写", productCount: 3, sort: 3, enabled: true }
 ];
+
 state.products = [
-  {
-    "id": "p1",
-    "code": "SP26001",
-    "name": "高空清洗服务",
-    "category": "上门服务",
-    "status": "已上架",
-    "orderCount": 5,
-    "properties": {
-      "needAppointment": true,
-      "onlinePay": true,
-      "needPilot": true
-    },
-    "specs": [
-      {
-        "name": "标准服务",
-        "price": "899"
-      },
-      {
-        "name": "企业增强服务",
-        "price": "1599"
-      }
-    ],
-    "images": [
-      {
-        "id": "pi1",
-        "name": "清洗现场1.jpg"
-      },
-      {
-        "id": "pi2",
-        "name": "清洗现场2.jpg"
-      },
-      {
-        "id": "pi3",
-        "name": "设备作业.jpg"
-      }
-    ],
-    "intro": "<p><strong>高空清洗服务</strong>适用于建筑外立面、光伏板等高空区域的无人机清洗。</p><ul><li>专业清洗设备，覆盖高空死角</li><li>持证飞手操作，安全合规</li><li>支持预约上门，在线支付</li></ul>",
-    "displayedReviewIds": []
-  },
-  {
-    "id": "p2",
-    "code": "SP26002",
-    "name": "无人机保养检测",
-    "category": "维修保养",
-    "status": "已上架",
-    "orderCount": 2,
-    "properties": {
-      "needAppointment": true,
-      "onlinePay": true,
-      "needPilot": false
-    },
-    "specs": [
-      {
-        "name": "基础保养",
-        "price": "899"
-      },
-      {
-        "name": "深度检测",
-        "price": "1299"
-      }
-    ],
-    "images": [
-      {
-        "id": "pi4",
-        "name": "保养检测1.jpg"
-      }
-    ],
-    "intro": "<p>提供无人机全机保养与性能检测服务，含硬件检查、固件升级建议与检测报告。</p>",
-    "displayedReviewIds": []
-  },
-  {
-    "id": "p3",
-    "code": "SP26003",
-    "name": "空域代办服务",
-    "category": "代办服务",
-    "status": "已下架",
-    "orderCount": 0,
-    "properties": {
-      "needAppointment": true,
-      "onlinePay": false,
-      "needPilot": false
-    },
-    "specs": [
-      {
-        "name": "标准代办",
-        "price": "3600"
-      }
-    ],
-    "images": [],
-    "intro": "<p>空域申请、飞行计划报批等一站式代办，适用于企业航拍与工程测绘项目。</p>",
-    "displayedReviewIds": []
-  }
+  productItem("p1", "无人机巡检服务", "无人机服务", productFields([
+    reqField("contactName", "登记联系人", "text", true),
+    reqField("contactPhone", "联系电话", "text", true),
+    reqField("serviceType", "服务类型", "select", true, { options: ["楼宇巡检", "园区巡检", "航线巡检", "设备巡检"] }),
+    reqField("inspectionArea", "巡检区域", "text", true),
+    reqField("inspectionTime", "巡检时间", "text", true),
+    reqField("remark", "需求说明"),
+    reqField("exampleImage", "例图", "image")
+  ]), "填写巡检区域、时间和需求说明，平台根据需求安排无人机巡检服务。"),
+  productItem("p2", "无人机物流服务", "无人机服务", productFields([
+    reqField("contactName", "登记联系人", "text", true),
+    reqField("contactPhone", "联系电话", "text", true),
+    reqField("customerType", "客户类型", "select", true, { options: ["个人", "企业", "医院/园区", "政府机构"] }),
+    reqField("cargoType", "货物类型", "text", true),
+    reqField("cargoWeight", "货物重量", "text", true),
+    reqField("cargoVolume", "货物体积"),
+    reqField("startPoint", "起运点", "text", true),
+    reqField("startAddress", "详细地址", "text", true),
+    reqField("destination", "目的地", "text", true),
+    reqField("destinationAddress", "详细地址", "text", true),
+    reqField("transportLimit", "运输时效", "select", true, { options: ["普通", "加急", "定时达"] }),
+    reqField("expectedTime", "期望运输时间", "text", true),
+    reqField("cargoPhoto", "货物照片", "image"),
+    reqField("remark", "备注说明"),
+    reqField("exampleImage", "例图", "image")
+  ]), "填写货物、起运点、目的地和运输时效，平台确认后安排无人机物流服务。"),
+  productItem("p3", "无人机吊运服务", "无人机服务", productFields([
+    reqField("contactName", "登记联系人", "text", true),
+    reqField("contactPhone", "联系电话", "text", true),
+    reqField("itemName", "吊运物品", "text", true),
+    reqField("weight", "物品重量（kg）", "text", true),
+    reqField("workAddress", "作业地点", "text", true),
+    reqField("height", "吊运高度（m）", "text", true),
+    reqField("remark", "需求说明"),
+    reqField("exampleImage", "例图", "image")
+  ]), "填写吊运物品、重量、高度和作业地点，平台评估现场条件后安排服务。"),
+  productItem("p4", "无人机表演服务", "无人机服务", productFields([
+    reqField("contactName", "登记联系人", "text", true),
+    reqField("contactPhone", "联系电话", "text", true),
+    reqField("purpose", "表演目的", "text", true),
+    reqField("date", "表演日期", "text", true),
+    reqField("timeSlot", "表演时段", "text", true),
+    reqField("backupDate", "是否备用雨天/延期日期"),
+    reqField("scale", "表演规模", "select", true, { options: ["100 架以内", "100-300 架", "300 架以上", "待方案确认"] }),
+    reqField("exampleImage", "例图", "image")
+  ]), "填写表演目的、日期、时段和规模，平台根据活动需求制定无人机表演方案。"),
+  productItem("p5", "无人机托管服务", "无人机服务", productFields([
+    reqField("contactName", "登记联系人", "text", true),
+    reqField("contactPhone", "联系电话", "text", true),
+    reqField("droneModel", "无人机型号", "text", true),
+    reqField("count", "托管数量", "text", true),
+    reqField("duration", "托管时长", "select", true, { options: ["1 个月", "3 个月", "6 个月", "12 个月"] }),
+    reqField("remark", "需求说明"),
+    reqField("exampleImage", "例图", "image")
+  ]), "填写托管机型、数量和时长，平台提供设备托管与运维管理服务。", "0", false),
+  productItem("p6", "无人机外卖配送", "无人机外卖配送", productFields([
+    reqField("jumpTip", "跳转说明", "text", false, { placeholder: "点击任意地方即可跳转" })
+  ]), "点击任意地方即可跳转到无人机外卖配送服务。", "0", false),
+  productItem("p7", "无人机赛事", "培训教育与赛事举办", productFields([
+    reqField("registerType", "注册类型", "select", true, { options: ["个人", "单位", "学校", "机构"] }),
+    reqField("organization", "单位名称", "text", true),
+    reqField("name", "姓名", "text", true),
+    reqField("gender", "性别", "select", true, { options: ["男", "女"] }),
+    reqField("idNo", "证件号", "text", true),
+    reqField("group", "组别", "select", true, { options: ["成人组", "青少年组", "团体组"] }),
+    reqField("phone", "联系电话", "text", true),
+    reqField("email", "电子邮箱"),
+    reqField("remark", "备注")
+  ]), "填写赛事报名信息，适用于无人机赛事报名和资料登记。", "0", false),
+  productItem("p8", "飞手培训", "培训教育与赛事举办", productFields([
+    reqField("name", "姓名", "text", true),
+    reqField("phone", "联系电话", "text", true),
+    reqField("gender", "性别", "select", true, { options: ["男", "女"] }),
+    reqField("birthday", "出生日期", "text", true),
+    reqField("idNo", "身份证号", "text", true),
+    reqField("examModel", "考试机型", "select", true, { options: ["多旋翼", "固定翼", "垂直起降固定翼"] }),
+    reqField("licenseLevel", "证照级别", "select", true, { options: ["视距内", "超视距", "教员"] }),
+    reqField("hasBase", "有无基础", "select", true, { options: ["有基础", "无基础"] }),
+    reqField("remark", "需求说明"),
+    reqField("exampleImage", "例图", "image")
+  ]), "填写飞手培训报名信息，平台根据考试机型和基础情况安排培训。", "0", false),
+  productItem("p9", "少儿培训", "培训教育与赛事举办", productFields([
+    reqField("name", "姓名", "text", true),
+    reqField("gender", "性别", "select", true, { options: ["男", "女"] }),
+    reqField("age", "年龄", "text", true),
+    reqField("grade", "在读年级", "text", true),
+    reqField("parentName", "家长姓名", "text", true),
+    reqField("parentPhone", "家长手机号", "text", true),
+    reqField("hasDroneBase", "有无无人机基础", "select", true, { options: ["有", "无"] }),
+    reqField("interest", "感兴趣方向", "select", true, { options: ["飞行体验", "编程控制", "竞赛训练", "航拍创作"] }),
+    reqField("classTime", "上课时间", "text", true),
+    reqField("intent", "报名意向", "select", true, { options: ["试听", "短期课", "长期班"] })
+  ]), "填写少儿培训报名信息，便于课程顾问匹配课程和上课时间。", "0", false)
 ];
 state.editingProductId = null;
 state.newProductDraft = null;
 state.editingCategoryId = null;
-state.categoryIconDraft = null;
 state.reviewDraft = [];
 state.reviewDraftProductId = null;
 state.productEditor = null;
 state.productToolbar = null;
 state.deletingCategoryId = null;
 state.deletingProductId = null;
+
+const requirementFieldTypes = ["text", "select", "image"];
+
+function defaultRequirementFields() {
+  return [
+    { key: "contactName", label: "登记联系人", type: "text", required: true, placeholder: "请输入联系人", sort: 1 },
+    { key: "contactPhone", label: "联系电话", type: "text", required: true, placeholder: "请输入联系电话", sort: 2 }
+  ];
+}
+
+function normalizeRequirementField(field, index) {
+  const type = requirementFieldTypes.includes(field.type) ? field.type : "text";
+  const locked = isLockedRequirementField(field, index);
+  const normalized = {
+    ...field,
+    type,
+    required: locked ? true : Boolean(field.required),
+    sort: field.sort || index + 1
+  };
+  if (type === "select") {
+    normalized.options = Array.isArray(field.options) ? field.options : [];
+    delete normalized.unit;
+  } else {
+    delete normalized.options;
+    delete normalized.unit;
+  }
+  return normalized;
+}
+
+function isLockedRequirementField(field, index) {
+  return index < 2 || ["contactName", "contactPhone"].includes(field.key);
+}
 
 const productReviews = DroneAdmin.data.productReviews = [
   {
@@ -157,7 +190,7 @@ const productReviews = DroneAdmin.data.productReviews = [
     "orderNo": "YB26060512",
     "user": "华景物业",
     "rating": 4,
-    "content": "整体满意，预约流程顺畅，外立面清洁效果明显。",
+    "content": "整体满意，需求确认流程顺畅，外立面清洁效果明显。",
     "time": "2026-06-06 11:05"
   },
   {
@@ -175,7 +208,7 @@ const productReviews = DroneAdmin.data.productReviews = [
     "orderNo": "YB26060218",
     "user": "张女士",
     "rating": 5,
-    "content": "高空作业很规范，现场管理到位，会再次预约。",
+    "content": "高空作业很规范，现场管理到位，会再次下单。",
     "time": "2026-06-02 10:15"
   },
   {
@@ -184,7 +217,7 @@ const productReviews = DroneAdmin.data.productReviews = [
     "orderNo": "YB26060105",
     "user": "成都建工",
     "rating": 4,
-    "content": "清洗效率不错，就是预约时段希望再多一些选择。",
+    "content": "清洗效率不错，就是服务时段希望再多一些选择。",
     "time": "2026-06-01 16:40"
   },
   {
@@ -246,7 +279,6 @@ const productReviews = DroneAdmin.data.productReviews = [
 function formatProductAttrs(product) {
   const props = product.properties || {};
   const parts = [];
-  if (props.needAppointment) parts.push("预约");
   if (props.onlinePay) parts.push("在线支付");
   else parts.push("不在线支付");
   if (props.needPilot) parts.push("需要飞手");
@@ -255,15 +287,17 @@ function formatProductAttrs(product) {
 }
 
 function ensureProductShape(product) {
-  if (!product.properties) product.properties = { needAppointment: true, onlinePay: true, needPilot: false };
+  if (!product.properties) product.properties = { onlinePay: true, needPilot: false };
   if (!product.specs) product.specs = [{ name: "标准服务", price: "0" }];
   if (!product.images) product.images = [];
   if (!product.displayedReviewIds) product.displayedReviewIds = [];
+  if (!product.requirementFields?.length) product.requirementFields = defaultRequirementFields();
+  product.requirementFields = product.requirementFields.map(normalizeRequirementField);
   return product;
 }
 
 function createEmptyProduct() {
-  const defaultCategory = state.categories.find(item => item.enabled)?.name || "上门服务";
+  const defaultCategory = state.categories.find(item => item.enabled)?.name || "无人机服务";
   return ensureProductShape({
     id: null,
     code: "",
@@ -271,7 +305,8 @@ function createEmptyProduct() {
     category: defaultCategory,
     status: "已下架",
     orderCount: 0,
-    properties: { needAppointment: true, onlinePay: true, needPilot: false },
+    properties: { onlinePay: true, needPilot: false },
+    requirementFields: defaultRequirementFields(),
     specs: [{ name: "标准服务", price: "0" }],
     images: [],
     intro: "<p></p>",
@@ -299,18 +334,6 @@ function categoryOptions(selected = "") {
     .join("");
 }
 
-function isCategoryImage(icon) {
-  return /\.(png|jpg|jpeg|svg|webp)$/i.test(icon) || String(icon).includes("/");
-}
-
-function categoryIcon(icon, name = "") {
-  const label = name || "分类图标";
-  const content = isCategoryImage(icon)
-    ? `<img src="${icon}" alt="${label}">`
-    : `<span class="category-icon-text">${icon}</span>`;
-  return `<span class="category-icon">${content}</span>`;
-}
-
 function categoryActions(item, index, total) {
   return rowActions({ edit: "category-edit", moveAction: "move-category", deleteAction: "delete-category", id: item.id, index, total });
 }
@@ -319,7 +342,6 @@ function categoriesPage() {
   const sorted = [...state.categories].sort((a, b) => a.sort - b.sort);
   const rows = sorted.map((item, index) => [
     item.sort,
-    categoryIcon(item.icon, item.name),
     item.name,
     `<span class="category-desc">${item.description || "—"}</span>`,
     item.productCount,
@@ -328,7 +350,7 @@ function categoriesPage() {
   ]);
   return panel("商品分类", `<div class="toolbar" style="margin-bottom:14px">
     <input placeholder="分类名称">${button("查询","filter","primary")}<span class="spacer"></span>${button("新增分类","category-edit","primary")}
-  </div>${paginatedTable("categories", ["排序","图标","分类名称","分类说明","商品数","状态","操作"], rows, "category-table")}`);
+  </div>${paginatedTable("categories", ["排序","分类名称","分类说明","商品数","状态","操作"], rows, "category-table")}`);
 }
 
 function productThumb(product) {
@@ -418,6 +440,77 @@ function productReviewsPanel(product) {
     <div class="review-list">${list || `<p class="empty">暂无来自订单的评价</p>`}</div>${pagination}`, actions);
 }
 
+function fieldTypeLabel(type) {
+  const labels = {
+    text: "文本",
+    select: "下拉框",
+    image: "图片"
+  };
+  return labels[type] || type;
+}
+
+function activeRequirementFields(product) {
+  ensureProductShape(product);
+  return product.requirementFields;
+}
+
+function requirementFieldValue(field, key, fallback = "") {
+  const value = field[key];
+  if (Array.isArray(value)) return value.join(" / ");
+  return value === undefined || value === null ? fallback : value;
+}
+
+function requirementFieldRows(product) {
+  const fields = activeRequirementFields(product)
+    .map((field, index) => ({ ...field, sort: field.sort || index + 1 }))
+    .sort((a, b) => a.sort - b.sort);
+  return fields.map((field, index) => {
+    const locked = isLockedRequirementField(field, index);
+    return [
+      `<span class="requirement-sort">${index + 1}</span>`,
+      `<input data-field="requirement-label" data-index="${index}" value="${field.label}">`,
+      `<div class="requirement-type-options">
+        ${requirementFieldTypes.map(type => `<label class="${field.type === type ? "active" : ""}"><input type="radio" name="requirement-type-${index}" data-action="requirement-type-choice" data-field="requirement-type" data-index="${index}" value="${type}"${field.type === type ? " checked" : ""}>${fieldTypeLabel(type)}</label>`).join("")}
+      </div>`,
+      `<label class="requirement-required"><input type="checkbox" data-action="toggle-requirement-required" data-index="${index}"${(locked || field.required) ? " checked" : ""}${locked ? " disabled" : ""}> 必填</label>`,
+      `<input data-field="requirement-placeholder" data-index="${index}" value="${requirementFieldValue(field, "placeholder")}" placeholder="请输入提示文案">`,
+      field.type === "select"
+        ? `<input data-field="requirement-extra" data-index="${index}" value="${requirementFieldValue(field, "options")}" placeholder="选项用 / 分隔">`
+        : `<span class="requirement-option-empty">仅下拉框填写</span>`,
+      `<div class="row-actions">
+        ${button("上移", "move-requirement-field", "small", `data-index="${index}" data-dir="-1"${locked || index <= 2 ? " disabled" : ""}`)}
+        ${button("下移", "move-requirement-field", "small", `data-index="${index}" data-dir="1"${locked || index === fields.length - 1 ? " disabled" : ""}`)}
+        ${button("删除", "delete-requirement-field", "small danger", `data-index="${index}"${locked ? " disabled" : ""}`)}
+      </div>`
+    ];
+  });
+}
+
+function setProductRequirementFields(product, fields) {
+  product.requirementFields = fields.map((field, index) => normalizeRequirementField({ ...field, sort: index + 1 }, index));
+}
+
+function ensureCustomRequirementFields(product) {
+  ensureProductShape(product);
+}
+
+function requirementFieldsPanel(product) {
+  const rows = requirementFieldRows(product);
+  return panel("需求采集字段", `<div class="requirement-config">
+    <div class="requirement-main">
+      <div class="requirement-template-bar">
+        <span class="tag blue">当前商品独立字段</span>
+        <span class="muted">订单生成时保存字段快照，后续改商品不影响历史订单。</span>
+      </div>
+      <div class="toolbar requirement-actions">
+        ${button("新增字段", "add-requirement-field", "primary")}
+      </div>
+      <div class="table-scroll requirement-table-wrap">${table(["排序","字段名称","字段类型","必填","提示文案","下拉选项","操作"], rows, "requirement-table")}</div>
+      <p class="muted requirement-help">字段由当前商品单独维护。首版字段类型仅支持文本、下拉框、图片；不支持字段联动和自动报价。</p>
+    </div>
+  </div>`);
+}
+
 function productActions(item) {
   return `<div class="row-actions"><button class="button small" data-route="product-edit" data-product-id="${item.id}">编辑</button>
     ${button("删除","delete-product","small danger",`data-id="${item.id}"`)}</div>`;
@@ -430,6 +523,7 @@ function productsPage() {
     item.name,
     item.category,
     item.specs.length,
+    `${activeRequirementFields(item).length} 个字段`,
     formatProductAttrs(item),
     tag(item.status),
     productActions(item)
@@ -438,7 +532,7 @@ function productsPage() {
     <input placeholder="商品名称 / 编号"><select><option>全部分类</option>${state.categories.map(item => `<option>${item.name}</option>`).join("")}</select>
     <select><option>全部状态</option><option>已上架</option><option>已下架</option></select>${button("查询","filter","primary")}
     <span class="spacer"></span>${button("创建商品","create-product","primary")}
-  </div>${paginatedTable("products", ["商品图","商品编号","商品名称","分类","规格数","业务属性","状态","操作"], rows, "products-table")}`);
+  </div>${paginatedTable("products", ["商品图","商品编号","商品名称","分类","规格数","需求字段","业务属性","状态","操作"], rows, "products-table")}`);
 }
 
 function propertyRow(label, key, product) {
@@ -463,7 +557,8 @@ function productEditPage() {
   + panel("商品介绍", richEditorContainer())
   + productReviewsPanel(product)
   + panel("多规格配置", `${table(["规格名称","价格（元）","操作"], specs)}<div style="margin-top:12px">${button("添加规格","add-spec")}</div>`)
-  + panel("业务属性", `<div class="check-list">${propertyRow("是否需要预约","needAppointment",product)}${propertyRow("是否在线支付","onlinePay",product)}${propertyRow("是否需要飞手服务","needPilot",product)}</div>
+  + requirementFieldsPanel(product)
+  + panel("业务属性", `<div class="check-list">${propertyRow("是否在线支付","onlinePay",product)}${propertyRow("是否需要飞手服务","needPilot",product)}</div>
     <p class="muted" style="margin:12px 0 0">业务属性与商品绑定。订单生成时保存最终属性快照，后续修改商品不会改变历史订单。</p>`);
 }
 
@@ -485,19 +580,6 @@ async function handleAddProductImage() {
   else toast(`已选择 ${Math.min(files.length, slots)} 张图片`);
 }
 
-async function handlePickCategoryIcon() {
-  const files = await pickLocalFile({ accept: "image/*" });
-  const file = files[0];
-  if (!file) return;
-  const url = URL.createObjectURL(file);
-  state.categoryIconDraft = { url, name: file.name };
-  const preview = document.querySelector(".category-icon-field .preview");
-  const nameEl = document.getElementById("category-icon-name");
-  if (preview) preview.innerHTML = `<img src="${url}" alt="分类图标">`;
-  if (nameEl) nameEl.textContent = file.name;
-  toast(`已选择：${file.name}`);
-}
-
 function readProductFormFromPage() {
   const product = activeProduct();
   const page = document.querySelector(".page");
@@ -513,6 +595,33 @@ function readProductFormFromPage() {
     const index = Number(input.dataset.index);
     if (product.specs[index]) product.specs[index].price = input.value.trim();
   });
+  ensureCustomRequirementFields(product);
+  if (product.requirementFields?.length) {
+    page.querySelectorAll('[data-field="requirement-label"]').forEach(input => {
+      const index = Number(input.dataset.index);
+      if (product.requirementFields[index]) product.requirementFields[index].label = input.value.trim();
+    });
+    page.querySelectorAll('[data-field="requirement-type"]:checked').forEach(input => {
+      const index = Number(input.dataset.index);
+      if (product.requirementFields[index]) product.requirementFields[index].type = input.value;
+    });
+    page.querySelectorAll('[data-field="requirement-placeholder"]').forEach(input => {
+      const index = Number(input.dataset.index);
+      if (product.requirementFields[index]) product.requirementFields[index].placeholder = input.value.trim();
+    });
+    page.querySelectorAll('[data-field="requirement-extra"]').forEach(input => {
+      const index = Number(input.dataset.index);
+      const field = product.requirementFields[index];
+      if (!field) return;
+      const value = input.value.trim();
+      if (field.type === "select") {
+        field.options = value.split("/").map(item => item.trim()).filter(Boolean);
+      } else {
+        delete field.options;
+      }
+    });
+    product.requirementFields = product.requirementFields.map(normalizeRequirementField);
+  }
   return product;
 }
 
@@ -525,9 +634,6 @@ function saveCategoryFromModal() {
   }
   const description = overlay.querySelector("#category-description")?.value.trim() || "";
   const enabled = overlay.querySelector("#category-enabled")?.value === "启用";
-  const icon = state.categoryIconDraft?.url
-    || (state.editingCategoryId && state.categories.find(item => item.id === state.editingCategoryId)?.icon)
-    || "../shared/assets/icons/category-onsite.png";
 
   if (state.editingCategoryId) {
     const item = state.categories.find(entry => entry.id === state.editingCategoryId);
@@ -535,7 +641,6 @@ function saveCategoryFromModal() {
       item.name = name;
       item.description = description;
       item.enabled = enabled;
-      item.icon = icon;
     }
   } else {
     const maxSort = Math.max(0, ...state.categories.map(item => item.sort));
@@ -543,14 +648,12 @@ function saveCategoryFromModal() {
       id: `c${Date.now()}`,
       name,
       description,
-      icon,
       productCount: 0,
       sort: maxSort + 1,
       enabled
     });
   }
   state.editingCategoryId = null;
-  state.categoryIconDraft = null;
   return true;
 }
 
@@ -568,10 +671,10 @@ DroneAdmin.registerModule({
 },
   docs: {
   "categories": {
-    "summary": "维护商品分类，控制小程序分类入口的名称、图标与展示顺序。业务属性不在此配置。",
+	    "summary": "维护商品分类，控制分类名称、说明、状态与展示顺序。业务属性不在此配置。",
     "operations": [
-      "新增分类：填写名称、分类说明、上传图标、设置启用状态",
-      "点击「编辑」：打开弹窗，修改名称、说明、图标与状态",
+	      "新增分类：填写名称、分类说明、设置启用状态",
+	      "点击「编辑」：打开弹窗，修改名称、说明与状态",
       "上移 / 下移：调整列表序号与小程序端分类展示顺序",
       "点击「删除」：仅当商品数为 0 时可删除，否则提示「该分类下还有商品，不可删除」",
       "删除前弹出确认框，确认后永久移除分类（原型模拟）"
@@ -581,12 +684,8 @@ DroneAdmin.registerModule({
         "排序",
         "列表序号，仅通过上移 / 下移调整，数字越小越靠前"
       ],
-      [
-        "图标",
-        "分类入口展示图标，建议 128×128，列表中以较大尺寸预览"
-      ],
-      [
-        "分类名称",
+	      [
+	        "分类名称",
         "后台与小程序端展示名称"
       ],
       [
@@ -636,7 +735,7 @@ DroneAdmin.registerModule({
       ],
       [
         "业务属性",
-        "预约 / 在线支付 / 飞手需求等，与商品绑定"
+        "在线支付 / 飞手需求等，与商品绑定"
       ],
       [
         "状态",
@@ -649,13 +748,13 @@ DroneAdmin.registerModule({
     ]
   },
   "product-edit": {
-    "summary": "创建或编辑商品，配置轮播图、富文本介绍、评价展示、规格价格及业务属性。",
+    "summary": "创建或编辑商品，配置轮播图、富文本介绍、评价展示、规格价格、业务属性及需求采集字段。",
     "operations": [
       "上传 / 排序 / 删除轮播图，第一张为列表封面与详情首图",
       "商品介绍使用 Element Admin 常用的 WangEditor 富文本组件编辑",
       "评价管理：分页浏览订单评价列表，多选后随「保存商品」一并生效；默认全不展示",
       "添加 / 删除规格，每个规格独立定价",
-      "业务属性通过勾选配置：是否需要预约、在线支付、飞手服务",
+      "业务属性通过勾选配置：在线支付、飞手服务；下单字段统一由需求采集字段配置",
       "保存后更新商品；历史订单保留下单时属性快照"
     ],
     "fields": [
@@ -684,10 +783,6 @@ DroneAdmin.registerModule({
         "多规格 SKU，用户下单时选择"
       ],
       [
-        "是否需要预约",
-        "勾选表示下单需选择服务时间"
-      ],
-      [
         "是否在线支付",
         "勾选表示支持线上下单支付"
       ],
@@ -713,16 +808,11 @@ DroneAdmin.registerModule({
     "category-edit": function (target) {
       const item = state.categories.find(x => x.id === target.dataset.id);
           state.editingCategoryId = item?.id || null;
-          state.categoryIconDraft = null;
-          const draft = item || { name: "", description: "", icon: "../shared/assets/icons/category-onsite.png", sort: state.categories.length + 1, enabled: true };
-          const iconPreview = isCategoryImage(draft.icon)
-            ? `<img src="${draft.icon}" alt="${draft.name || "分类图标"}">`
-            : `<span class="category-icon-text">${draft.icon || "分类"}</span>`;
+          const draft = item || { name: "", description: "", sort: state.categories.length + 1, enabled: true };
           modal("商品分类", formGrid([
             { label: "分类名称", html: `<input id="category-name" value="${draft.name}" placeholder="请输入分类名称">` },
             { label: "分类状态", html: `<select id="category-enabled"><option${draft.enabled ? " selected" : ""}>启用</option><option${draft.enabled ? "" : " selected"}>停用</option></select>` },
-            { label: "分类说明", wide: true, html: `<textarea id="category-description" placeholder="请输入分类说明，用于小程序分类页展示">${draft.description || ""}</textarea>` },
-            { label: "分类图标", wide: true, html: `<div class="category-icon-field"><span class="category-icon preview">${iconPreview}</span>${button("选择图片", "pick-category-icon")}<span class="muted category-icon-name" id="category-icon-name">${item ? "保留当前图标或重新选择" : "未选择"}</span><span class="muted">建议 128×128 或更大，用于小程序分类入口展示</span></div>` }
+            { label: "分类说明", wide: true, html: `<textarea id="category-description" placeholder="请输入分类说明，用于小程序分类页展示">${draft.description || ""}</textarea>` }
           ]), `${button("取消","close-modal")}${button("保存分类","save-category","primary")}`, true);
     },
     "save-category": function (target) {
@@ -788,6 +878,46 @@ DroneAdmin.registerModule({
       activeProduct().specs.splice(Number(target.dataset.index), 1);
           render();
     },
+    "add-requirement-field": function (target) {
+      const product = readProductFormFromPage();
+          ensureCustomRequirementFields(product);
+          product.requirementFields.push({
+            key: `field${Date.now()}`,
+            label: "新字段",
+            type: "text",
+            required: false,
+            placeholder: "请输入内容",
+            sort: product.requirementFields.length + 1
+          });
+          render();
+    },
+    "delete-requirement-field": function (target) {
+      const product = readProductFormFromPage();
+          ensureCustomRequirementFields(product);
+          const index = Number(target.dataset.index);
+          if (isLockedRequirementField(product.requirementFields[index], index)) {
+            toast("联系人和联系电话为默认必填字段");
+            return;
+          }
+          product.requirementFields.splice(index, 1);
+          setProductRequirementFields(product, product.requirementFields);
+          render();
+    },
+    "move-requirement-field": function (target) {
+      const product = readProductFormFromPage();
+          ensureCustomRequirementFields(product);
+          const index = Number(target.dataset.index);
+          const next = index + Number(target.dataset.dir);
+          if (isLockedRequirementField(product.requirementFields[index], index) || next < 2) {
+            toast("联系人和联系电话固定在前两项");
+            return;
+          }
+          if (next >= 0 && next < product.requirementFields.length) {
+            [product.requirementFields[index], product.requirementFields[next]] = [product.requirementFields[next], product.requirementFields[index]];
+            setProductRequirementFields(product, product.requirementFields);
+            render();
+          }
+    },
     "save-product": function (target) {
       const product = readProductFormFromPage();
           if (state.richEditor) product.intro = state.richEditor.getHtml();
@@ -840,9 +970,6 @@ DroneAdmin.registerModule({
           });
           state.reviewDraft = [...draft];
           render();
-    },
-    "pick-category-icon": function (target) {
-      handlePickCategoryIcon();
     }
   },
   changeActions: {
@@ -857,6 +984,29 @@ DroneAdmin.registerModule({
           if (event.target.checked) draft.add(event.target.dataset.id);
           else draft.delete(event.target.dataset.id);
           state.reviewDraft = [...draft];
+          render();
+          return;
+    },
+    "toggle-requirement-required": function (target) {
+      const product = readProductFormFromPage();
+          ensureCustomRequirementFields(product);
+          const index = Number(event.target.dataset.index);
+          const field = product.requirementFields[index];
+          if (isLockedRequirementField(field, index)) {
+            field.required = true;
+            render();
+            return;
+          }
+          if (field) field.required = event.target.checked;
+          render();
+          return;
+    },
+    "requirement-type-choice": function (target) {
+      const product = readProductFormFromPage();
+          ensureCustomRequirementFields(product);
+          const field = product.requirementFields[Number(event.target.dataset.index)];
+          if (field) field.type = event.target.value;
+          product.requirementFields = product.requirementFields.map(normalizeRequirementField);
           render();
           return;
     }
@@ -880,6 +1030,5 @@ DroneAdmin.registerModule({
     state.deletingCategoryId = null;
     state.deletingProductId = null;
     state.editingCategoryId = null;
-    state.categoryIconDraft = null;
   }
 });

@@ -76,7 +76,7 @@ function rowActions({ edit, moveAction, deleteAction, id, index, total }) {
 }
 
 function getListPage(key) {
-  if (!state.listPages[key]) state.listPages[key] = { page: 1, pageSize: 5 };
+  if (!state.listPages[key]) state.listPages[key] = { page: 1, pageSize: 10 };
   return state.listPages[key];
 }
 
@@ -104,7 +104,7 @@ function listPagination({ total, page, pageSize, key }) {
       ${button("›", "list-page-next", "small", `data-list-key="${key}"${page >= totalPages ? " disabled" : ""}`)}
     </div>
     <label class="list-pagination-size"><select data-action="list-page-size" data-list-key="${key}">
-      ${[5, 10, 20].map(size => `<option value="${size}"${size === pageSize ? " selected" : ""}>${size}</option>`).join("")}
+      ${[10, 20, 50].map(size => `<option value="${size}"${size === pageSize ? " selected" : ""}>${size}</option>`).join("")}
     </select> / 页</label>
   </div>`;
 }

@@ -3,11 +3,12 @@
 - 路由：`orders`、`order-detail`
 - 代码：`js/modules/orders.js`
 ## 当前功能
-- 订单列表、动态状态流转、预约信息、备注图预览和飞手分配/调整。
+- 订单列表、动态状态流转、需求信息快照、备注图预览和飞手分配/调整。
 ## 数据结构
-- `orderRecords[]`；`state.viewingOrderId`；订单内含业务属性快照和 `assignedPilots`。
+- `orderRecords[]`；`state.viewingOrderId`；订单内含业务属性快照、`requirementSnapshot` 和 `assignedPilots`。
 ## 操作与业务规则
 - 在线支付决定是否包含“待付款”；飞手需求决定“待派单/待服务”或“待交付”。
+- 需求信息快照来自用户下单时的动态字段 JSON，商品字段后续调整不影响历史订单。
 - 待派单确认飞手后进入待服务；待服务调整飞手不改变状态。
 ## 与其他模块的依赖
 - Dashboard 和飞手详情只读使用本模块数据/helper。

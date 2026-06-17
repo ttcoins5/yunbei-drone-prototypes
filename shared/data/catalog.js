@@ -1,11 +1,43 @@
+function reqField(key, label, type = "text", required = false, extra = {}) {
+  return {
+    key,
+    label,
+    type,
+    required,
+    placeholder: extra.placeholder || (type === "image" ? `上传${label}` : `请输入${label}`),
+    options: extra.options,
+    sort: extra.sort || 1
+  };
+}
+
+function productFields(list) {
+  return list.map((field, index) => ({ ...field, sort: index + 1 }));
+}
+
+function serviceProduct(id, name, desc, fields, image, sales, category = "无人机服务") {
+  return {
+    id,
+    name,
+    desc,
+    category,
+    price: 0,
+    sales,
+    location: "信息填写",
+    image,
+    requirementFields: fields,
+    reviewCount: 0,
+    detail: `${name}需要先填写需求信息，平台确认后安排后续服务。`,
+    specs: [{ name: "信息提交", price: 0, desc: "填写信息后由平台确认" }],
+    reviews: [
+      { user: "平台用户", rating: 5, content: "信息填写清楚，平台沟通及时。", time: "2026-06-12 15:20" }
+    ]
+  };
+}
+
 export const categories = [
-  { name: "无人机销售", desc: "专业设备选购", route: "products", icon: 0, featured: true, image: "nav-sales" },
-  { name: "无人机租赁", desc: "灵活租期方案", route: "rental", icon: 1, featured: true, image: "nav-rental" },
-  { name: "保养维修", desc: "专业检测养护", route: "booking", icon: 2, featured: true, image: "nav-maintain" },
-  { name: "无人机保险", desc: "设备飞行保障", route: "booking", icon: 3, featured: true, image: "nav-insurance" },
-  { name: "空域代办", route: "booking", icon: 4 },
-  { name: "共享电池", route: "booking", icon: 5 },
-  { name: "培训服务", route: "booking", icon: 6 },
+  { name: "无人机服务", desc: "巡检、物流、吊运、表演、托管", route: "products", icon: 0, featured: true, image: "nav-hoisting" },
+  { name: "无人机外卖配送", desc: "点击后跳转到配送服务", route: "products", icon: 1, featured: true, image: "nav-transport" },
+  { name: "培训教育与赛事举办", desc: "赛事报名、飞手培训、少儿培训", route: "products", icon: 2, featured: true, image: "nav-maintain" },
   { name: "全部分类", route: "categories", icon: 7 }
 ];
 
@@ -21,38 +53,38 @@ export const homepageNavItems = [
   },
   {
     id: "nav-agriculture",
-    name: "农业",
+    name: "表演",
     size: "large",
     image: "../../shared/assets/home-nav/entry-agriculture-large.png",
     jumpType: "internal",
-    link: "/pages/services/agriculture/index",
+    link: "/pages/services/performance/index",
     enabled: true
   },
   {
     id: "nav-cleaning",
-    name: "高空清洗",
+    name: "培训",
     size: "large",
     image: "../../shared/assets/home-nav/entry-cleaning-large.png",
     jumpType: "internal",
-    link: "/pages/services/cleaning/index",
+    link: "/pages/training/index",
     enabled: true
   },
   {
     id: "nav-transport",
-    name: "高空搬运",
+    name: "无人机巡检",
     size: "large",
     image: "../../shared/assets/home-nav/entry-transport-large.png",
     jumpType: "internal",
-    link: "/pages/services/transport/index",
+    link: "/pages/services/inspection/index",
     enabled: true
   },
   {
     id: "nav-sales",
-    name: "无人机销售",
+    name: "外卖",
     size: "small",
     image: "../../shared/assets/home-nav/entry-sales-small.png",
     jumpType: "internal",
-    link: "/pages/products/index?type=sales",
+    link: "/pages/services/takeout/index",
     enabled: true
   },
   {
@@ -61,21 +93,21 @@ export const homepageNavItems = [
     size: "small",
     image: "../../shared/assets/home-nav/entry-rental-small.png",
     jumpType: "internal",
-    link: "/pages/products/index?type=rental",
+    link: "/pages/services/rental/index",
     enabled: true
   },
   {
     id: "nav-maintenance",
-    name: "保养",
+    name: "少儿研学",
     size: "small",
     image: "../../shared/assets/home-nav/entry-maintenance-small.png",
     jumpType: "internal",
-    link: "/pages/maintenance/index",
+    link: "/pages/training/children/index",
     enabled: true
   },
   {
     id: "nav-all",
-    name: "全部分类",
+    name: "更多",
     size: "small",
     image: "../../shared/assets/home-nav/entry-all-small.png",
     jumpType: "internal",
@@ -84,120 +116,103 @@ export const homepageNavItems = [
   }
 ];
 
-export const products = [
-  {
-    name: "轻型航拍无人机",
-    desc: "便携航拍 · 智能避障",
-    price: 6999,
-    sales: 238,
-    image: "../../shared/assets/product-mapping.png",
-    specs: [
-      { name: "标准套装", price: 6999, desc: "主机 · 遥控器 · 标准电池" },
-      { name: "双电套装", price: 8299, desc: "标准套装 · 备用电池" },
-      { name: "保险套装", price: 8999, desc: "双电套装 · 设备保险" }
-    ]
-  },
-  {
-    name: "行业测绘无人机套装",
-    desc: "高精度航测 · RTK 定位",
-    price: 19999,
-    sales: 126,
-    image: "../../shared/assets/product-mapping.png",
-    specs: [
-      { name: "标准套装", price: 19999, desc: "主机 · RTK 模块 · 基础培训" },
-      { name: "RTK 套装", price: 23999, desc: "标准套装 · 高精度定位增强" },
-      { name: "增强套装", price: 28999, desc: "RTK 套装 · 航测软件 · 交付支持" }
-    ]
-  },
-  {
-    name: "农业植保无人机",
-    desc: "精准喷洒 · 高效作业",
-    price: 38800,
-    sales: 89,
-    image: "../../shared/assets/product-agriculture.png",
-    specs: [
-      { name: "基础版", price: 38800, desc: "喷洒系统 · 标准药箱" },
-      { name: "大田版", price: 45800, desc: "大容量药箱 · 智能航线" },
-      { name: "作业版", price: 52800, desc: "作业培训 · 备件包 · 售后支持" }
-    ]
-  },
-  {
-    name: "长航时巡检无人机",
-    desc: "工业巡检 · 稳定续航",
-    price: 26900,
-    sales: 67,
-    image: "../../shared/assets/product-mapping.png",
-    specs: [
-      { name: "巡检套装", price: 26900, desc: "主机 · 巡检镜头 · 标准电池" },
-      { name: "长航时套装", price: 32900, desc: "增强电池 · 远距离图传" },
-      { name: "企业套装", price: 39800, desc: "长航时套装 · 平台接入支持" }
-    ]
-  }
+export const hoistingProducts = [
+  serviceProduct("inspection", "无人机巡检服务", "巡检区域 · 巡检时间", productFields([
+    reqField("contactName", "登记联系人", "text", true),
+    reqField("contactPhone", "联系电话", "text", true),
+    reqField("serviceType", "服务类型", "select", true, { options: ["楼宇巡检", "园区巡检", "航线巡检", "设备巡检"] }),
+    reqField("inspectionArea", "巡检区域", "text", true),
+    reqField("inspectionTime", "巡检时间", "text", true),
+    reqField("remark", "需求说明"),
+    reqField("exampleImage", "例图", "image")
+  ]), "../../shared/assets/home-nav/entry-cleaning-large.png", 312),
+  serviceProduct("logistics", "无人机物流服务", "货物信息 · 运输时效", productFields([
+    reqField("contactName", "登记联系人", "text", true),
+    reqField("contactPhone", "联系电话", "text", true),
+    reqField("customerType", "客户类型", "select", true, { options: ["个人", "企业", "医院/园区", "政府机构"] }),
+    reqField("cargoType", "货物类型", "text", true),
+    reqField("cargoWeight", "货物重量", "text", true),
+    reqField("cargoVolume", "货物体积"),
+    reqField("startPoint", "起运点", "text", true),
+    reqField("startAddress", "详细地址", "text", true),
+    reqField("destination", "目的地", "text", true),
+    reqField("destinationAddress", "详细地址", "text", true),
+    reqField("transportLimit", "运输时效", "select", true, { options: ["普通", "加急", "定时达"] }),
+    reqField("expectedTime", "期望运输时间", "text", true),
+    reqField("cargoPhoto", "货物照片", "image"),
+    reqField("remark", "备注说明"),
+    reqField("exampleImage", "例图", "image")
+  ]), "../../shared/assets/home-nav/entry-agriculture-large.png", 286),
+  serviceProduct("hoisting", "无人机吊运服务", "吊运物品 · 作业地点", productFields([
+    reqField("contactName", "登记联系人", "text", true),
+    reqField("contactPhone", "联系电话", "text", true),
+    reqField("itemName", "吊运物品", "text", true),
+    reqField("weight", "物品重量（kg）", "text", true),
+    reqField("workAddress", "作业地点", "text", true),
+    reqField("height", "吊运高度（m）", "text", true),
+    reqField("remark", "需求说明"),
+    reqField("exampleImage", "例图", "image")
+  ]), "../../shared/assets/home-nav/entry-hoisting-large.png", 264),
+  serviceProduct("performance", "无人机表演服务", "表演日期 · 表演规模", productFields([
+    reqField("contactName", "登记联系人", "text", true),
+    reqField("contactPhone", "联系电话", "text", true),
+    reqField("purpose", "表演目的", "text", true),
+    reqField("date", "表演日期", "text", true),
+    reqField("timeSlot", "表演时段", "text", true),
+    reqField("backupDate", "是否备用雨天/延期日期"),
+    reqField("scale", "表演规模", "select", true, { options: ["100 架以内", "100-300 架", "300 架以上", "待方案确认"] }),
+    reqField("exampleImage", "例图", "image")
+  ]), "../../shared/assets/home-nav/entry-transport-large.png", 198),
+  serviceProduct("hosting", "无人机托管服务", "无人机型号 · 托管时长", productFields([
+    reqField("contactName", "登记联系人", "text", true),
+    reqField("contactPhone", "联系电话", "text", true),
+    reqField("droneModel", "无人机型号", "text", true),
+    reqField("count", "托管数量", "text", true),
+    reqField("duration", "托管时长", "select", true, { options: ["1 个月", "3 个月", "6 个月", "12 个月"] }),
+    reqField("remark", "需求说明"),
+    reqField("exampleImage", "例图", "image")
+  ]), "../../shared/assets/home-nav/entry-rental-small.png", 156),
+  serviceProduct("takeout", "无人机外卖配送", "点击任意地方即可跳转", productFields([
+    reqField("jumpTip", "跳转说明", "text", false, { placeholder: "点击任意地方即可跳转" })
+  ]), "../../shared/assets/home-nav/entry-sales-small.png", 142, "无人机外卖配送"),
+  serviceProduct("competition", "无人机赛事", "赛事报名 · 信息填写", productFields([
+    reqField("registerType", "注册类型", "select", true, { options: ["个人", "单位", "学校", "机构"] }),
+    reqField("organization", "单位名称", "text", true),
+    reqField("name", "姓名", "text", true),
+    reqField("gender", "性别", "select", true, { options: ["男", "女"] }),
+    reqField("idNo", "证件号", "text", true),
+    reqField("group", "组别", "select", true, { options: ["成人组", "青少年组", "团体组"] }),
+    reqField("phone", "联系电话", "text", true),
+    reqField("email", "电子邮箱"),
+    reqField("remark", "备注")
+  ]), "../../shared/assets/product-mapping.png", 116, "培训教育与赛事举办"),
+  serviceProduct("pilot-training", "飞手培训", "证照级别 · 考试机型", productFields([
+    reqField("name", "姓名", "text", true),
+    reqField("phone", "联系电话", "text", true),
+    reqField("gender", "性别", "select", true, { options: ["男", "女"] }),
+    reqField("birthday", "出生日期", "text", true),
+    reqField("idNo", "身份证号", "text", true),
+    reqField("examModel", "考试机型", "select", true, { options: ["多旋翼", "固定翼", "垂直起降固定翼"] }),
+    reqField("licenseLevel", "证照级别", "select", true, { options: ["视距内", "超视距", "教员"] }),
+    reqField("hasBase", "有无基础", "select", true, { options: ["有基础", "无基础"] }),
+    reqField("remark", "需求说明"),
+    reqField("exampleImage", "例图", "image")
+  ]), "../../shared/assets/product-agriculture.png", 104, "培训教育与赛事举办"),
+  serviceProduct("child-training", "少儿培训", "少儿课程 · 家长信息", productFields([
+    reqField("name", "姓名", "text", true),
+    reqField("gender", "性别", "select", true, { options: ["男", "女"] }),
+    reqField("age", "年龄", "text", true),
+    reqField("grade", "在读年级", "text", true),
+    reqField("parentName", "家长姓名", "text", true),
+    reqField("parentPhone", "家长手机号", "text", true),
+    reqField("hasDroneBase", "有无无人机基础", "select", true, { options: ["有", "无"] }),
+    reqField("interest", "感兴趣方向", "select", true, { options: ["飞行体验", "编程控制", "竞赛训练", "航拍创作"] }),
+    reqField("classTime", "上课时间", "text", true),
+    reqField("intent", "报名意向", "select", true, { options: ["试听", "短期课", "长期班"] })
+  ]), "../../shared/assets/product-mapping.png", 92, "培训教育与赛事举办")
 ].sort((a, b) => b.sales - a.sales);
 
-export const hoistingProducts = [
-  {
-    id: "hoist-medical",
-    name: "医疗物资应急吊运",
-    desc: "院区调拨 · 夜间可约",
-    price: 120,
-    sales: 318,
-    location: "上海黄浦",
-    image: "../../shared/assets/home-nav/entry-hoisting-large.png",
-    reviewCount: 46,
-    detail: "适用于院区、园区或楼宇之间的小件应急吊运。下单后平台会根据货物类型、起降点条件和飞行窗口安排飞手与设备。",
-    specs: [
-      { name: "50kg以内", price: 120, desc: "医疗药品 · 文件样本 · 单点直达" },
-      { name: "50kg-100kg", price: 198, desc: "医疗箱 · 应急备件 · 专人交接" },
-      { name: "夜间加急", price: 298, desc: "夜间窗口 · 加急调度 · 双人核验" }
-    ],
-    reviews: [
-      { user: "张医生", rating: 5, content: "夜间调度很快，交接流程清楚，药品送达时间比地面车辆稳定。", time: "2026-06-12 23:40" },
-      { user: "黄浦院区", rating: 5, content: "飞手提前确认起降点，平台客服一直同步进度，适合应急物资。", time: "2026-06-10 18:26" },
-      { user: "林先生", rating: 4, content: "整体很顺畅，希望后续能增加更多夜间预约时段。", time: "2026-06-08 21:12" }
-    ]
-  },
-  {
-    id: "hoist-construction",
-    name: "工地建材吊运",
-    desc: "小件建材 · 楼层转运",
-    price: 260,
-    sales: 204,
-    location: "四川成都",
-    image: "../../shared/assets/home-nav/entry-transport-large.png",
-    reviewCount: 38,
-    detail: "面向工地楼层、屋面和临时作业点的小件建材吊运。平台根据重量、楼层高度和现场安全条件配置吊运方案。",
-    specs: [
-      { name: "轻载吊运", price: 260, desc: "30kg以内 · 单次吊运 · 现场确认" },
-      { name: "标准吊运", price: 480, desc: "30kg-80kg · 多批次吊运 · 安全员协同" },
-      { name: "半日服务", price: 1280, desc: "半日驻场 · 多点吊运 · 履约记录" }
-    ],
-    reviews: [
-      { user: "陈工", rating: 5, content: "楼顶材料转运效率高，现场安全交底比较规范。", time: "2026-06-11 16:20" },
-      { user: "成都建工", rating: 4, content: "平台确认重量和起吊点很仔细，半日服务比较适合连续作业。", time: "2026-06-06 10:18" }
-    ]
-  },
-  {
-    id: "hoist-park",
-    name: "园区设备吊运",
-    desc: "设备备件 · 跨楼配送",
-    price: 180,
-    sales: 176,
-    location: "浙江宁波",
-    image: "../../shared/assets/home-nav/entry-hoisting-large.png",
-    reviewCount: 29,
-    detail: "适用于园区内部跨楼、跨区的小型设备与备件吊运，支持预约时段、固定交接人和履约留痕。",
-    specs: [
-      { name: "单点配送", price: 180, desc: "园区内单点 · 小型备件 · 到点交付" },
-      { name: "多点配送", price: 360, desc: "园区多点 · 路线规划 · 统一交接" },
-      { name: "企业月结", price: 980, desc: "企业协议价 · 月度结算 · 专属客服" }
-    ],
-    reviews: [
-      { user: "云航科技", rating: 5, content: "跨楼备件配送省了很多沟通成本，交付照片也能追溯。", time: "2026-06-09 13:35" },
-      { user: "王女士", rating: 5, content: "预约时间准，客服会提前提醒收货人到交接点。", time: "2026-06-05 09:48" }
-    ]
-  }
-].sort((a, b) => b.sales - a.sales);
+export const products = hoistingProducts;
 
 export const orderStatuses = [
   { name: "待付款", count: 2, route: "orders", icon: 0 },

@@ -23,7 +23,7 @@ function dashboardPage() {
     )),
     "pending-orders": panel("待派单订单明细", paginatedTable(
       "dashboard-pending-orders",
-      ["订单号","用户","商品/服务","预约时间","等待时长","操作"],
+      ["订单号","用户","商品/服务","服务时间","等待时长","操作"],
       pendingOrderRows
     )),
     "pilot-applications": panel("待审核飞手明细", paginatedTable(

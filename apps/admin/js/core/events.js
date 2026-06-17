@@ -64,6 +64,12 @@ document.addEventListener("change", event => {
 window.addEventListener("hashchange", () => {
   const route = location.hash.replace("#/", "");
   if (route && route !== state.page) {
+    if (!canAccessRoute(route)) {
+      toast("当前角色无权访问该页面");
+      state.page = firstAllowedRoute();
+      location.hash = `#/${state.page}`;
+      return;
+    }
     state.page = route;
     render();
   }

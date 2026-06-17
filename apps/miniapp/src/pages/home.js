@@ -1,4 +1,4 @@
-import { categories, homepageNavItems, hoistingProducts } from "../data/catalog.js?v=profile-auto-role-1";
+import { categories, homepageNavItems, hoistingProducts } from "../data/catalog.js?v=nav-banner-1";
 import { icon } from "../components/icons.js";
 import { shell } from "../components/layout.js?v=profile-auto-role-1";
 import { productCard } from "../components/productCard.js";
@@ -30,7 +30,7 @@ export function homePage() {
       <button data-route="report"><i>报</i><span><small>FLIGHT REPORT</small><b>飞行报备</b><em>材料提交 · 进度跟进</em></span><strong>→</strong></button>
     </section>
     <section class="products-section">
-      <div class="section-title"><span><small>POPULAR PRODUCTS</small><h2>热销商品</h2></span><button data-route="products">更多 →</button></div>
+      <div class="section-title"><span><small>SERVICE ITEMS</small><h2>服务项目</h2></span><button data-route="products">更多 →</button></div>
       <p class="section-tip">按平台销量由高到低展示</p>
       <div class="product-grid">${hoistingProducts.map((product, index) => productCard(product, index)).join("")}</div>
     </section>`, { tab: "home" });
