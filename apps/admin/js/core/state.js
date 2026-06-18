@@ -19,7 +19,6 @@ const menu = [
   { id: "orders", label: "订单管理", icon: "单", children: [
     { id: "orders", label: "订单列表" }
   ]},
-  { id: "training", label: "培训管理", icon: "培" },
   { id: "operator-applications", label: "运营管理", icon: "运", children: [
     { id: "operator-applications", label: "运营商申请" },
     { id: "feedbacks", label: "意见反馈" }
@@ -40,7 +39,6 @@ const navRouteAlias = {
   "role-edit": "roles",
   "product-edit": "products",
   "order-detail": "orders",
-  "training-detail": "training",
   "operator-application-detail": "operator-applications",
   "feedback-detail": "feedbacks",
   "pilot-review": "pilot-applications",

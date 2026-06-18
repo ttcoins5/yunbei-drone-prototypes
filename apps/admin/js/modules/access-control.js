@@ -9,7 +9,6 @@ const permissionCatalog = DroneAdmin.data.permissionCatalog = [
   { id: "categories", group: "商品管理", label: "商品分类管理" },
   { id: "products", group: "商品管理", label: "商品列表" },
   { id: "orders", group: "订单管理", label: "订单列表" },
-  { id: "training", group: "培训管理", label: "培训管理" },
   { id: "operator-applications", group: "运营管理", label: "运营商申请" },
   { id: "feedbacks", group: "运营管理", label: "意见反馈" },
   { id: "pilot-applications", group: "飞手管理", label: "入驻申请" },
