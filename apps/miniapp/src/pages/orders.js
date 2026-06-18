@@ -1,5 +1,5 @@
 import { shell } from "../components/layout.js?v=profile-auto-role-1";
-import { state } from "../state/appState.js?v=order-list-density-1";
+import { state } from "../state/appState.js?v=product-order-fixtures-1";
 
 const orderTabs = ["全部", "待付款", "待接单", "待服务", "待评价", "已取消"];
 
@@ -199,9 +199,5 @@ export function orderDetailPage() {
         </article>`).join("")}
       </div>
     </section>
-    <div class="order-detail-actions">
-      <button data-action="contact-sheet">联系客服</button>
-      <button data-action="toast" data-message="${order.tab === "已取消" ? "该订单已取消" : "再次下单功能原型待补充"}">${order.tab === "已取消" ? "订单已取消" : "再次下单"}</button>
-    </div>
   </div>`, { title: "订单详情", back: true, tab: "orders" });
 }

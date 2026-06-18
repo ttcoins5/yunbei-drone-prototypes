@@ -62,7 +62,7 @@ function caseRows() {
   return state.caseShowcase.items.map((item, index) => [
     `<strong>${index + 1}</strong>`,
     `<div class="case-showcase-cover">${item.images?.[0] ? `<img src="${caseShowcaseEscape(item.images[0])}" alt="${caseShowcaseEscape(item.title)}">` : imageMissingIcon()}</div>`,
-    `<div><strong>${caseShowcaseEscape(item.title)}</strong><small class="muted">${caseShowcaseEscape(item.summary)}</small></div>`,
+    `<div class="case-showcase-title-cell"><strong>${caseShowcaseEscape(item.title)}</strong><small class="muted">${caseShowcaseEscape(item.summary)}</small></div>`,
     `${item.images?.length || 0} 张`,
     `<span class="muted">${item.intro ? "已配置富文本介绍" : "未配置"}</span>`,
     rowActions({ edit: "edit-case-showcase", moveAction: "move-case-showcase", deleteAction: "delete-case-showcase", id: item.id, index, total: state.caseShowcase.items.length })

@@ -175,6 +175,25 @@ button { cursor: pointer; }
 .page-lead { color: var(--muted); font-size: 12px; }
 .list-row { display: grid; width: 100%; min-height: 74px; grid-template-columns: 50px 1fr 18px; align-items: center; gap: 10px; margin-bottom: 9px; padding: 10px; border: 0; border-radius: 13px; color: inherit; background: #fff; text-align: left; }
 .list-row span { display: grid; gap: 5px; }.list-row small { color: var(--muted); font-size: 10px; }.list-row > i { color: #8da0a6; font-style: normal; }
+.service-directory-page { min-height: 760px; padding: 12px 12px 92px; background: #f6f7f8; }
+.service-search { position: sticky; z-index: 2; top: 0; display: grid; grid-template-columns: 22px 1fr; align-items: center; gap: 7px; margin: 0 -12px 12px; padding: 10px 15px 14px; border-radius: 0 0 24px 24px; background: #fff; box-shadow: 0 12px 24px rgba(18,42,55,.06); }
+.service-search i { position: relative; width: 18px; height: 18px; border: 2px solid #aab5ba; border-radius: 50%; }
+.service-search i::after { position: absolute; right: -5px; bottom: -3px; width: 8px; height: 2px; border-radius: 2px; background: #aab5ba; content: ""; transform: rotate(45deg); }
+.service-search input { min-width: 0; height: 40px; border: 0; border-radius: 18px; padding: 0 12px; color: #243941; background: #f3f5f6; font-size: 15px; font-weight: 700; outline: none; }
+.service-search input::placeholder { color: #b9c1c5; }
+.service-category-list { display: grid; gap: 12px; }
+.service-category-card { padding: 18px 14px 16px; border-radius: 18px; background: #fff; box-shadow: 0 10px 24px rgba(18,42,55,.06); }
+.service-category-card h2 { margin: 0 0 16px; color: #151f24; font-size: 18px; line-height: 1.2; }
+.service-entry-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 18px 10px; }
+.service-entry { display: grid; min-width: 0; gap: 7px; justify-items: center; padding: 0; border: 0; color: #30383c; background: transparent; text-align: center; }
+.service-entry b { width: 100%; overflow: hidden; font-size: 12px; line-height: 1.25; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+.service-entry-icon { display: grid; width: 54px; height: 54px; place-items: center; overflow: hidden; border-radius: 17px; background: #eef5f7; box-shadow: 0 8px 18px rgba(50,110,233,.16); }
+.service-entry-icon img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.service-entry-icon.inspection, .service-entry-icon.logistics, .service-entry-icon.hosting { background: linear-gradient(145deg,#4ccaf2,#2b75e8); }
+.service-entry-icon.pilot-training, .service-entry-icon.performance { background: linear-gradient(145deg,#7163f3,#943ef0); }
+.service-entry-icon.takeout, .service-entry-icon.hoisting { background: linear-gradient(145deg,#ffbf3a,#f36f1f); }
+.service-entry-icon.competition { background: linear-gradient(145deg,#fb4d74,#e91c4a); }
+.service-entry-icon.child-training { background: linear-gradient(145deg,#ffc23d,#ff7c20); }
 .filter-row { display: grid; grid-template-columns: repeat(3,1fr); margin-bottom: 10px; border-radius: 8px; background: #fff; }
 .filter-row button { height: 30px; border: 0; color: var(--muted); background: transparent; font-size: 11px; font-weight: 700; }.filter-row .active { color: var(--teal); font-weight: 800; }
 .orders-page { min-height: 760px; padding-bottom: 82px; background: #f0f0f0; }
@@ -246,10 +265,6 @@ button { cursor: pointer; }
 .order-progress-item b { color: #0c2935; font-size: 13px; }
 .order-progress-item small { color: var(--muted); font-size: 9px; }
 .order-progress-item p { margin: 0; color: #536c75; font-size: 11px; line-height: 1.6; }
-.order-detail-actions { position: absolute; z-index: 12; right: 13px; bottom: 76px; left: 13px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px 0 2px; background: linear-gradient(180deg,rgba(238,243,244,0),#eef3f4 18px); }
-.order-detail-actions button { height: 42px; border: 0; border-radius: 12px; font-weight: 800; }
-.order-detail-actions button:first-child { color: #126b79; background: #e6f6f5; }
-.order-detail-actions button:last-child { color: #fff; background: linear-gradient(135deg,var(--blue),var(--teal)); }
 .message-center { min-height: 760px; padding: 13px 13px 92px; background: linear-gradient(180deg,#eef3f4 0,#f6f9fa 100%); }
 .message-list { display: grid; gap: 16px; padding-top: 2px; }
 .message-card { position: relative; display: grid; width: 100%; min-height: 96px; grid-template-columns: 58px minmax(0,1fr) 46px; align-items: center; gap: 14px; padding: 17px 14px; border: 1px solid rgba(220,231,233,.64); border-radius: 18px; color: #17313c; background: rgba(255,255,255,.96); box-shadow: 0 14px 34px rgba(18,42,55,.08); text-align: left; }
@@ -322,7 +337,7 @@ button { cursor: pointer; }
 .review-card h3 { margin: 0 0 5px; color: #142b35; font-size: 14px; }
 .review-card p { margin: 9px 0 7px; color: #405964; font-size: 12px; line-height: 1.7; }
 .review-card time { color: #9aa8ad; font-size: 10px; }
-.product-bottom-bar { position: absolute; right: 0; bottom: 65px; left: 0; display: grid; grid-template-columns: 58px 58px 1fr; gap: 8px; padding: 10px 16px; border-top: 1px solid #edf2f3; background: #fff; }
+.product-bottom-bar { position: absolute; right: 0; bottom: 65px; left: 0; display: grid; grid-template-columns: 1fr; gap: 8px; padding: 10px 16px; border-top: 1px solid #edf2f3; background: #fff; }
 .product-bottom-bar button { height: 42px; border: 1px solid #dce7e9; border-radius: 999px; color: #07152f; background: #fff; font-size: 12px; font-weight: 800; }
 .product-bottom-bar button:last-child { border: 0; color: #fff; background: linear-gradient(135deg,var(--blue),var(--teal)); font-size: 14px; }
 .detail-template-page { padding-bottom: 86px; background: #f7f8fa; }
@@ -361,12 +376,15 @@ button { cursor: pointer; }
 .detail-feature-list article:last-child { padding-bottom: 0; border-bottom: 0; }
 .detail-feature-list b { color: #1d262d; font-size: 15px; }
 .detail-feature-list p { margin-top: 8px; font-size: 13px; }
-.detail-contact-list { display: grid; gap: 16px; }
-.detail-contact-list div { display: grid; grid-template-columns: 38px 1fr auto; gap: 10px; align-items: center; }
+.detail-contact-list { display: grid; gap: 14px; }
+.detail-contact-row { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 10px; align-items: center; }
 .detail-contact-list i { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 50%; color: var(--blue); background: var(--pale); font-style: normal; }
 .detail-contact-list span { display: grid; gap: 4px; min-width: 0; }
+.detail-contact-row.compact span { display: flex; min-width: 0; align-items: baseline; gap: 8px; white-space: nowrap; }
 .detail-contact-list small { color: #a0a8ae; font-size: 11px; }
 .detail-contact-list b { color: #313941; font-size: 14px; line-height: 1.55; }
+.detail-contact-row.compact small { flex: 0 0 auto; font-size: 12px; }
+.detail-contact-row.compact b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .detail-contact-list button { min-width: 58px; height: 32px; border: 0; border-radius: 999px; color: #fff; background: linear-gradient(135deg,var(--blue),var(--teal)); font-size: 12px; font-weight: 800; }
 .detail-info-list { display: grid; gap: 10px; }
 .detail-info-list div { display: grid; grid-template-columns: 72px 1fr; gap: 12px; padding: 12px; border-radius: 12px; background: #f7fafb; }
@@ -550,11 +568,14 @@ button { cursor: pointer; }
 .address-empty b { color: #0c2935; }
 .address-empty p { color: var(--muted); font-size: 11px; line-height: 1.7; }
 .address-floating-action { position: absolute; right: 17px; bottom: 78px; left: 17px; min-height: 46px; border: 0; border-radius: 13px; color: #fff; background: linear-gradient(135deg,var(--blue),var(--teal)); box-shadow: 0 14px 28px rgba(18,94,118,.24); font-weight: 800; }
-.sheet-mask { position: absolute; z-index: 30; inset: 0; display: flex; align-items: flex-end; padding-bottom: 10px; background: rgba(0,0,0,.58); }
-.contact-sheet { width: 100%; overflow: hidden; border-radius: 18px 18px 0 0; background: #252525; box-shadow: 0 -18px 40px rgba(0,0,0,.28); }
-.contact-sheet button { display: block; width: 100%; height: 72px; border: 0; border-bottom: 1px solid rgba(255,255,255,.08); color: #e8e8e8; background: #252525; font-size: 20px; font-weight: 700; }
-.contact-sheet .contact-sheet-cancel { margin-top: 10px; border-bottom: 0; background: #282828; }
 .dialog-mask { position: absolute; z-index: 34; inset: 0; display: grid; place-items: center; padding: 28px; background: rgba(6,29,43,.42); }
+.dialog-backdrop { position: absolute; inset: 0; border: 0; background: transparent; }
+.contact-confirm-dialog { width: 100%; max-width: 320px; overflow: hidden; border-radius: 22px; background: #fff; box-shadow: 0 24px 56px rgba(6,29,43,.24); text-align: center; }
+.contact-confirm-dialog b { display: block; padding: 28px 22px 12px; color: #1b2329; font-size: 20px; font-weight: 800; }
+.contact-confirm-dialog p { margin: 0; padding: 0 22px 24px; color: #5c6770; font-size: 16px; line-height: 1.75; }
+.contact-confirm-actions { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #eceff2; }
+.contact-confirm-actions button { height: 64px; border: 0; color: #3f4a52; background: #fff; font-size: 17px; font-weight: 500; }
+.contact-confirm-actions button + button { border-left: 1px solid #eceff2; color: #1e8cff; font-weight: 700; }
 .pilot-only-dialog { width: 100%; max-width: 286px; padding: 22px 20px 18px; border-radius: 18px; background: #fff; box-shadow: 0 18px 42px rgba(6,29,43,.2); text-align: center; }
 .pilot-only-dialog b { color: #0c2935; font-size: 17px; }
 .pilot-only-dialog p { margin: 10px 0 18px; color: #6e828a; font-size: 12px; line-height: 1.65; }
@@ -651,6 +672,32 @@ button { cursor: pointer; }
 .flight-report-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 2px; border-top: 1px solid rgba(220,233,235,.9); }
 .flight-report-card p { margin: 0; color: #70858d; font-size: 10px; }
 .flight-report-foot button { height: 30px; padding: 0 11px; border: 0; border-radius: 999px; color: #126b79; background: #e6f6f5; font-size: 10px; font-weight: 800; white-space: nowrap; }
+.flight-report-detail-page { min-height: 760px; padding: 13px 13px 92px; background: #eef3f4; }
+.flight-report-detail-hero { padding: 18px; border-radius: 18px; color: #fff; background: linear-gradient(135deg,#0b536a,#18a79c); box-shadow: 0 16px 32px rgba(18,94,118,.16); }
+.flight-report-detail-hero.confirmed { background: linear-gradient(135deg,#405d68,#7d969e); }
+.flight-report-detail-hero small { color: rgba(213,250,247,.9); font-size: 7px; font-weight: 800; letter-spacing: .16em; }
+.flight-report-detail-hero h2 { margin: 7px 0 5px; font-size: 24px; }
+.flight-report-detail-hero p { margin: 0; color: rgba(255,255,255,.86); font-size: 12px; font-weight: 800; }
+.flight-report-detail-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 15px; }
+.flight-report-detail-meta span { display: grid; gap: 4px; padding: 10px; border: 1px solid rgba(255,255,255,.18); border-radius: 12px; background: rgba(255,255,255,.12); }
+.flight-report-detail-meta small { color: rgba(225,252,250,.78); letter-spacing: 0; }
+.flight-report-detail-meta b { color: #fff; font-size: 11px; line-height: 1.45; }
+.flight-report-detail-card { display: grid; gap: 12px; margin-top: 11px; padding: 14px; border-radius: 16px; background: #fff; box-shadow: 0 10px 24px rgba(18,42,55,.06); }
+.flight-report-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.flight-report-detail-grid span { display: grid; gap: 4px; min-width: 0; padding: 11px; border-radius: 12px; background: #f7fbfc; }
+.flight-report-detail-grid small { color: var(--muted); font-size: 9px; font-weight: 800; }
+.flight-report-detail-grid b { color: #17313c; font-size: 12px; line-height: 1.55; overflow-wrap: anywhere; }
+.flight-report-detail-grid span:nth-last-child(1):nth-child(odd), .flight-report-detail-grid span:nth-child(5) { grid-column: 1 / -1; }
+.flight-report-statement { margin: 0; padding: 13px; border-radius: 12px; color: #17313c; background: #f7fbfc; font-size: 12px; font-weight: 800; line-height: 1.7; }
+.flight-report-detail-progress { display: grid; gap: 11px; padding-top: 2px; }
+.flight-report-detail-progress article { display: grid; grid-template-columns: 22px 1fr; gap: 9px; align-items: start; color: #8aa0a7; }
+.flight-report-detail-progress i { display: grid; width: 20px; height: 20px; place-items: center; border: 2px solid #d6e6e8; border-radius: 50%; background: #fff; }
+.flight-report-detail-progress .done i { border-color: #20a49e; background: #20a49e; }
+.flight-report-detail-progress .done i::after { color: #fff; content: "✓"; font-size: 11px; font-style: normal; font-weight: 900; }
+.flight-report-detail-progress span { display: grid; gap: 3px; min-width: 0; padding-bottom: 10px; border-bottom: 1px solid #edf2f3; }
+.flight-report-detail-progress article:last-child span { border-bottom: 0; }
+.flight-report-detail-progress b { color: #17313c; font-size: 12px; }
+.flight-report-detail-progress small { color: var(--muted); font-size: 10px; line-height: 1.5; }
 .task-hall-page { min-height: 760px; padding: 13px 13px 92px; background: linear-gradient(180deg,#e2f5f3 0,#eef3f4 245px); }
 .task-hall-hero { padding: 18px; border-radius: 18px; color: #fff; background: linear-gradient(135deg,#0b536a,#18a79c); box-shadow: 0 16px 32px rgba(18,94,118,.16); }
 .task-hall-hero small { color: #9df0eb; font-size: 7px; font-weight: 800; letter-spacing: .16em; }
@@ -668,6 +715,7 @@ button { cursor: pointer; }
 .pilot-task-head b, .assigned-order-head b { overflow: hidden; color: #0c2935; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
 .pilot-task-head em, .assigned-order-head em { flex: 0 0 auto; padding: 5px 8px; border-radius: 999px; color: #087075; background: #def8f4; font-size: 9px; font-style: normal; font-weight: 800; }
 .pilot-task-card.closed .pilot-task-head em, .assigned-order-card.completed .assigned-order-head em { color: #60747c; background: #eef4f5; }
+.source-tag { width: fit-content; padding: 4px 8px; border-radius: 999px; color: #087075; background: #eefbf9; font-size: 9px; font-weight: 800; }
 .pilot-task-fields { display: grid; grid-template-columns: 1fr; gap: 10px; }
 .pilot-task-fields span, .assigned-order-main span, .pilot-order-table span, .pilot-order-fields span { display: grid; gap: 4px; min-width: 0; }
 .pilot-task-fields b, .assigned-order-main b, .pilot-order-table b, .pilot-order-fields b { color: #17313c; font-size: 12px; line-height: 1.55; overflow-wrap: anywhere; }

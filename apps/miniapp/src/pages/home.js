@@ -1,8 +1,7 @@
-import { categories, homepageNavItems } from "../data/catalog.js?v=external-link-1";
-import { caseStudies } from "../data/caseStudies.js?v=case-showcase-1";
-import { icon } from "../components/icons.js";
+import { categories, homepageNavItems, products } from "../data/catalog.js?v=contact-address-1";
+import { caseStudies } from "../data/caseStudies.js?v=product-line-icons-1";
 import { shell } from "../components/layout.js?v=profile-auto-role-1";
-import { state } from "../state/appState.js?v=order-list-density-1";
+import { state } from "../state/appState.js?v=contact-address-1";
 
 function stripHtml(html = "") {
   return String(html).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
@@ -55,7 +54,7 @@ export function homePage() {
     <section class="task-entry-panel">
       <button data-route="tasks">
         <span class="task-entry-icon"><i></i><i></i><i></i></span>
-        <span class="task-entry-copy"><small>TASK HALL</small><b>任务大厅</b><em>任务征集 · 分配订单 · 飞手报名</em></span>
+        <span class="task-entry-copy"><small>TASK HALL</small><b>任务大厅</b><em>任务征集 · 我的服务 · 飞手报名</em></span>
         <span class="task-entry-meta"><strong>3</strong><small>进行中</small></span>
       </button>
     </section>
@@ -67,7 +66,35 @@ export function homePage() {
 }
 
 export function categoriesPage() {
-  return shell(`<div class="list-page"><p class="page-lead">选择需要的商品或行业服务</p>${categories.filter(item => item.route !== "categories").map(item => `<button class="list-row" data-route="${item.route}">${icon(item)}<span><b>${item.name}</b><small>${item.desc || "查看相关服务与办理说明"}</small></span><i>›</i></button>`).join("")}</div>`, { title: "全部分类", back: true });
+  const groups = categories
+    .filter(item => item.route !== "categories")
+    .map(item => ({
+      id: item.name,
+      name: item.name,
+      desc: item.desc,
+      products: products
+        .map((product, index) => ({ product, index }))
+        .filter(({ product }) => product.category === item.name)
+    }))
+    .filter(group => group.products.length);
+
+  return shell(`<div class="service-directory-page">
+    <section class="service-search">
+      <i></i>
+      <input placeholder="搜索服务" aria-label="搜索服务">
+    </section>
+    <div class="service-category-list">
+      ${groups.map(group => `<section class="service-category-card">
+        <h2>${group.name}</h2>
+        <div class="service-entry-grid">
+          ${group.products.map(({ product, index }) => `<button class="service-entry" data-action="product" data-index="${index}" data-product-id="${product.id}">
+            <span class="service-entry-icon ${product.id}"><img src="${product.image}" alt="${product.name}"></span>
+            <b>${product.name.replace(/服务$/, "")}</b>
+          </button>`).join("")}
+        </div>
+      </section>`).join("")}
+    </div>
+  </div>`, { title: "全部服务", back: true, tab: "products" });
 }
 
 export function casesPage() {

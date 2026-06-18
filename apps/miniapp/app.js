@@ -1,9 +1,9 @@
-import { hoistingProducts } from "./src/data/catalog.js?v=external-link-1";
-import { caseStudies } from "./src/data/caseStudies.js?v=case-showcase-1";
-import { state } from "./src/state/appState.js?v=order-list-density-1";
-import { navigate, render } from "./src/router/navigation.js?v=invoice-email-removed-1";
+import { hoistingProducts } from "./src/data/catalog.js?v=contact-address-1";
+import { caseStudies } from "./src/data/caseStudies.js?v=product-line-icons-1";
+import { state } from "./src/state/appState.js?v=contact-address-1";
+import { navigate, render } from "./src/router/navigation.js?v=product-line-icons-1";
 import { toast } from "./src/utils/toast.js";
-import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=all-products-2";
+import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=product-line-icons-1";
 
 function formatDateTime(date = new Date()) {
   const year = date.getFullYear();
@@ -43,7 +43,7 @@ function resolveHomepageNavLink(link, jumpType) {
     "/pages/services/performance/index": "performance",
     "/pages/services/hosting/index": "hosting",
     "/pages/services/takeout/index": "takeout",
-    "/pages/services/rental/index": "hosting",
+    "/pages/services/rental/index": "rental",
     "/pages/training/competition/index": "competition",
     "/pages/training/children/index": "child-training",
     "/pages/training/index": "pilot-training",
@@ -209,6 +209,13 @@ function filterOrders(filter) {
 function filterReports(filter) {
   state.reportFilter = filter;
   render(true);
+}
+
+function openFlightReport(reportNo) {
+  const report = state.flightReports.find(item => item.reportNo === reportNo);
+  if (!report) return toast("未找到报备记录");
+  state.selectedFlightReportNo = report.reportNo;
+  navigate("reportDetail");
 }
 
 function filterProductReviews(filter) {
@@ -465,6 +472,7 @@ document.addEventListener("click", (event) => {
   if (action.dataset.action === "case-open") return openCase(action.dataset.id);
   if (action.dataset.action === "order-filter") return filterOrders(action.dataset.filter);
   if (action.dataset.action === "report-filter") return filterReports(action.dataset.filter);
+  if (action.dataset.action === "flight-report-open") return openFlightReport(action.dataset.id);
   if (action.dataset.action === "review-filter") return filterProductReviews(action.dataset.filter);
   if (action.dataset.action === "task-hall-tab") return setTaskHallTab(action.dataset.tab);
   if (action.dataset.action === "pilot-task-join") return joinPilotTask(action.dataset.id);
@@ -490,7 +498,8 @@ document.addEventListener("click", (event) => {
   if (action.dataset.action === "notification-open") return openNotification(action.dataset.id);
   if (action.dataset.action === "order-open") return openOrder(action.dataset.id);
   if (action.dataset.action === "product") {
-    state.selectedProduct = currentProducts()[Number(action.dataset.index)];
+    const list = currentProducts();
+    state.selectedProduct = list.find(item => item.id === action.dataset.productId) || list[Number(action.dataset.index)];
     state.selectedSpecIndex = 0;
     state.productReviewFilter = "全部";
     navigate("product");

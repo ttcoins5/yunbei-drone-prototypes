@@ -1,5 +1,5 @@
 import { shell } from "../components/layout.js?v=profile-auto-role-1";
-import { state } from "../state/appState.js?v=order-list-density-1";
+import { state } from "../state/appState.js?v=product-order-fixtures-1";
 
 const defaultAboutConfig = {
   name: "四川奉飞飞无人机科技有限公司",
@@ -81,16 +81,16 @@ export function contactWechatPage() {
 }
 
 export function tasksPage() {
-  const isTaskTab = state.taskHallTab === "任务信息";
+  const isTaskTab = state.taskHallTab === "任务征集";
 
   return shell(`<div class="task-hall-page">
     <section class="task-hall-hero">
       <small>PILOT TASK CENTER</small>
       <h2>任务大厅</h2>
-      <p>查看后台发布的任务征集，也可以处理平台已分配给你的订单。</p>
+      <p>仅展示后台自建的飞手征集任务；用户订单被平台指派后，会进入我的服务统一查看。</p>
     </section>
     <div class="task-hall-tabs">
-      ${["任务信息", "分配订单"].map(tab => `<button class="${state.taskHallTab === tab ? "active" : ""}" data-action="task-hall-tab" data-tab="${tab}">${tab}</button>`).join("")}
+      ${["任务征集", "我的服务"].map(tab => `<button class="${state.taskHallTab === tab ? "active" : ""}" data-action="task-hall-tab" data-tab="${tab}">${tab}</button>`).join("")}
     </div>
     ${isTaskTab ? pilotTaskList() : assignedPilotOrderList()}
   </div>`, { title: "任务大厅", back: true, tab: "profile" });
@@ -113,7 +113,6 @@ function pilotTaskList() {
           <span><small>服务时间</small><b>${task.serviceTime}</b></span>
           <span><small>地址</small><b>${task.address}</b></span>
           <span><small>备注</small><b>${task.remark}</b></span>
-          <span class="wide"><small>附文本说明</small><b>${task.description}</b></span>
         </div>
         <footer>
           <small>${task.intentionCount + (task.joined ? 1 : 0)} 人已提交意愿</small>
@@ -126,19 +125,21 @@ function pilotTaskList() {
 
 function assignedPilotOrderList() {
   return `<section class="assigned-order-list">
-    ${state.assignedPilotOrders.map(order => `<button class="assigned-order-card ${order.status === "已完成" ? "completed" : ""}" data-action="pilot-order-open" data-id="${order.orderNo}">
+    ${state.assignedPilotOrders.map(order => {
+      return `<button class="assigned-order-card ${order.status === "已完成" ? "completed" : ""}" data-action="pilot-order-open" data-id="${order.orderNo}">
       <div class="assigned-order-head">
         <span><small>订单号</small><b>${order.orderNo}</b></span>
         <em>${order.status}</em>
       </div>
       <div class="assigned-order-main">
-        <span><small>商品/服务</small><b>${order.productName}</b></span>
-        <span><small>用户</small><b>${order.user}</b></span>
+        <span><small>${order.sourceType === "backendTask" ? "任务标题" : "商品/服务"}</small><b>${order.productName}</b></span>
+        <span><small>${order.sourceType === "backendTask" ? "任务联系人" : "下单用户"}</small><b>${order.user}</b></span>
         <span><small>服务时间</small><b>${order.bookingDate} ${order.bookingTime}</b></span>
-        <span><small>订单金额</small><b>¥${order.amount.toLocaleString()}</b></span>
+        <span><small>指派时间</small><b>${order.assignedTime}</b></span>
       </div>
       <p>${order.bookingAddress}</p>
-    </button>`).join("")}
+    </button>`;
+    }).join("")}
   </section>`;
 }
 
@@ -147,10 +148,11 @@ function selectedAssignedOrder() {
 }
 
 function pilotOrderInfoGrid(order) {
+  const sourceLabel = order.sourceType === "backendTask" ? "后台自建任务" : "用户下单订单";
   const fields = [
     ["订单号", order.orderNo],
-    ["用户", order.user],
-    ["分类", order.category],
+    ["来源", sourceLabel],
+    [order.sourceType === "backendTask" ? "任务联系人" : "下单用户", order.user],
     ["商品", order.productName]
   ];
 
@@ -177,7 +179,7 @@ function pilotRequirementFields(order) {
 export function pilotOrderDetailPage() {
   const order = selectedAssignedOrder();
   if (!order) {
-    return shell(`<div class="pilot-order-detail-page"><div class="order-empty"><b>暂无分配订单</b><p>请先从任务大厅选择订单。</p></div></div>`, { title: "分配订单详情", back: true, tab: "profile" });
+    return shell(`<div class="pilot-order-detail-page"><div class="order-empty"><b>暂无服务订单</b><p>请先从我的服务中选择一笔订单。</p></div></div>`, { title: "服务详情", back: true, tab: "profile" });
   }
 
   const completed = order.status === "已完成";
@@ -193,11 +195,11 @@ export function pilotOrderDetailPage() {
       </div>
     </section>
     <section class="pilot-order-card">
-      <div class="pilot-order-title"><b>订单信息</b><small>后台分配订单</small></div>
+      <div class="pilot-order-title"><b>订单信息</b><small>${order.sourceType === "backendTask" ? "后台任务转指派" : "用户订单转指派"}</small></div>
       ${pilotOrderInfoGrid(order)}
     </section>
     <section class="pilot-order-card">
-      <div class="pilot-order-title"><b>需求信息</b><small>${order.requirementSnapshot?.templateName || "按下单快照展示"}</small></div>
+      <div class="pilot-order-title"><b>${order.sourceType === "backendTask" ? "后台任务信息" : "用户需求信息"}</b><small>${order.requirementSnapshot?.templateName || "按来源字段展示"}</small></div>
       ${pilotRequirementFields(order)}
     </section>
     <section class="pilot-order-card">
@@ -217,7 +219,7 @@ export function pilotOrderDetailPage() {
       <button data-action="contact-sheet">联系客服</button>
       <button data-action="pilot-order-complete" data-id="${order.orderNo}" ${completed ? "disabled" : ""}>${completed ? "已完成" : "完成订单"}</button>
     </div>
-  </div>`, { title: "分配订单详情", back: true, tab: "profile" });
+  </div>`, { title: "服务详情", back: true, tab: "profile" });
 }
 
 export function aboutPage() {

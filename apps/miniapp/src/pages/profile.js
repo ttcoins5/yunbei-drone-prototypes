@@ -1,7 +1,7 @@
-import { orderStatuses, serviceModules } from "../data/catalog.js?v=detail-page-icon-1";
+import { orderStatuses, serviceModules } from "../data/catalog.js?v=contact-address-1";
 import { orderIcon, serviceIcon } from "../components/icons.js";
 import { shell } from "../components/layout.js?v=profile-auto-role-1";
-import { state } from "../state/appState.js?v=order-list-density-1";
+import { state } from "../state/appState.js?v=contact-address-1";
 
 function isPilot() {
   return state.userProfile.role === "pilot";
@@ -62,7 +62,7 @@ export function profileDetailPage() {
         <span><b>${userRoleLabel()}</b><small>通过手机号授权自动识别</small></span>
         <em>${isPilot() ? "飞手权限已开通" : "未开通飞手权限"}</em>
       </div>
-      <p class="profile-detail-tip">${isPilot() ? "飞手可进入任务大厅和飞行报备，并处理平台分配订单。" : "普通用户可正常下单、开票和联系客服；任务大厅和飞行报备需飞手申请通过后使用。"}</p>
+      <p class="profile-detail-tip">${isPilot() ? "飞手可进入任务大厅查看征集任务，并在我的服务处理已指派订单。" : "普通用户可正常下单、开票和联系客服；任务大厅和飞行报备需飞手申请通过后使用。"}</p>
     </section>
     <section class="profile-detail-card">
       <div class="profile-card-title"><h3>个人资料</h3><button data-action="wechat-profile-auth">微信授权更新</button></div>

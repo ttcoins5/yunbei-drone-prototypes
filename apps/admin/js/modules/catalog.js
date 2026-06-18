@@ -23,7 +23,11 @@ function catalogEscape(value) {
 }
 
 function productIcon(name) {
-  return `../../shared/assets/product-icons/${name}`;
+  return `../../shared/assets/product-icons/${name}?v=product-line-icons-1`;
+}
+
+function displayAssetName(name = "") {
+  return String(name || "").split("?")[0] || "商品图标";
 }
 
 function detailSection(id, type, title, extra = {}) {
@@ -34,7 +38,7 @@ function detailContactSection(sort = 99) {
   return detailSection("contact", "contact", "联系方式", {
     phone: "0577-55558188",
     backupPhone: "0577-88360168",
-    address: "浙江省温州市鹿城区七都街道青鹿空间204室",
+    address: "浙江省宁波市鄞州区低空经济产业园",
     sort
   });
 }
@@ -69,6 +73,12 @@ const serviceDetailDefaults = {
     intro: "为企业和个人无人机提供托管、检测、保养、维修协调和飞行资产管理服务。",
     items: ["设备托管", "定期检测", "维护保养", "资产管理"],
     advantages: ["标准化仓储管理", "定期健康检查", "维修保养协同", "设备档案清晰"]
+  },
+  p6: {
+    subtitle: "灵活租赁 · 设备保障 · 按需使用",
+    intro: "提供多型号无人机短租、长租和项目制租赁服务，适用于临时作业、培训演示、活动保障等场景。",
+    items: ["短期租赁", "项目租赁", "设备交付", "基础保障"],
+    advantages: ["租期灵活匹配", "设备状态可追溯", "交付前检测", "支持押金与档期确认"]
   }
 };
 
@@ -114,7 +124,7 @@ function eventDetailPage(name) {
     hero: { title: name, subtitle: "赛事报名 · 规则透明 · 专业组织", icon: "competition" },
     sections: [
       detailSection("intro", "intro", "赛事介绍", { content: "面向无人机爱好者、院校和行业团队提供赛事报名、组别登记和活动组织服务。", sort: 1 }),
-      detailSection("eventInfo", "eventInfo", "赛事信息", { date: "2026年暑期档", address: "温州低空经济示范区", groups: ["成人组", "青少年组", "团体组"], deadline: "赛前7日截止报名", sort: 2 }),
+      detailSection("eventInfo", "eventInfo", "赛事信息", { date: "2026年暑期档", address: "宁波低空经济示范区", groups: ["成人组", "青少年组", "团体组"], deadline: "赛前7日截止报名", sort: 2 }),
       detailSection("fees", "fee", "报名费用", { items: [{ name: "个人报名", price: "线下确认" }, { name: "团体报名", price: "线下确认" }], sort: 3 }),
       detailContactSection(4)
     ],
@@ -162,7 +172,6 @@ function productItem(id, name, category, fields, desc, price = "0", needPilot = 
     requirementFields: fields,
     specs: [{ name: "信息提交", price }],
     images: icon ? [{ id: `${id}-icon`, name: iconName, url: icon }] : [],
-    intro: `<p>${desc}</p>`,
     detailPage: detailPageFor(id, name),
     displayedReviewIds: []
   };
@@ -170,7 +179,8 @@ function productItem(id, name, category, fields, desc, price = "0", needPilot = 
 
 state.categories = [
   { id: "c1", name: "无人机服务", description: "巡检、物流、吊运、表演、托管等无人机服务", productCount: 5, sort: 1, enabled: true },
-  { id: "c3", name: "培训教育", description: "无人机赛事、飞手培训、少儿培训信息填写", productCount: 3, sort: 2, enabled: true }
+  { id: "c3", name: "培训教育与赛事举办", description: "无人机赛事、飞手培训、少儿培训信息填写", productCount: 3, sort: 2, enabled: true },
+  { id: "c4", name: "增值服务", description: "无人机租赁等增值业务", productCount: 1, sort: 3, enabled: true }
 ];
 
 state.products = [
@@ -229,7 +239,17 @@ state.products = [
     reqField("remark", "需求说明"),
     reqField("exampleImage", "例图", "image")
   ]), "填写托管机型、数量和时长，平台提供设备托管与运维管理服务。", "0", false, productIcon("icon-hosting.png")),
-  productItem("p7", "无人机赛事", "培训教育", productFields([
+  productItem("p6", "无人机租赁", "增值服务", productFields([
+    reqField("contactName", "登记联系人", "text", true),
+    reqField("contactPhone", "联系电话", "text", true),
+    reqField("droneModel", "租赁机型", "select", true, { options: ["多旋翼航拍机", "行业巡检机", "物流运输机", "待平台推荐"] }),
+    reqField("rentalPeriod", "租赁周期", "select", true, { options: ["1-3 天", "1 周", "1 个月", "项目制租赁"] }),
+    reqField("useScene", "使用场景", "text", true),
+    reqField("startDate", "期望开始日期", "text", true),
+    reqField("remark", "需求说明"),
+    reqField("exampleImage", "例图", "image")
+  ]), "填写租赁机型、租赁周期和使用场景，平台确认设备档期、押金和交付方式。", "0", false, productIcon("icon-rental.png")),
+  productItem("p7", "无人机赛事", "培训教育与赛事举办", productFields([
     reqField("registerType", "注册类型", "select", true, { options: ["个人", "单位", "学校", "机构"] }),
     reqField("organization", "单位名称", "text", true),
     reqField("name", "姓名", "text", true),
@@ -240,7 +260,7 @@ state.products = [
     reqField("email", "电子邮箱"),
     reqField("remark", "备注")
   ]), "填写赛事报名信息，适用于无人机赛事报名和资料登记。", "0", false, productIcon("icon-competition.png")),
-  productItem("p8", "飞手培训", "培训教育", productFields([
+  productItem("p8", "飞手培训", "培训教育与赛事举办", productFields([
     reqField("name", "姓名", "text", true),
     reqField("phone", "联系电话", "text", true),
     reqField("gender", "性别", "select", true, { options: ["男", "女"] }),
@@ -252,7 +272,7 @@ state.products = [
     reqField("remark", "需求说明"),
     reqField("exampleImage", "例图", "image")
   ]), "填写飞手培训报名信息，平台根据考试机型和基础情况安排培训。", "0", false, productIcon("icon-pilot-training.png")),
-  productItem("p9", "少儿培训", "培训教育", productFields([
+  productItem("p9", "少儿培训", "培训教育与赛事举办", productFields([
     reqField("name", "姓名", "text", true),
     reqField("gender", "性别", "select", true, { options: ["男", "女"] }),
     reqField("age", "年龄", "text", true),
@@ -447,7 +467,6 @@ function createEmptyProduct() {
     requirementFields: defaultRequirementFields(),
     specs: [{ name: "标准服务", price: "0" }],
     images: [],
-    intro: "<p></p>",
     detailPage: detailPageFor("p3", "未命名商品"),
     displayedReviewIds: []
   });
@@ -500,34 +519,44 @@ function productThumb(product) {
   return thumb(Boolean(first), { title: first ? first.name : "暂无图标" });
 }
 
-function initProductEditor() {
-  const product = activeProduct();
-  initRichEditor({
-    html: product.intro || "<p></p>",
-    placeholder: "请输入商品介绍...",
-    onChange(ed) {
-      product.intro = ed.getHtml();
-    }
-  });
-}
-
 function productImagesPanel(product) {
   const icon = product.images?.[0];
   const preview = icon?.url
     ? `<img src="${catalogEscape(icon.url)}" alt="${catalogEscape(icon.name || product.name)}">`
     : "图";
-  const row = icon ? `<div class="media-row media-row--icon">
-    <div class="media-preview">${preview}</div>
-    <div class="media-meta"><strong>${catalogEscape(icon.name)}</strong><span class="muted">用于商品列表与小程序商品卡片展示</span></div>
-    <div class="row-actions">
+  const iconName = displayAssetName(icon?.name || icon?.url?.split("/").pop());
+  const row = icon ? `<div class="product-icon-card">
+    <div class="product-icon-preview">${preview}</div>
+    <div class="product-icon-copy">
+      <div class="product-icon-title">
+        <strong title="${catalogEscape(iconName)}">${catalogEscape(iconName)}</strong>
+        <span class="tag blue">单张图标</span>
+      </div>
+      <p>用于后台商品列表、小程序商品卡片与商品详情页头图。</p>
+      <div class="product-icon-tags">
+        <span>列表封面</span>
+        <span>商品卡片</span>
+        <span>详情头图</span>
+      </div>
+    </div>
+    <div class="row-actions product-icon-actions">
       ${button("替换图标", "add-product-image", "small")}
       ${button("删除", "delete-product-image", "small danger", `data-id="${icon.id}"`)}
     </div>
   </div>` : "";
-  return panel("图标管理", `<div class="toolbar" style="margin-bottom:14px">
-    ${button(icon ? "替换图标" : "上传图标","add-product-image","primary")}
-    <span class="muted">单张图标 · 用于列表封面、小程序商品卡片与商品详情页头图</span>
-  </div><div class="media-list">${row || `<p class="empty">暂无图标，请上传</p>`}</div>`);
+  return panel("图标管理", `<div class="product-icon-panel">
+    <div class="product-icon-head">
+      <div>
+        <strong>商品图标</strong>
+        <span>上传 1 张图标，系统同步用于后台商品列表、小程序商品卡片和商品详情页头图。</span>
+      </div>
+      ${button(icon ? "替换图标" : "上传图标","add-product-image","primary")}
+    </div>
+    ${row || `<div class="product-icon-empty">
+      <span>暂无图标</span>
+      <p>上传后会同步展示在商品列表、小程序商品卡片和商品详情页头部。</p>
+    </div>`}
+  </div>`);
 }
 
 function productDraftKey(product) {
@@ -669,7 +698,6 @@ function productsPage() {
     item.code,
     item.name,
     item.category,
-    item.specs.length,
     formatProductAttrs(item),
     tag(item.status),
     productActions(item)
@@ -678,7 +706,7 @@ function productsPage() {
     <input placeholder="商品名称 / 编号"><select><option>全部分类</option>${state.categories.map(item => `<option>${item.name}</option>`).join("")}</select>
     <select><option>全部状态</option><option>已上架</option><option>已下架</option></select>${button("查询","filter","primary")}
     <span class="spacer"></span>${button("创建商品","create-product","primary")}
-  </div>${paginatedTable("products", ["商品图","商品编号","商品名称","分类","规格数","业务属性","状态","操作"], rows, "products-table")}`);
+  </div>${paginatedTable("products", ["商品图","商品编号","商品名称","分类","业务属性","状态","操作"], rows, "products-table")}`);
 }
 
 function propertyRow(label, key, product) {
@@ -700,7 +728,6 @@ function productEditPage() {
     { label: "上架状态", html: `<select data-field="product-status"><option${product.status === "已上架" ? " selected" : ""}>已上架</option><option${product.status === "已下架" ? " selected" : ""}>已下架</option></select>` }
   ]), `${routeButton("返回商品列表","products","")}${button("保存商品","save-product","primary")}`)
   + productImagesPanel(product)
-  + panel("商品介绍", richEditorContainer())
   + productReviewsPanel(product)
   + panel("多规格配置", `${table(["规格名称","价格（元）","操作"], specs)}<div style="margin-top:12px">${button("添加规格","add-spec")}</div>`)
   + requirementFieldsPanel(product)
@@ -873,10 +900,6 @@ DroneAdmin.registerModule({
         "所属商品分类"
       ],
       [
-        "规格数",
-        "该商品配置的规格数量"
-      ],
-      [
         "业务属性",
         "在线支付 / 飞手需求等，与商品绑定"
       ],
@@ -891,10 +914,9 @@ DroneAdmin.registerModule({
     ]
   },
   "product-edit": {
-    "summary": "创建或编辑商品，配置单张商品图标、富文本介绍、评价展示、规格价格、业务属性及需求采集字段。",
+    "summary": "创建或编辑商品，配置单张商品图标、评价展示、规格价格、业务属性及需求采集字段。",
     "operations": [
       "上传 / 替换 / 删除商品图标，用于列表封面、小程序商品卡片与商品详情页头图",
-      "商品介绍使用 Element Admin 常用的 WangEditor 富文本组件编辑",
       "评价管理：分页浏览订单评价列表，多选后随「保存商品」一并生效；默认全不展示",
       "添加 / 删除规格，每个规格独立定价",
       "业务属性通过勾选配置：在线支付、飞手服务；下单字段统一由需求采集字段配置",
@@ -912,10 +934,6 @@ DroneAdmin.registerModule({
       [
         "商品图标",
         "单张图片，用于列表封面、小程序商品卡片与商品详情页头图"
-      ],
-      [
-        "商品介绍",
-        "WangEditor 富文本详情，小程序详情页展示"
       ],
       [
         "评价管理",
@@ -1063,7 +1081,6 @@ DroneAdmin.registerModule({
     },
     "save-product": function (target) {
       const product = readProductFormFromPage();
-          if (state.richEditor) product.intro = state.richEditor.getHtml();
           if (!product.name.trim()) {
             toast("请填写商品名称");
             return;
@@ -1145,9 +1162,6 @@ DroneAdmin.registerModule({
           render();
           return;
     }
-  },
-  afterRender: {
-    "product-edit": initProductEditor
   },
   beforeNavigate: function (target) {
     if (target.dataset.route === "product-edit") {

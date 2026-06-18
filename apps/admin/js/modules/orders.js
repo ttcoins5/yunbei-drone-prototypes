@@ -1,112 +1,50 @@
-state.viewingOrderId = "YB26061318";
+state.viewingOrderId = "YB26061701";
+
+function orderField(label, type, value, extra = {}) {
+  return { label, type, value, ...extra };
+}
+
+function orderSnapshot(productName, fields) {
+  return {
+    templateName: `${productName}需求字段`,
+    fields
+  };
+}
 
 const orderRecords = DroneAdmin.data.orderRecords = [
   {
-    "id": "YB26061326",
-    "user": "林先生",
-    "service": "高空清洗服务",
-    "amount": "¥1,599",
+    "id": "YB26061701",
+    "user": "云航科技",
+    "service": "无人机巡检服务",
+    "amount": "线下报价",
     "needPilot": true,
     "status": "待派单",
-    "onlinePay": true,
+    "onlinePay": false,
     "assignedPilots": [],
     "appointment": {
-      "date": "2026-06-14",
+      "date": "2026-06-19",
       "slot": "09:00-11:00",
-      "phone": "139****5528",
-      "address": "成都市武侯区某园区 3 号楼",
-      "remark": "重点清洗北侧玻璃幕墙，现场有停车位。",
+      "phone": "189****3016",
+      "address": "成都市天府新区科创园",
+      "remark": "巡检屋面设备、排水沟和西侧幕墙，完成后需提交 PDF 报告。",
       "remarkPhoto": {
-        "name": "北侧外立面.jpg"
+        "name": "巡检范围示意.jpg"
       }
     },
-    "requirementSnapshot": {
-      "templateName": "吊运服务模板",
-      "fields": [
-        { "label": "登记联系人", "type": "text", "value": "林先生" },
-        { "label": "联系电话", "type": "text", "value": "139****5528" },
-        { "label": "吊运物品", "type": "text", "value": "外立面清洗设备" },
-        { "label": "物品重量", "type": "number", "value": "28", "unit": "kg" },
-        { "label": "作业地点", "type": "address", "value": "成都市武侯区某园区 3 号楼" },
-        { "label": "吊运高度", "type": "number", "value": "42", "unit": "m" },
-        { "label": "需求说明", "type": "textarea", "value": "重点清洗北侧玻璃幕墙，现场有停车位。" },
-        { "label": "现场照片", "type": "image", "value": "北侧外立面.jpg" }
-      ]
-    }
+    "requirementSnapshot": orderSnapshot("无人机巡检服务", [
+      orderField("登记联系人", "text", "云航科技"),
+      orderField("联系电话", "text", "189****3016"),
+      orderField("服务类型", "select", "园区巡检"),
+      orderField("巡检区域", "text", "成都市天府新区科创园"),
+      orderField("巡检时间", "text", "2026-06-19 09:00-11:00"),
+      orderField("需求说明", "text", "巡检屋面设备、排水沟和西侧幕墙，完成后需提交 PDF 报告。"),
+      orderField("例图", "image", "巡检范围示意.jpg")
+    ])
   },
   {
-    "id": "YB26061318",
-    "user": "华景物业",
-    "service": "园区航拍测绘",
-    "amount": "¥3,600",
-    "needPilot": true,
-    "status": "待派单",
-    "onlinePay": true,
-    "assignedPilots": [],
-    "appointment": {
-      "date": "2026-06-15",
-      "slot": "14:00-16:00",
-      "phone": "138****6626",
-      "address": "成都市高新区天府软件园",
-      "remark": "需避开午间员工休息时间，从东门进入。",
-      "remarkPhoto": {
-        "name": "东门入口.jpg"
-      }
-    },
-    "requirementSnapshot": {
-      "templateName": "巡检服务模板",
-      "fields": [
-        { "label": "登记联系人", "type": "text", "value": "华景物业" },
-        { "label": "联系电话", "type": "text", "value": "138****6626" },
-        { "label": "服务类型", "type": "select", "value": "园区巡检" },
-        { "label": "巡检区域", "type": "address", "value": "成都市高新区天府软件园" },
-        { "label": "巡检时间", "type": "timeSlot", "value": "2026-06-15 14:00-16:00" },
-        { "label": "需求说明", "type": "textarea", "value": "需避开午间员工休息时间，从东门进入。" },
-        { "label": "例图/附件", "type": "image", "value": "东门入口.jpg" }
-      ]
-    }
-  },
-  {
-    "id": "YB26061309",
-    "user": "赵女士",
-    "service": "无人机保养检测",
-    "amount": "¥899",
-    "needPilot": false,
-    "status": "待交付",
-    "onlinePay": true,
-    "assignedPilots": [],
-    "appointment": {
-      "date": "2026-06-16",
-      "slot": "10:00-11:30",
-      "phone": "136****1175",
-      "address": "成都市双流区某维修点",
-      "remark": "",
-      "remarkPhoto": null
-    }
-  },
-  {
-    "id": "YB26061402",
-    "user": "李先生",
-    "service": "园区航拍测绘",
-    "amount": "¥2,800",
-    "priceChangeLogs": [],
-    "needPilot": true,
-    "status": "待付款",
-    "onlinePay": true,
-    "assignedPilots": [],
-    "appointment": {
-      "date": "2026-06-17",
-      "slot": "09:00-11:00",
-      "phone": "137****5520",
-      "address": "成都市武侯区某园区",
-      "remark": "需航拍正射影像。",
-      "remarkPhoto": null
-    }
-  },
-  {
-    "id": "YB26061401",
-    "user": "成都建工",
-    "service": "高空清洗服务",
+    "id": "YB26061702",
+    "user": "华景医院",
+    "service": "无人机物流服务",
     "amount": "线下报价",
     "needPilot": true,
     "status": "待派单",
@@ -114,69 +52,219 @@ const orderRecords = DroneAdmin.data.orderRecords = [
     "assignedPilots": [],
     "appointment": {
       "date": "2026-06-18",
-      "slot": "14:00-16:00",
-      "phone": "028-55****90",
-      "address": "成都市天府新区某工地",
-      "remark": "需提前联系现场负责人。",
+      "slot": "15:00-17:00",
+      "phone": "138****6626",
+      "address": "成都市高新区华景医院",
+      "remark": "医疗样本需冷链运输，期望 2 小时内送达。",
       "remarkPhoto": {
-        "name": "工地入口.jpg"
+        "name": "冷链箱照片.jpg"
       }
-    }
+    },
+    "requirementSnapshot": orderSnapshot("无人机物流服务", [
+      orderField("登记联系人", "text", "华景医院"),
+      orderField("联系电话", "text", "138****6626"),
+      orderField("客户类型", "select", "医院/园区"),
+      orderField("货物类型", "text", "医疗样本"),
+      orderField("货物重量", "text", "8kg"),
+      orderField("货物体积", "text", "40cm x 30cm x 30cm"),
+      orderField("起运点", "text", "华景医院检验科"),
+      orderField("详细地址", "text", "成都市高新区华景医院 2 号楼"),
+      orderField("目的地", "text", "天府软件园医学中心"),
+      orderField("详细地址", "text", "成都市高新区天府软件园 C 区"),
+      orderField("运输时效", "select", "加急"),
+      orderField("期望运输时间", "text", "2026-06-18 15:00"),
+      orderField("货物照片", "image", "冷链箱照片.jpg"),
+      orderField("备注说明", "text", "医疗样本需冷链运输，期望 2 小时内送达。"),
+      orderField("例图", "image", "起降点示意.jpg")
+    ])
   },
   {
-    "id": "YB26060803",
-    "user": "唐先生",
-    "service": "空域代办服务",
+    "id": "YB26061703",
+    "user": "成都建工",
+    "service": "无人机吊运服务",
     "amount": "线下报价",
-    "needPilot": false,
-    "status": "已完成",
-    "onlinePay": false,
-    "assignedPilots": []
-  },
-  {
-    "id": "YB26060711",
-    "user": "云航科技",
-    "service": "园区巡检服务",
-    "amount": "¥6,400",
     "needPilot": true,
-    "status": "待评价",
-    "onlinePay": true,
+    "status": "待服务",
+    "onlinePay": false,
     "assignedPilots": [
       {
         "name": "王伟",
         "area": "成都双流",
         "device": "M350 RTK",
-        "status": "已完成"
+        "status": "待服务"
       }
     ],
     "appointment": {
-      "date": "2026-06-07",
-      "slot": "11:00-13:00",
-      "phone": "189****3016",
-      "address": "成都市天府新区科创园",
-      "remark": "巡检完成后需提交 PDF 报告。",
+      "date": "2026-06-18",
+      "slot": "14:00-16:00",
+      "phone": "028-55****90",
+      "address": "成都市天府新区某工地",
+      "remark": "空调外机需吊运至 18 层平台，现场有安全员对接。",
       "remarkPhoto": {
-        "name": "巡检范围.jpg"
+        "name": "工地入口.jpg"
       }
-    }
+    },
+    "requirementSnapshot": orderSnapshot("无人机吊运服务", [
+      orderField("登记联系人", "text", "成都建工"),
+      orderField("联系电话", "text", "028-55****90"),
+      orderField("吊运物品", "text", "空调外机"),
+      orderField("物品重量（kg）", "text", "35"),
+      orderField("作业地点", "text", "成都市天府新区某工地"),
+      orderField("吊运高度（m）", "text", "54"),
+      orderField("需求说明", "text", "空调外机需吊运至 18 层平台，现场有安全员对接。"),
+      orderField("例图", "image", "工地入口.jpg")
+    ])
   },
   {
-    "id": "YB26060605",
-    "user": "张女士",
-    "service": "高空清洗服务",
-    "amount": "¥899",
+    "id": "YB26061704",
+    "user": "文旅集团",
+    "service": "无人机表演服务",
+    "amount": "线下报价",
     "needPilot": true,
-    "status": "已完成",
-    "onlinePay": true,
+    "status": "待派单",
+    "onlinePay": false,
     "assignedPilots": [],
     "appointment": {
-      "date": "2026-06-06",
-      "slot": "09:30-11:30",
-      "phone": "136****1175",
-      "address": "绵阳市科创园 A 区",
-      "remark": "已完成服务，客户无异议。",
+      "date": "2026-07-01",
+      "slot": "19:30-20:00",
+      "phone": "139****8801",
+      "address": "成都市锦江区音乐广场",
+      "remark": "开幕式表演，需预留雨天延期方案。",
       "remarkPhoto": null
-    }
+    },
+    "requirementSnapshot": orderSnapshot("无人机表演服务", [
+      orderField("登记联系人", "text", "文旅集团"),
+      orderField("联系电话", "text", "139****8801"),
+      orderField("表演目的", "text", "开幕式"),
+      orderField("表演日期", "text", "2026-07-01"),
+      orderField("表演时段", "text", "19:30-20:00"),
+      orderField("是否备用雨天/延期日期", "text", "2026-07-02"),
+      orderField("表演规模", "select", "300 架以上"),
+      orderField("例图", "image", "表演图案参考.jpg")
+    ])
+  },
+  {
+    "id": "YB26061705",
+    "user": "赵女士",
+    "service": "无人机托管服务",
+    "amount": "线下报价",
+    "priceChangeLogs": [],
+    "needPilot": false,
+    "status": "待交付",
+    "onlinePay": false,
+    "assignedPilots": [],
+    "appointment": {
+      "date": "2026-06-20",
+      "slot": "10:00-11:30",
+      "phone": "136****1175",
+      "address": "成都市双流区低空服务中心",
+      "remark": "两台行业机托管 3 个月，需要定期电池保养。",
+      "remarkPhoto": null
+    },
+    "requirementSnapshot": orderSnapshot("无人机托管服务", [
+      orderField("登记联系人", "text", "赵女士"),
+      orderField("联系电话", "text", "136****1175"),
+      orderField("无人机型号", "text", "M30T"),
+      orderField("托管数量", "text", "2 台"),
+      orderField("托管时长", "select", "3 个月"),
+      orderField("需求说明", "text", "两台行业机托管 3 个月，需要定期电池保养。"),
+      orderField("例图", "image", "设备照片.jpg")
+    ])
+  },
+  {
+    "id": "YB26061706",
+    "user": "周老师",
+    "service": "无人机租赁",
+    "amount": "线下报价",
+    "needPilot": false,
+    "status": "待交付",
+    "onlinePay": false,
+    "assignedPilots": [],
+    "appointment": {
+      "date": "2026-06-21",
+      "slot": "09:30-10:30",
+      "phone": "137****5520",
+      "address": "苏州市吴江区东太湖路 88 号",
+      "remark": "研学活动租赁 1 周，需附带双电池与充电器。",
+      "remarkPhoto": {
+        "name": "活动场地.jpg"
+      }
+    },
+    "requirementSnapshot": orderSnapshot("无人机租赁", [
+      orderField("登记联系人", "text", "周老师"),
+      orderField("联系电话", "text", "137****5520"),
+      orderField("租赁机型", "select", "行业巡检机"),
+      orderField("租赁周期", "select", "1 周"),
+      orderField("使用场景", "text", "研学活动飞行展示"),
+      orderField("期望开始日期", "text", "2026-06-21"),
+      orderField("需求说明", "text", "需附带双电池与充电器。"),
+      orderField("例图", "image", "活动场地.jpg")
+    ])
+  },
+  {
+    "id": "YB26061707",
+    "user": "成都航协",
+    "service": "无人机赛事",
+    "amount": "线下报价",
+    "needPilot": false,
+    "status": "待评价",
+    "onlinePay": false,
+    "assignedPilots": [],
+    "requirementSnapshot": orderSnapshot("无人机赛事", [
+      orderField("注册类型", "select", "单位"),
+      orderField("单位名称", "text", "成都航协"),
+      orderField("姓名", "text", "唐先生"),
+      orderField("性别", "select", "男"),
+      orderField("证件号", "text", "5101**********26"),
+      orderField("组别", "select", "团体组"),
+      orderField("联系电话", "text", "138****2198"),
+      orderField("电子邮箱", "text", "event@example.com"),
+      orderField("备注", "text", "团队报名 6 人，需确认参赛资料。")
+    ])
+  },
+  {
+    "id": "YB26061708",
+    "user": "李同学",
+    "service": "飞手培训",
+    "amount": "线下报价",
+    "needPilot": false,
+    "status": "已完成",
+    "onlinePay": false,
+    "assignedPilots": [],
+    "requirementSnapshot": orderSnapshot("飞手培训", [
+      orderField("姓名", "text", "李同学"),
+      orderField("联系电话", "text", "135****8910"),
+      orderField("性别", "select", "男"),
+      orderField("出生日期", "text", "2001-08-18"),
+      orderField("身份证号", "text", "5101**********18"),
+      orderField("考试机型", "select", "多旋翼"),
+      orderField("证照级别", "select", "视距内"),
+      orderField("有无基础", "select", "无基础"),
+      orderField("需求说明", "text", "周末班，期望 7 月开课。"),
+      orderField("例图", "image", "证件照.jpg")
+    ])
+  },
+  {
+    "id": "YB26061709",
+    "user": "王女士",
+    "service": "少儿培训",
+    "amount": "线下报价",
+    "needPilot": false,
+    "status": "已完成",
+    "onlinePay": false,
+    "assignedPilots": [],
+    "requirementSnapshot": orderSnapshot("少儿培训", [
+      orderField("姓名", "text", "王小雨"),
+      orderField("性别", "select", "女"),
+      orderField("年龄", "text", "10"),
+      orderField("在读年级", "text", "四年级"),
+      orderField("家长姓名", "text", "王女士"),
+      orderField("家长手机号", "text", "136****1175"),
+      orderField("有无无人机基础", "select", "无"),
+      orderField("感兴趣方向", "select", "飞行体验"),
+      orderField("上课时间", "text", "周六上午"),
+      orderField("报名意向", "select", "试听")
+    ])
   }
 ];
 
@@ -246,7 +334,7 @@ function orderStatusCell(order) {
 }
 
 function orderListActions(order) {
-  const price = order.status === "待付款"
+  const price = order.amount === "线下报价" || order.onlinePay === false
     ? button("改价", "edit-order-price", "small", `data-order-id="${order.id}"`)
     : "";
   const assign = order.needPilot && order.status === "待派单"
@@ -280,7 +368,7 @@ function ordersPage() {
 
 function orderDetailPage() {
   const order = activeOrder();
-  const canEditPrice = order.status === "待付款";
+  const canEditPrice = order.amount === "线下报价" || order.onlinePay === false;
   const canAssignPilot = order.needPilot && ["待派单", "待服务"].includes(order.status);
   const priceAction = canEditPrice ? button("修改金额", "edit-order-price", "small primary", `data-order-id="${order.id}"`) : "";
   const pilotAction = canAssignPilot
@@ -293,19 +381,18 @@ function orderDetailPage() {
     ? panel("飞手分配与履约", pilots, pilotAction)
     : "";
   const logs = order.priceChangeLogs?.length
-    ? table(["操作时间","操作人","原金额","新金额","改价原因"], order.priceChangeLogs.map(item => [item.time, item.operator, item.oldAmount, item.newAmount, item.reason]))
-    : `<p class="empty">暂无改价记录。仅未付款订单允许由超级管理员改价。</p>`;
+    ? table(["操作时间","操作人","原金额","新金额","改价原因"], order.priceChangeLogs.map(item => [item.time, item.operator || "平台管理员", item.oldAmount, item.newAmount, item.reason]))
+    : `<p class="empty">暂无改价记录。线下报价订单确认金额后会在这里留痕。</p>`;
   return panel("订单状态", `<div class="steps steps--flow">${orderSteps(order)}</div>
     <p class="muted order-flow-summary">本单流转：${orderFlowSummary(order)}</p>`, routeButton("返回订单列表","orders",""))
   + panel("订单信息快照", detailGrid([
     ["订单号", order.id], ["用户", order.user], ["商品/服务", order.service], ["订单金额", order.amount],
     ["在线支付", order.onlinePay ? "是（下单快照）" : "否（下单快照）"],
-    ["需要飞手", order.needPilot ? "是（下单快照）" : "否（下单快照）"],
-    ["改价规则", canEditPrice ? tag("未付款可改价") : "付款后不可改价", true]
+    ["需要飞手", order.needPilot ? "是（下单快照）" : "否（下单快照）"]
   ]), priceAction)
-  + panel("改价记录", logs)
   + orderRequirementPanel(order)
-  + pilotPanel;
+  + pilotPanel
+  + panel("改价记录", logs);
 }
 
 DroneAdmin.registerModule({
@@ -326,7 +413,7 @@ DroneAdmin.registerModule({
       "列表状态列 hover 可查看该单完整流转路径",
       "状态颜色：待付款/待评价=橙色，待派单=红色（需管理员操作），待服务/待交付=蓝色，已完成=绿色",
       "需飞手且待派单的订单，列表显示「去派单」，点击直接弹窗指派飞手（与详情「分配飞手」同一逻辑）",
-      "待付款订单显示「改价」，仅超级管理员可修改金额并形成改价记录",
+      "线下报价订单显示「改价」，填写金额和原因后形成改价记录",
       "点击「查看详情」进入订单详情，顶部步骤条展示动态流转进度",
       "待服务阶段在详情页「调整飞手」修改名单，状态不变"
     ],
@@ -345,7 +432,7 @@ DroneAdmin.registerModule({
       ],
       [
         "金额",
-        "订单应付金额；待付款订单可由超级管理员改价，付款后不可改"
+        "订单应付金额；线下报价订单可改价，线上已支付订单不可改"
       ],
       [
         "需要飞手",
@@ -383,7 +470,7 @@ DroneAdmin.registerModule({
       "顶部步骤条按下单快照（在线支付 / 飞手服务）动态生成，非固定 5 步",
       "步骤条下方展示本单完整流转路径摘要",
       "「订单信息快照」展示金额与业务属性（下单时保存，不可改）",
-      "未付款订单详情可点击「修改金额」，需填写新金额和改价原因，保存后生成留痕记录",
+      "线下报价订单详情可点击「修改金额」，需填写新金额和改价原因，保存后生成留痕记录",
       "订单详情展示「需求信息快照」，字段来自下单时的商品表单配置",
       "需飞手服务时展示「飞手分配与履约」面板：待派单显示「分配飞手」，待服务显示「调整飞手」",
       "列表「去派单」与详情「分配飞手」为同一指派弹窗；调整飞手仅改名单，不改变订单状态",
@@ -400,7 +487,7 @@ DroneAdmin.registerModule({
       ],
       [
         "改价记录",
-        "记录超级管理员改价的操作时间、原金额、新金额和改价原因"
+        "记录改价操作时间、操作人、原金额、新金额和改价原因"
       ],
       [
         "需求信息快照",
@@ -425,23 +512,22 @@ DroneAdmin.registerModule({
     "edit-order-price": function (target) {
       if (target.dataset.orderId) state.viewingOrderId = target.dataset.orderId;
       const order = activeOrder();
-      if (order.status !== "待付款") {
-        toast("付款后不可改价，仅未付款订单可操作");
+      if (!(order.amount === "线下报价" || order.onlinePay === false)) {
+        toast("仅线下报价订单可改价");
         return;
       }
-      modal("订单改价", `${formGrid([
-        { label: "订单号", html: `<input value="${order.id}" readonly>` },
-        { label: "当前金额", html: `<input value="${order.amount}" readonly>` },
-        { label: "新金额", html: `<input name="newAmount" value="${order.amount.replace(/[^\d.]/g, "") || ""}" placeholder="请输入新金额">` },
-        { label: "操作角色", html: `<input value="超级管理员" readonly>` },
-        { label: "改价原因", wide: true, html: `<textarea name="priceReason" placeholder="请输入改价原因">客户需求变更，重新核算服务报价</textarea>` }
-      ])}<p class="muted" style="margin:12px 0 0">规则：仅未付款订单允许改价；付款后不可改价；操作会记录操作人、时间、原金额、新金额和原因。</p>`,
+      modal("订单改价", `<div class="price-change-form el-form">
+        <label><span>订单号</span><input value="${order.id}" readonly></label>
+        <label><span>当前金额</span><input value="${order.amount}" readonly></label>
+        <label><span>新金额</span><input name="newAmount" value="${order.amount.replace(/[^\d.]/g, "") || ""}" placeholder="请输入新金额"></label>
+        <label><span>改价原因</span><textarea name="priceReason" placeholder="请输入改价原因">客户需求变更，重新核算服务报价</textarea></label>
+      </div><p class="price-change-tip">仅线下报价订单可改价，保存后自动记录时间、操作人、原金额、新金额和原因。</p>`,
       `${button("取消","close-modal")}${button("确认改价","confirm-price-change","primary")}`, true);
     },
     "confirm-price-change": function (target) {
       const order = activeOrder();
-      if (order.status !== "待付款") {
-        toast("付款后不可改价");
+      if (!(order.amount === "线下报价" || order.onlinePay === false)) {
+        toast("仅线下报价订单可改价");
         return;
       }
       const newAmountInput = document.querySelector("input[name='newAmount']");
@@ -457,7 +543,7 @@ DroneAdmin.registerModule({
       order.priceChangeLogs = [
         {
           time: new Date().toLocaleString("zh-CN", { hour12: false }),
-          operator: "超级管理员",
+          operator: "平台管理员",
           oldAmount,
           newAmount,
           reason: reasonInput?.value?.trim() || "未填写"

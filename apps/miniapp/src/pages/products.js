@@ -1,7 +1,7 @@
-import { products } from "../data/catalog.js?v=detail-page-icon-1";
+import { products } from "../data/catalog.js?v=contact-address-1";
 import { shell } from "../components/layout.js?v=profile-auto-role-1";
-import { productCard } from "../components/productCard.js?v=all-products-1";
-import { state } from "../state/appState.js?v=order-list-density-1";
+import { productCard } from "../components/productCard.js?v=product-line-icons-1";
+import { state } from "../state/appState.js?v=contact-address-1";
 
 export function currentProducts() {
   return products;
@@ -77,9 +77,8 @@ function renderFeatureSection(section) {
 function renderContactSection(section) {
   return `<section class="detail-template-card">${sectionTitle(section.title)}
     <div class="detail-contact-list">
-      ${section.phone ? `<div><i>☎</i><span><small>联系电话</small><b>${section.phone}</b></span><button data-action="contact-phone">拨打</button></div>` : ""}
-      ${section.backupPhone ? `<div><i>☎</i><span><small>咨询热线</small><b>${section.backupPhone}</b></span><button data-action="contact-phone">拨打</button></div>` : ""}
-      ${section.address ? `<div><i>⌖</i><span><small>联系地址</small><b>${section.address}</b></span></div>` : ""}
+      ${section.phone ? `<div class="detail-contact-row compact"><i>☎</i><span><small>联系电话</small><b>${section.phone}</b></span><button data-action="contact-phone">拨打</button></div>` : ""}
+      ${section.address ? `<div class="detail-contact-row"><i>⌖</i><span><small>联系地址</small><b>${section.address}</b></span></div>` : ""}
     </div>
   </section>`;
 }
@@ -114,8 +113,6 @@ function detailBottomBar(detailPage) {
     ? `data-action="toast" data-message="已打开${cta.text || "外部服务"}"`
     : `data-route="orderConfirm"`;
   return `<div class="product-bottom-bar detail-template-bottom">
-    <button data-action="contact-sheet">客服</button>
-    <button data-action="contact-phone">电话</button>
     <button ${attrs}>${cta.text || "立即下单"}</button>
   </div>`;
 }

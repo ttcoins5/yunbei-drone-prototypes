@@ -10,11 +10,15 @@ function logo(size = "") {
 }
 
 function button(text, action, cls = "", attrs = "") {
-  return `<button class="button ${cls}" data-action="${action}" ${attrs}>${text}</button>`;
+  const type = cls.includes("primary") ? " el-button--primary" : cls.includes("danger") ? " el-button--danger" : "";
+  const size = cls.includes("small") ? " el-button--small" : "";
+  return `<button class="button el-button${type}${size} ${cls}" data-action="${action}" ${attrs}>${text}</button>`;
 }
 
 function routeButton(text, route, cls = "") {
-  return `<button class="button ${cls}" data-route="${route}">${text}</button>`;
+  const type = cls.includes("primary") ? " el-button--primary" : cls.includes("danger") ? " el-button--danger" : "";
+  const size = cls.includes("small") ? " el-button--small" : "";
+  return `<button class="button el-button${type}${size} ${cls}" data-route="${route}">${text}</button>`;
 }
 
 function opButton(text, action, cls = "", attrs = "") {
@@ -23,31 +27,34 @@ function opButton(text, action, cls = "", attrs = "") {
 }
 
 function opRoute(text, route, cls = "", attrs = "") {
-  return `<div class="actions"><button class="button ${cls || "small"}" data-route="${route}" ${attrs}>${text}</button></div>`;
+  const finalCls = cls || "small";
+  const type = finalCls.includes("primary") ? " el-button--primary" : finalCls.includes("danger") ? " el-button--danger" : "";
+  const size = finalCls.includes("small") ? " el-button--small" : "";
+  return `<div class="actions"><button class="button el-button${type}${size} ${finalCls}" data-route="${route}" ${attrs}>${text}</button></div>`;
 }
 
 function tag(text) {
   const cls = /完成|通过|上架|转化|开票/.test(text) ? "green"
     : /待|审核|联系/.test(text) ? "amber"
     : /驳回|下架|关闭/.test(text) ? "red" : "blue";
-  return `<span class="tag ${cls}">${text}</span>`;
+  return `<span class="tag el-tag ${cls}">${text}</span>`;
 }
 
 function table(headers, rows, cls = "") {
-  return `<table class="${cls}"><thead><tr>${headers.map(x => `<th>${x}</th>`).join("")}</tr></thead>
+  return `<table class="ruoyi-table el-table ${cls}"><thead><tr>${headers.map(x => `<th>${x}</th>`).join("")}</tr></thead>
     <tbody>${rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
 }
 
 function panel(title, body, actions = "") {
-  return `<section class="panel"><div class="panel-head"><h2>${title}</h2><div class="toolbar">${actions}</div></div><div class="panel-body">${body}</div></section>`;
+  return `<section class="panel el-card"><div class="panel-head"><h2>${title}</h2><div class="toolbar">${actions}</div></div><div class="panel-body">${body}</div></section>`;
 }
 
 function detailGrid(items) {
-  return `<dl class="detail-grid">${items.map(([key, value, wide]) => `<div class="detail-item${wide ? " span-2" : ""}"><dt>${key}</dt><dd>${value}</dd></div>`).join("")}</dl>`;
+  return `<dl class="detail-grid el-descriptions">${items.map(([key, value, wide]) => `<div class="detail-item${wide ? " span-2" : ""}"><dt>${key}</dt><dd>${value}</dd></div>`).join("")}</dl>`;
 }
 
 function formGrid(fields) {
-  return `<div class="form-grid">${fields.map(field => `<div class="form-field ${field.wide ? "span-2" : ""}">
+  return `<div class="form-grid el-form">${fields.map(field => `<div class="form-field el-form-item ${field.wide ? "span-2" : ""}">
     <label>${field.label}</label>${field.html}
   </div>`).join("")}</div>`;
 }
@@ -126,7 +133,7 @@ function toast(message) {
 
 function modal(title, body, footer = "", wide = false) {
   document.getElementById("overlay").innerHTML = `<div class="overlay">
-    <section class="modal ${wide ? "wide" : ""}">
+    <section class="modal el-dialog ${wide ? "wide" : ""}">
       <div class="modal-head"><h2>${title}</h2><button class="close" data-action="close-modal">×</button></div>
       <div class="modal-body">${body}</div>
       ${footer ? `<div class="modal-foot">${footer}</div>` : ""}

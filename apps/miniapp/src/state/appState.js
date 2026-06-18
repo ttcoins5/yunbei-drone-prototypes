@@ -1,4 +1,69 @@
-import { hoistingProducts } from "../data/catalog.js?v=detail-page-icon-1";
+import { hoistingProducts } from "../data/catalog.js?v=contact-address-1";
+
+const productById = Object.fromEntries(hoistingProducts.map(product => [product.id, product]));
+
+function snapshotValue(field, values) {
+  if (Object.prototype.hasOwnProperty.call(values, field.key)) return values[field.key];
+  if (field.type === "select") return field.options?.[0] || "";
+  return "";
+}
+
+function productRequirementSnapshot(product, values) {
+  return {
+    templateId: product.id,
+    templateName: `${product.name}需求字段`,
+    serviceType: product.category,
+    fields: [...(product.requirementFields || [])]
+      .sort((a, b) => a.sort - b.sort)
+      .map(field => {
+        const value = snapshotValue(field, values);
+        return {
+          key: field.key,
+          label: field.label,
+          type: ["text", "select", "image"].includes(field.type) ? field.type : "text",
+          value,
+          displayValue: value,
+          required: Boolean(field.required)
+        };
+      })
+  };
+}
+
+function miniOrder(config) {
+  const product = productById[config.productId] || hoistingProducts[0];
+  const spec = product.specs?.[0] || { name: "信息提交", price: 0 };
+  const values = {
+    contactName: config.contactName,
+    contactPhone: config.contactPhone,
+    name: config.contactName,
+    phone: config.contactPhone,
+    parentName: config.contactName,
+    parentPhone: config.contactPhone,
+    ...config.values
+  };
+  const snapshot = productRequirementSnapshot(product, values);
+  return {
+    orderNo: config.orderNo,
+    status: config.status,
+    tab: config.tab || config.status,
+    time: config.time,
+    title: product.name,
+    spec: spec.name,
+    price: config.amount ?? spec.price,
+    count: 1,
+    paid: config.paid ?? config.amount ?? spec.price,
+    serviceType: product.category,
+    contactName: config.contactName,
+    contactPhone: config.contactPhone,
+    address: config.address || "",
+    remark: config.remark || "",
+    requirementSnapshot: snapshot,
+    timeline: config.timeline || [
+      { time: config.time, title: "订单提交", desc: `已提交${product.name}需求` },
+      { time: config.time, title: config.status, desc: "平台正在确认需求信息并安排后续服务" }
+    ]
+  };
+}
 
 export const state = {
   page: location.hash.replace("#/", "") || "home",
@@ -20,178 +85,238 @@ export const state = {
     wechatAuthorized: true,
     phoneAuthorized: true
   },
-  selectedOrderNo: "ORD17811004481206569",
+  selectedOrderNo: "ORD20260617001",
   orders: [
-    {
-      orderNo: "ORD1781687808948",
+    miniOrder({
+      orderNo: "ORD20260617001",
       status: "待接单",
-      tab: "待接单",
       time: "2026-06-17 17:16",
-      title: "无人机巡检服务",
-      spec: "信息提交",
-      price: 0,
-      count: 1,
-      paid: 0,
-      serviceType: "园区巡检",
+      productId: "inspection",
       contactName: "云北用户",
       contactPhone: "13888888821",
       address: "上海市 浦东新区 张江低空产业园 6 号楼",
       remark: "需巡检园区屋面、连廊与设备平台",
-      requirementSnapshot: {
-        templateName: "巡检服务模板",
-        fields: [
-          { label: "登记联系人", type: "text", value: "云北用户" },
-          { label: "联系电话", type: "text", value: "13888888821" },
-          { label: "服务类型", type: "select", value: "园区巡检" },
-          { label: "巡检区域", type: "address", value: "上海市 浦东新区 张江低空产业园 6 号楼" },
-          { label: "巡检时间", type: "timeSlot", value: "2026-06-20 09:00-11:00" },
-          { label: "需求说明", type: "textarea", value: "需巡检园区屋面、连廊与设备平台" }
-        ]
+      values: {
+        serviceType: "园区巡检",
+        inspectionArea: "上海市 浦东新区 张江低空产业园 6 号楼",
+        inspectionTime: "2026-06-20 09:00-11:00",
+        remark: "需巡检园区屋面、连廊与设备平台",
+        exampleImage: "园区巡检范围.jpg"
       },
       timeline: [
         { time: "2026-06-17 17:16", title: "订单提交", desc: "已提交无人机巡检服务需求" },
         { time: "2026-06-17 17:20", title: "待接单", desc: "后台正在确认需求信息并安排服务" }
       ]
-    },
-    {
-      orderNo: "ORD17811004481206569",
-      status: "已取消",
-      tab: "已取消",
-      time: "2026-06-10 22:07",
-      title: "医疗物品吊运",
-      spec: "50kg-100kg - 医疗药品",
-      price: 120,
-      count: 1,
-      paid: 120,
-      serviceType: "应急吊运",
-      contactName: "张医生",
+    }),
+    miniOrder({
+      orderNo: "ORD20260617002",
+      status: "待服务",
+      time: "2026-06-16 14:40",
+      productId: "logistics",
+      contactName: "华景医院",
       contactPhone: "13888886661",
       address: "上海市 黄浦区 复兴中路 521 号",
-      remark: "夜间加急配送，需到院区西门交接",
-      requirementSnapshot: {
-        templateName: "吊运服务模板",
-        fields: [
-          { label: "登记联系人", type: "text", value: "张医生" },
-          { label: "联系电话", type: "text", value: "13888886661" },
-          { label: "吊运物品", type: "text", value: "医疗冷链箱" },
-          { label: "物品重量", type: "number", value: "68", unit: "kg" },
-          { label: "作业地点", type: "address", value: "上海市 黄浦区 复兴中路 521 号" },
-          { label: "吊运高度", type: "number", value: "28", unit: "m" },
-          { label: "需求说明", type: "textarea", value: "夜间加急配送，需到院区西门交接" },
-          { label: "现场照片", type: "image", value: "院区西门交接点.jpg" }
-        ]
+      remark: "医疗样本冷链运输，需 2 小时内送达",
+      values: {
+        customerType: "医院/园区",
+        cargoType: "医疗样本",
+        cargoWeight: "8kg",
+        cargoVolume: "40cm x 30cm x 30cm",
+        startPoint: "华景医院检验科",
+        startAddress: "上海市 黄浦区 复兴中路 521 号",
+        destination: "张江医学中心",
+        destinationAddress: "上海市 浦东新区 张江科学城",
+        transportLimit: "加急",
+        expectedTime: "2026-06-18 15:00",
+        cargoPhoto: "冷链箱照片.jpg",
+        remark: "医疗样本冷链运输，需 2 小时内送达",
+        exampleImage: "起降点示意.jpg"
       },
       timeline: [
-        { time: "2026-06-10 22:07", title: "订单提交", desc: "已提交医疗物品吊运需求" },
-        { time: "2026-06-10 22:16", title: "平台受理", desc: "客服已确认需求与配送地址" },
-        { time: "2026-06-10 23:02", title: "订单取消", desc: "用户主动取消，本次未安排飞手" }
+        { time: "2026-06-16 14:40", title: "订单提交", desc: "已提交无人机物流服务需求" },
+        { time: "2026-06-16 15:10", title: "待服务", desc: "平台已确认运输信息，等待服务执行" }
       ]
-    },
-    {
-      orderNo: "ORD17811004481206570",
+    }),
+    miniOrder({
+      orderNo: "ORD20260617003",
       status: "待服务",
-      tab: "待服务",
-      time: "2026-06-12 09:30",
-      title: "园区楼宇巡检",
-      spec: "航线巡检 - 半日服务",
-      price: 680,
-      count: 1,
-      paid: 680,
-      serviceType: "楼宇巡检",
-      contactName: "李工",
+      time: "2026-06-15 09:30",
+      productId: "hoisting",
+      contactName: "成都建工",
       contactPhone: "13888887772",
-      address: "上海市 浦东新区 张江低空产业园 6 号楼",
-      remark: "重点查看幕墙、屋面机组和西侧连廊",
-      requirementSnapshot: {
-        templateName: "巡检服务模板",
-        fields: [
-          { label: "登记联系人", type: "text", value: "李工" },
-          { label: "联系电话", type: "text", value: "13888887772" },
-          { label: "服务类型", type: "select", value: "园区巡检" },
-          { label: "巡检区域", type: "address", value: "上海市 浦东新区 张江低空产业园 6 号楼" },
-          { label: "巡检时间", type: "timeSlot", value: "2026-06-18 14:00-16:00" },
-          { label: "需求说明", type: "textarea", value: "重点查看幕墙、屋面机组和西侧连廊" },
-          { label: "例图/附件", type: "image", value: "巡检范围示意.jpg" }
-        ]
+      address: "成都市天府新区某工地",
+      remark: "空调外机需吊运至 18 层平台",
+      values: {
+        itemName: "空调外机",
+        weight: "35kg",
+        workAddress: "成都市天府新区某工地",
+        height: "54m",
+        remark: "空调外机需吊运至 18 层平台",
+        exampleImage: "工地入口.jpg"
       },
       timeline: [
-        { time: "2026-06-12 09:30", title: "订单提交", desc: "已提交园区楼宇巡检需求" },
-        { time: "2026-06-12 10:00", title: "支付完成", desc: "订单已支付，等待平台调度" },
+        { time: "2026-06-15 09:30", title: "订单提交", desc: "已提交无人机吊运服务需求" },
         { time: "2026-06-15 18:40", title: "待服务", desc: "已分配飞手，等待按服务时间上门" }
       ]
-    },
-    {
-      orderNo: "ORD17811004481206571",
+    }),
+    miniOrder({
+      orderNo: "ORD20260617004",
       status: "待接单",
-      tab: "待接单",
       time: "2026-06-13 14:15",
-      title: "无人机租赁订单",
-      spec: "行业测绘机 - 3 天租期",
-      price: 300,
-      count: 3,
-      paid: 900,
-      serviceType: "无人机租赁",
-      contactName: "周老师",
+      productId: "performance",
+      contactName: "文旅集团",
       contactPhone: "13888889993",
-      address: "苏州市 吴江区 东太湖路 88 号",
-      remark: "租赁 3 天，需附带双电池与充电器",
-      requirementSnapshot: {
-        templateName: "租赁需求模板",
-        fields: [
-          { label: "登记联系人", type: "text", value: "周老师" },
-          { label: "联系电话", type: "text", value: "13888889993" },
-          { label: "租赁机型", type: "text", value: "行业测绘机" },
-          { label: "租赁时长", type: "text", value: "3 天" },
-          { label: "服务地址", type: "address", value: "苏州市 吴江区 东太湖路 88 号" },
-          { label: "配件需求", type: "text", value: "双电池、充电器" },
-          { label: "备注说明", type: "textarea", value: "租赁 3 天，需附带双电池与充电器" }
-        ]
+      address: "成都市锦江区音乐广场",
+      remark: "开幕式表演，需预留雨天延期方案",
+      values: {
+        purpose: "开幕式",
+        date: "2026-07-01",
+        timeSlot: "19:30-20:00",
+        backupDate: "2026-07-02",
+        scale: "300 架以上",
+        exampleImage: "表演图案参考.jpg"
       },
       timeline: [
-        { time: "2026-06-13 14:15", title: "订单提交", desc: "已提交行业测绘机租赁需求" },
-        { time: "2026-06-13 14:22", title: "支付完成", desc: "订单已支付，等待商家接单" },
-        { time: "2026-06-14 10:20", title: "待接单", desc: "商家正在确认库存与交付时间" }
+        { time: "2026-06-13 14:15", title: "订单提交", desc: "已提交无人机表演服务需求" },
+        { time: "2026-06-13 14:22", title: "待接单", desc: "平台正在确认表演规模和空域条件" }
       ]
-    }
+    }),
+    miniOrder({
+      orderNo: "ORD20260617005",
+      status: "已完成",
+      time: "2026-06-12 10:20",
+      productId: "hosting",
+      contactName: "赵女士",
+      contactPhone: "13888880005",
+      address: "成都市双流区低空服务中心",
+      remark: "两台 M30T 托管 3 个月",
+      values: {
+        droneModel: "M30T",
+        count: "2 台",
+        duration: "3 个月",
+        remark: "两台 M30T 托管 3 个月",
+        exampleImage: "设备照片.jpg"
+      }
+    }),
+    miniOrder({
+      orderNo: "ORD20260617006",
+      status: "待接单",
+      time: "2026-06-11 16:00",
+      productId: "rental",
+      contactName: "周老师",
+      contactPhone: "13888880006",
+      address: "苏州市 吴江区 东太湖路 88 号",
+      remark: "研学活动租赁 1 周",
+      values: {
+        droneModel: "行业巡检机",
+        rentalPeriod: "1 周",
+        useScene: "研学活动飞行展示",
+        startDate: "2026-06-21",
+        remark: "需附带双电池与充电器",
+        exampleImage: "活动场地.jpg"
+      }
+    }),
+    miniOrder({
+      orderNo: "ORD20260617007",
+      status: "待评价",
+      time: "2026-06-10 10:30",
+      productId: "competition",
+      contactName: "成都航协",
+      contactPhone: "13888880007",
+      remark: "团队报名 6 人，需确认参赛资料",
+      values: {
+        registerType: "单位",
+        organization: "成都航协",
+        name: "唐先生",
+        gender: "男",
+        idNo: "5101**********26",
+        group: "团体组",
+        phone: "13888880007",
+        email: "event@example.com",
+        remark: "团队报名 6 人，需确认参赛资料"
+      }
+    }),
+    miniOrder({
+      orderNo: "ORD20260617008",
+      status: "已完成",
+      time: "2026-06-09 09:20",
+      productId: "pilot-training",
+      contactName: "李同学",
+      contactPhone: "13888880008",
+      remark: "周末班，期望 7 月开课",
+      values: {
+        name: "李同学",
+        phone: "13888880008",
+        gender: "男",
+        birthday: "2001-08-18",
+        idNo: "5101**********18",
+        examModel: "多旋翼",
+        licenseLevel: "视距内",
+        hasBase: "无基础",
+        remark: "周末班，期望 7 月开课",
+        exampleImage: "证件照.jpg"
+      }
+    }),
+    miniOrder({
+      orderNo: "ORD20260617009",
+      status: "已完成",
+      time: "2026-06-08 15:10",
+      productId: "child-training",
+      contactName: "王女士",
+      contactPhone: "13888880009",
+      remark: "周六上午试听",
+      values: {
+        name: "王小雨",
+        gender: "女",
+        age: "10",
+        grade: "四年级",
+        parentName: "王女士",
+        parentPhone: "13888880009",
+        hasDroneBase: "无",
+        interest: "飞行体验",
+        classTime: "周六上午",
+        intent: "试听"
+      }
+    })
   ],
   serviceNotifications: [
     {
       id: "service-notice-1",
-      orderNo: "ORD17811004481206569",
-      fromStatus: "待服务",
-      toStatus: "已取消",
-      time: "2026-06-16 09:20",
+      orderNo: "ORD20260617003",
+      fromStatus: "待接单",
+      toStatus: "待服务",
+      time: "2026-06-15 18:40",
       isRead: false
     },
     {
       id: "service-notice-2",
-      orderNo: "ORD17811004481206570",
+      orderNo: "ORD20260617002",
       fromStatus: "待接单",
       toStatus: "待服务",
-      time: "2026-06-15 18:40",
+      time: "2026-06-16 15:10",
       isRead: true
     },
     {
       id: "service-notice-3",
-      orderNo: "ORD17811004481206571",
-      fromStatus: "待付款",
+      orderNo: "ORD20260617006",
+      fromStatus: "订单提交",
       toStatus: "待接单",
-      time: "2026-06-14 10:20",
+      time: "2026-06-11 16:00",
       isRead: true
     }
   ],
-  taskHallTab: "任务信息",
+  taskHallTab: "任务征集",
   selectedTaskId: "REQ20260614001",
-  selectedAssignedOrderNo: "YB26061326",
+  selectedAssignedOrderNo: "YB26061703",
   pilotTasks: [
     {
       id: "REQ20260614001",
       requirementNo: "REQ20260614001",
-      title: "高空清洗服务协作",
+      sourceType: "backendTask",
+      title: "无人机吊运服务协作",
       serviceTime: "2026-06-18 09:00-12:00",
-      address: "成都市武侯区某园区 3 号楼",
-      remark: "需具备楼宇外立面作业经验，现场有停车位。",
-      description: "后台发布的飞手意愿征集任务。飞手报名后，平台将结合资质、距离和排班情况进行筛选并分配订单。",
+      address: "成都市天府新区某工地",
+      remark: "需具备高空吊运作业经验，现场有安全员对接。",
       status: "征集中",
       joined: false,
       intentionCount: 6
@@ -199,11 +324,11 @@ export const state = {
     {
       id: "REQ20260615002",
       requirementNo: "REQ20260615002",
+      sourceType: "backendTask",
       title: "园区屋面巡检任务",
       serviceTime: "2026-06-19 14:00-17:30",
       address: "宁波市鄞州区低空经济产业园",
       remark: "重点查看屋面设备、排水沟和西侧幕墙。",
-      description: "任务需要按指定航线完成影像采集，并在服务后提交巡检素材。平台将根据报名飞手情况统一派单。",
       status: "征集中",
       joined: false,
       intentionCount: 3
@@ -211,11 +336,11 @@ export const state = {
     {
       id: "REQ20260612003",
       requirementNo: "REQ20260612003",
-      title: "商业航拍补拍",
+      sourceType: "backendTask",
+      title: "无人机表演试飞",
       serviceTime: "2026-06-16 16:00-18:00",
       address: "杭州市滨江区江南大道 1888 号",
       remark: "天气原因已暂缓，等待后台重新开放。",
-      description: "该需求当前已关闭，飞手可查看任务信息，但不能继续提交报名意愿。",
       status: "已关闭",
       joined: false,
       intentionCount: 9
@@ -223,46 +348,48 @@ export const state = {
   ],
   assignedPilotOrders: [
     {
-      orderNo: "YB26061326",
-      user: "林先生",
-      category: "飞行服务",
-      productName: "高空清洗服务",
-      amount: 1599,
-      onlinePay: "是（下单快照）",
+      orderNo: "YB26061703",
+      sourceType: "backendTask",
+      user: "成都建工",
+      category: "无人机服务",
+      productName: "无人机吊运服务",
+      amount: 0,
+      onlinePay: "否（下单快照）",
       needPilot: "是（下单快照）",
-      bookingDate: "2026-06-14",
-      bookingTime: "09:00-11:00",
-      contactPhone: "139****5528",
-      bookingAddress: "成都市武侯区某园区 3 号楼",
-      infoRemark: "重点清洗北侧玻璃幕墙，现场有停车位。",
-      remarkPhoto: "北侧外立面.jpg",
+      bookingDate: "2026-06-18",
+      bookingTime: "14:00-16:00",
+      contactPhone: "028-55****90",
+      bookingAddress: "成都市天府新区某工地",
+      infoRemark: "空调外机需吊运至 18 层平台，现场有安全员对接。",
+      remarkPhoto: "工地入口.jpg",
       requirementSnapshot: {
-        templateName: "吊运服务模板",
+        templateName: "无人机吊运服务需求字段",
         fields: [
-          { label: "登记联系人", type: "text", value: "林先生" },
-          { label: "联系电话", type: "text", value: "139****5528" },
-          { label: "吊运物品", type: "text", value: "外立面清洗设备" },
-          { label: "物品重量", type: "number", value: "28", unit: "kg" },
-          { label: "作业地点", type: "address", value: "成都市武侯区某园区 3 号楼" },
-          { label: "吊运高度", type: "number", value: "42", unit: "m" },
-          { label: "需求说明", type: "textarea", value: "重点清洗北侧玻璃幕墙，现场有停车位。" },
-          { label: "现场照片", type: "image", value: "北侧外立面.jpg" }
+          { label: "登记联系人", type: "text", value: "成都建工" },
+          { label: "联系电话", type: "text", value: "028-55****90" },
+          { label: "吊运物品", type: "text", value: "空调外机" },
+          { label: "物品重量（kg）", type: "text", value: "35" },
+          { label: "作业地点", type: "text", value: "成都市天府新区某工地" },
+          { label: "吊运高度（m）", type: "text", value: "54" },
+          { label: "需求说明", type: "text", value: "空调外机需吊运至 18 层平台，现场有安全员对接。" },
+          { label: "例图", type: "image", value: "工地入口.jpg" }
         ]
       },
       status: "待完成",
       assignedTime: "2026-06-13 18:20",
       progress: [
         { time: "2026-06-13 18:20", title: "后台派单", desc: "平台已将订单分配给当前飞手" },
-        { time: "2026-06-14 08:30", title: "等待服务", desc: "请按服务时间到达服务地址" }
+        { time: "2026-06-18 13:30", title: "等待服务", desc: "请按服务时间到达服务地址" }
       ]
     },
     {
       orderNo: "YB26061327",
+      sourceType: "userOrder",
       user: "陈女士",
       category: "巡检服务",
-      productName: "园区屋面巡检",
-      amount: 880,
-      onlinePay: "是（下单快照）",
+      productName: "无人机巡检服务",
+      amount: 0,
+      onlinePay: "否（下单快照）",
       needPilot: "是（下单快照）",
       bookingDate: "2026-06-18",
       bookingTime: "14:00-16:00",
@@ -271,15 +398,15 @@ export const state = {
       infoRemark: "需要拍摄屋顶机组、排水沟和东侧连廊。",
       remarkPhoto: "屋面点位示意.jpg",
       requirementSnapshot: {
-        templateName: "巡检服务模板",
+        templateName: "无人机巡检服务需求字段",
         fields: [
           { label: "登记联系人", type: "text", value: "陈女士" },
           { label: "联系电话", type: "text", value: "138****2091" },
           { label: "服务类型", type: "select", value: "园区巡检" },
-          { label: "巡检区域", type: "address", value: "宁波市鄞州区低空经济产业园 2 号楼" },
-          { label: "巡检时间", type: "timeSlot", value: "2026-06-18 14:00-16:00" },
-          { label: "需求说明", type: "textarea", value: "需要拍摄屋顶机组、排水沟和东侧连廊。" },
-          { label: "例图/附件", type: "image", value: "屋面点位示意.jpg" }
+          { label: "巡检区域", type: "text", value: "宁波市鄞州区低空经济产业园 2 号楼" },
+          { label: "巡检时间", type: "text", value: "2026-06-18 14:00-16:00" },
+          { label: "需求说明", type: "text", value: "需要拍摄屋顶机组、排水沟和东侧连廊。" },
+          { label: "例图", type: "image", value: "屋面点位示意.jpg" }
         ]
       },
       status: "待完成",
@@ -291,18 +418,19 @@ export const state = {
     },
     {
       orderNo: "YB26061218",
+      sourceType: "userOrder",
       user: "周先生",
-      category: "农业服务",
-      productName: "农田植保作业",
-      amount: 1260,
-      onlinePay: "是（下单快照）",
+      category: "无人机服务",
+      productName: "无人机物流服务",
+      amount: 0,
+      onlinePay: "否（下单快照）",
       needPilot: "是（下单快照）",
       bookingDate: "2026-06-12",
       bookingTime: "07:30-10:30",
       contactPhone: "137****6180",
-      bookingAddress: "苏州市吴江区东太湖农服中心",
-      infoRemark: "作业前需与农服站确认药剂配比。",
-      remarkPhoto: "地块边界图.jpg",
+      bookingAddress: "苏州市吴江区东太湖路 88 号",
+      infoRemark: "医疗样本冷链运输，需 2 小时内送达。",
+      remarkPhoto: "冷链箱照片.jpg",
       status: "已完成",
       assignedTime: "2026-06-11 16:35",
       progress: [
@@ -391,6 +519,7 @@ export const state = {
     }
   ],
   reportFilter: "全部报备",
+  selectedFlightReportNo: "BB20260615001",
   orderFilter: "全部",
   orderSearch: "",
   invoiceTab: "apply",

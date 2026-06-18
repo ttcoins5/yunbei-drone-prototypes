@@ -1,6 +1,6 @@
 import { icon } from "../components/icons.js";
 import { shell } from "../components/layout.js?v=profile-auto-role-1";
-import { state } from "../state/appState.js?v=order-list-density-1";
+import { state } from "../state/appState.js?v=product-order-fixtures-1";
 
 function addressCard(address) {
   return `<article class="address-card ${address.isDefault ? "is-default" : ""}">
@@ -74,9 +74,9 @@ export function addressPage() {
 
 export function invoicePage() {
   const availableOrders = [
-    { id: "FF20260615001", title: "行业测绘无人机套装", time: "2026-06-10 22:07", amount: 19999 },
-    { id: "FF20260615002", title: "园区楼宇巡检服务", time: "2026-06-12 09:30", amount: 680 },
-    { id: "FF20260615003", title: "无人机租赁订单", time: "2026-06-13 14:15", amount: 900 }
+    { id: "ORD20260617001", title: "无人机巡检服务", time: "2026-06-17 17:16", amount: 0 },
+    { id: "ORD20260617003", title: "无人机吊运服务", time: "2026-06-15 09:30", amount: 0 },
+    { id: "ORD20260617006", title: "无人机租赁", time: "2026-06-11 16:00", amount: 0 }
   ];
   const records = [
     { id: "FP20260618001", title: "上海云北低空科技有限公司", amount: 19999, type: "增值税普通发票", time: "2026-06-18 10:21", file: "PDF" },
@@ -187,9 +187,64 @@ function flightReportCard(report) {
     </div>
     <div class="flight-report-foot">
       <p>${report.reportStatement || "特此报备"} · 提交：${report.reportTime}</p>
-      <button type="button" data-action="toast" data-message="已查看报备字段：委托主体、飞手信息、设备信息、飞行计划、区域、高度、任务性质">查看详情</button>
+      <button type="button" data-action="flight-report-open" data-id="${report.reportNo}">查看详情</button>
     </div>
   </article>`;
+}
+
+function selectedFlightReport() {
+  return state.flightReports.find(report => report.reportNo === state.selectedFlightReportNo);
+}
+
+function reportDetailItem(label, value) {
+  return `<span><small>${label}</small><b>${value || "—"}</b></span>`;
+}
+
+export function reportDetailPage() {
+  const report = selectedFlightReport();
+  if (!report) {
+    return shell(`<div class="flight-report-detail-page"><div class="flight-report-empty"><b>暂无报备详情</b><p>请先从飞行报备历史记录中选择一条报备。</p></div></div>`, { title: "报备详情", back: true, tab: "home" });
+  }
+
+  return shell(`<div class="flight-report-detail-page">
+    <section class="flight-report-detail-hero ${report.status === "待确认" ? "pending" : "confirmed"}">
+      <small>FLIGHT REPORT DETAIL</small>
+      <h2>${report.status}</h2>
+      <p>${report.reportNo}</p>
+      <div class="flight-report-detail-meta">
+        <span><small>提交时间</small><b>${report.reportTime}</b></span>
+        <span><small>确认状态</small><b>${report.status}</b></span>
+      </div>
+    </section>
+    <section class="flight-report-detail-card">
+      <div class="flight-report-title"><b>报备主体</b><small>委托与飞手信息</small></div>
+      <div class="flight-report-detail-grid">
+        ${reportDetailItem("委托主体", report.entrustedSubject)}
+        ${reportDetailItem("飞手姓名", report.pilot)}
+        ${reportDetailItem("联系方式", report.pilotPhone)}
+        ${reportDetailItem("任务性质", report.taskNature)}
+      </div>
+    </section>
+    <section class="flight-report-detail-card">
+      <div class="flight-report-title"><b>设备与计划</b><small>标准飞行字段</small></div>
+      <div class="flight-report-detail-grid">
+        ${reportDetailItem("无人机型号", report.droneModel || report.modelLicense)}
+        ${reportDetailItem("序列号", report.serialNo)}
+        ${reportDetailItem("飞行计划", report.flightPlan || report.duration)}
+        ${reportDetailItem("飞行高度", report.flightAltitude)}
+        ${reportDetailItem("具体位置", report.flightArea)}
+        ${reportDetailItem("架次", `${report.sorties || 1} 架次`)}
+      </div>
+    </section>
+    <section class="flight-report-detail-card">
+      <div class="flight-report-title"><b>报备说明</b><small>${report.status === "已确认" ? "平台已确认" : "等待后台确认"}</small></div>
+      <p class="flight-report-statement">${report.reportStatement || "特此报备"}</p>
+      <div class="flight-report-detail-progress">
+        <article class="done"><i></i><span><b>提交报备</b><small>${report.reportTime}</small></span></article>
+        <article class="${report.status === "已确认" ? "done" : ""}"><i></i><span><b>平台确认</b><small>${report.status === "已确认" ? "已完成报备确认" : "后台待确认"}</small></span></article>
+      </div>
+    </section>
+  </div>`, { title: "报备详情", back: true, tab: "home" });
 }
 
 export function reportPage() {

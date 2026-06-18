@@ -15,7 +15,7 @@ function productFields(list) {
 }
 
 function productIcon(name) {
-  return `../../shared/assets/product-icons/${name}`;
+  return `../../shared/assets/product-icons/${name}?v=product-line-icons-1`;
 }
 
 function serviceProduct(id, name, desc, fields, image, sales, category = "无人机服务") {
@@ -47,7 +47,7 @@ function contactSection(sort = 99) {
   return section("contact", "contact", "联系方式", {
     phone: "0577-55558188",
     backupPhone: "0577-88360168",
-    address: "浙江省温州市鹿城区七都街道青鹿空间204室",
+    address: "浙江省宁波市鄞州区低空经济产业园",
     sort
   });
 }
@@ -82,6 +82,12 @@ const serviceDetailDefaults = {
     intro: "为企业和个人无人机提供托管、检测、保养、维修协调和飞行资产管理服务。",
     items: ["设备托管", "定期检测", "维护保养", "资产管理"],
     advantages: ["标准化仓储管理", "定期健康检查", "维修保养协同", "设备档案清晰"]
+  },
+  rental: {
+    subtitle: "灵活租赁 · 设备保障 · 按需使用",
+    intro: "提供多型号无人机短租、长租和项目制租赁服务，适用于临时作业、培训演示、活动保障等场景。",
+    items: ["短期租赁", "项目租赁", "设备交付", "基础保障"],
+    advantages: ["租期灵活匹配", "设备状态可追溯", "交付前检测", "支持押金与档期确认"]
   }
 };
 
@@ -153,7 +159,7 @@ function eventDetailPage(name) {
     hero: { title: name, subtitle: "赛事报名 · 规则透明 · 专业组织", icon: "competition" },
     sections: [
       section("intro", "intro", "赛事介绍", { content: "面向无人机爱好者、院校和行业团队提供赛事报名、组别登记和活动组织服务。", sort: 1 }),
-      section("eventInfo", "eventInfo", "赛事信息", { date: "2026年暑期档", address: "温州低空经济示范区", groups: ["成人组", "青少年组", "团体组"], deadline: "赛前7日截止报名", sort: 2 }),
+      section("eventInfo", "eventInfo", "赛事信息", { date: "2026年暑期档", address: "宁波低空经济示范区", groups: ["成人组", "青少年组", "团体组"], deadline: "赛前7日截止报名", sort: 2 }),
       section("rules", "checklist", "组别规则", { items: ["按年龄和单位类型分组", "报名资料审核后确认参赛", "现场需遵守飞行安全规范"], sort: 3 }),
       section("fees", "fee", "报名费用", { items: [{ name: "个人报名", price: "线下确认" }, { name: "团体报名", price: "线下确认" }], sort: 4 }),
       contactSection(5)
@@ -184,7 +190,8 @@ function detailPageFor(id, name) {
 
 export const categories = [
   { name: "无人机服务", desc: "巡检、物流、吊运、表演、托管", route: "products", icon: 0, featured: true, image: "nav-hoisting" },
-  { name: "培训教育", desc: "赛事报名、飞手培训、少儿培训", route: "products", icon: 2, featured: true, image: "nav-maintain" },
+  { name: "培训教育与赛事举办", desc: "赛事报名、飞手培训、少儿培训", route: "products", icon: 2, featured: true, image: "nav-maintain" },
+  { name: "增值服务", desc: "无人机租赁等增值业务", route: "products", icon: 3, featured: true, image: "nav-rental" },
   { name: "全部分类", route: "categories", icon: 7 }
 ];
 
@@ -319,6 +326,16 @@ export const hoistingProducts = [
     reqField("remark", "需求说明"),
     reqField("exampleImage", "例图", "image")
   ]), productIcon("icon-hosting.png"), 156),
+  serviceProduct("rental", "无人机租赁", "租赁机型 · 租赁周期", productFields([
+    reqField("contactName", "登记联系人", "text", true),
+    reqField("contactPhone", "联系电话", "text", true),
+    reqField("droneModel", "租赁机型", "select", true, { options: ["多旋翼航拍机", "行业巡检机", "物流运输机", "待平台推荐"] }),
+    reqField("rentalPeriod", "租赁周期", "select", true, { options: ["1-3 天", "1 周", "1 个月", "项目制租赁"] }),
+    reqField("useScene", "使用场景", "text", true),
+    reqField("startDate", "期望开始日期", "text", true),
+    reqField("remark", "需求说明"),
+    reqField("exampleImage", "例图", "image")
+  ]), productIcon("icon-rental.png"), 142, "增值服务"),
   serviceProduct("competition", "无人机赛事", "赛事报名 · 信息填写", productFields([
     reqField("registerType", "注册类型", "select", true, { options: ["个人", "单位", "学校", "机构"] }),
     reqField("organization", "单位名称", "text", true),
@@ -329,7 +346,7 @@ export const hoistingProducts = [
     reqField("phone", "联系电话", "text", true),
     reqField("email", "电子邮箱"),
     reqField("remark", "备注")
-  ]), productIcon("icon-competition.png"), 116, "培训教育"),
+  ]), productIcon("icon-competition.png"), 116, "培训教育与赛事举办"),
   serviceProduct("pilot-training", "飞手培训", "证照级别 · 考试机型", productFields([
     reqField("name", "姓名", "text", true),
     reqField("phone", "联系电话", "text", true),
@@ -341,7 +358,7 @@ export const hoistingProducts = [
     reqField("hasBase", "有无基础", "select", true, { options: ["有基础", "无基础"] }),
     reqField("remark", "需求说明"),
     reqField("exampleImage", "例图", "image")
-  ]), productIcon("icon-pilot-training.png"), 104, "培训教育"),
+  ]), productIcon("icon-pilot-training.png"), 104, "培训教育与赛事举办"),
   serviceProduct("child-training", "少儿培训", "少儿课程 · 家长信息", productFields([
     reqField("name", "姓名", "text", true),
     reqField("gender", "性别", "select", true, { options: ["男", "女"] }),
@@ -353,17 +370,17 @@ export const hoistingProducts = [
     reqField("interest", "感兴趣方向", "select", true, { options: ["飞行体验", "编程控制", "竞赛训练", "航拍创作"] }),
     reqField("classTime", "上课时间", "text", true),
     reqField("intent", "报名意向", "select", true, { options: ["试听", "短期课", "长期班"] })
-  ]), productIcon("icon-child-training.png"), 92, "培训教育")
+  ]), productIcon("icon-child-training.png"), 92, "培训教育与赛事举办")
 ].sort((a, b) => b.sales - a.sales);
 
 export const products = hoistingProducts;
 
 export const orderStatuses = [
-  { name: "待付款", count: 2, route: "orders", icon: 0 },
-  { name: "待接单", count: 1, route: "orders", icon: 1 },
-  { name: "待服务", count: 3, route: "orders", icon: 2 },
-  { name: "待评价", count: 0, route: "orders", icon: 3 },
-  { name: "已完成", count: 12, route: "orders", icon: 4 }
+  { name: "待付款", count: 0, route: "orders", icon: 0 },
+  { name: "待接单", count: 3, route: "orders", icon: 1 },
+  { name: "待服务", count: 2, route: "orders", icon: 2 },
+  { name: "待评价", count: 1, route: "orders", icon: 3 },
+  { name: "已完成", count: 3, route: "orders", icon: 4 }
 ];
 
 export const serviceModules = [

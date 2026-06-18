@@ -7,3 +7,10 @@ site/
 *.tmp
 prototype-export-*.json
 prototype-export-*.html
+scripts/__pycache__/
+scripts/build_product_detail_confirm_doc.py
+scripts/export_product_detail_assets.mjs
+scripts/generate_product_icons.py
+docs/product-detail-confirm-assets/
+docs/商品详情页文案与截图客户确认.docx
+shared/assets/product-icons/_*.png

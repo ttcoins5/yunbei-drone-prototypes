@@ -1,13 +1,17 @@
-import { state } from "../state/appState.js?v=order-list-density-1";
+import { state } from "../state/appState.js?v=product-order-fixtures-1";
 
 function contactSheet() {
   if (!state.showContactSheet) return "";
 
-  return `<div class="sheet-mask" data-action="contact-cancel">
-    <section class="contact-sheet" role="dialog" aria-label="联系客服选项">
-      <button data-action="contact-phone">电话客服</button>
-      <button data-action="contact-wechat">微信客服</button>
-      <button class="contact-sheet-cancel" data-action="contact-cancel">取消</button>
+  return `<div class="dialog-mask">
+    <button class="dialog-backdrop" type="button" aria-label="关闭弹窗" data-action="contact-cancel"></button>
+    <section class="contact-confirm-dialog" role="dialog" aria-label="联系客服">
+      <b>联系客服</b>
+      <p>客服电话：0577-55558188<br>工作时间：工作日 9:00-18:00</p>
+      <div class="contact-confirm-actions">
+        <button type="button" data-action="contact-cancel">取消</button>
+        <button type="button" data-action="contact-phone">拨打电话</button>
+      </div>
     </section>
   </div>`;
 }

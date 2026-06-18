@@ -146,9 +146,9 @@ function openRoleModal(role = null) {
   </section>`).join("");
   modal(role ? "编辑角色权限" : "新增角色", formGrid([
     { label: "角色名称", html: `<input id="role-name" value="${draft.name}" placeholder="请输入角色名称"${draft.locked ? " disabled" : ""}>` },
-    { label: "角色说明", html: `<input id="role-description" value="${draft.description}" placeholder="请输入角色说明"${draft.locked ? " disabled" : ""}>` },
+    { label: "角色说明", wide: true, html: `<textarea id="role-description" placeholder="请输入角色说明"${draft.locked ? " disabled" : ""}>${draft.description}</textarea>` },
     { label: "页面权限", wide: true, html: `<div class="permission-matrix">${matrix}</div>` }
-  ]), `${button("取消","close-modal")}${draft.locked ? "" : button("保存角色","save-role","primary")}`, true);
+  ]).replace("form-grid", "form-grid role-form-grid"), `${button("取消","close-modal")}${draft.locked ? "" : button("保存角色","save-role","primary")}`, true);
 }
 
 function saveAdminUserFromModal() {

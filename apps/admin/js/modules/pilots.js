@@ -194,8 +194,8 @@ function pilotDetailPage() {
   + pilotCompanyPanel(pilot.company)
   + pilotQualificationPanel(pilot)
   + panel("分配订单及个人完成状态", table(["订单号","服务","服务时间","订单状态","个人状态"], [
-    ["YB26061318","园区航拍测绘",formatOrderAppointmentBrief(orderRecords.find(item => item.id === "YB26061318")),statusTag("待服务"),tag("服务中")],
-    ["YB26060809","园区巡检","—",statusTag("已完成"),tag("已完成")]
+    ["YB26061703","无人机吊运服务",formatOrderAppointmentBrief(orderRecords.find(item => item.id === "YB26061703")),statusTag("待服务"),tag("服务中")],
+    ["YB26061701","无人机巡检服务",formatOrderAppointmentBrief(orderRecords.find(item => item.id === "YB26061701")),statusTag("待派单"),tag("待确认")]
   ]));
 }
 

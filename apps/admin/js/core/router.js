@@ -71,8 +71,21 @@ function sidebar() {
 
 function topbar() {
   return `<header class="topbar">
-    <div><div class="crumb">奉飞飞无人机后台 / ${titles[state.page] || "工作台"}</div><h1>${titles[state.page] || "工作台"}</h1></div>
-    <div class="top-actions"><span class="tag">低保真 V1</span>${button("复制页面链接", "copy-link")}${button("退出", "logout")}</div>
+    <div class="navbar">
+      <div class="navbar-left">
+        <span class="hamburger">☰</span>
+        <span class="crumb">奉飞飞无人机后台 / ${titles[state.page] || "工作台"}</span>
+      </div>
+      <div class="top-actions">
+        <span class="tag">低保真 V1</span>
+        ${button("复制页面链接", "copy-link")}
+        <span class="navbar-user">${currentAdminUser().name}</span>
+        ${button("退出", "logout")}
+      </div>
+    </div>
+    <div class="tags-view">
+      <button class="tag-tab active" data-route="${state.page}">${titles[state.page] || "工作台"}</button>
+    </div>
   </header>`;
 }
 

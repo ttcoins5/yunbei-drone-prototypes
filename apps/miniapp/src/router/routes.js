@@ -1,9 +1,9 @@
-import { caseDetailPage, casesPage, categoriesPage, homePage } from "../pages/home.js?v=case-showcase-1";
-import { orderConfirmPage, paymentPage, paymentResultPage, productDetailPage, productReviewsPage, productsPage } from "../pages/products.js?v=all-products-2";
+import { caseDetailPage, casesPage, categoriesPage, homePage } from "../pages/home.js?v=product-line-icons-1";
+import { orderConfirmPage, paymentPage, paymentResultPage, productDetailPage, productReviewsPage, productsPage } from "../pages/products.js?v=product-line-icons-1";
 import { profileDetailPage, profilePage } from "../pages/profile.js?v=message-clean-2";
-import { messagesPage, orderDetailPage, ordersPage, serviceNotificationsPage } from "../pages/orders.js?v=order-list-paid-only-1";
-import { addressPage, feedbackPage, formPage, invoicePage, operatorPage, reportPage } from "../pages/forms.js?v=report-no-after-submit-1";
-import { aboutPage, contactPage, contactPhonePage, contactWechatPage, pilotOrderDetailPage, tasksPage } from "../pages/static.js?v=about-contact-1";
+import { messagesPage, orderDetailPage, ordersPage, serviceNotificationsPage } from "../pages/orders.js?v=product-line-icons-1";
+import { addressPage, feedbackPage, formPage, invoicePage, operatorPage, reportDetailPage, reportPage } from "../pages/forms.js?v=report-no-after-submit-1";
+import { aboutPage, contactPage, contactPhonePage, contactWechatPage, pilotOrderDetailPage, tasksPage } from "../pages/static.js?v=product-line-icons-1";
 
 export const routes = {
   home: homePage,
@@ -18,6 +18,7 @@ export const routes = {
   paymentResult: paymentResultPage,
   pilot: () => formPage("pilot"),
   report: reportPage,
+  reportDetail: reportDetailPage,
   booking: () => formPage("booking"),
   rental: () => formPage("rental"),
   profile: profilePage,
