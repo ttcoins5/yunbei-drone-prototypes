@@ -1,7 +1,7 @@
-import { categories, homepageNavItems, products } from "../data/catalog.js?v=order-detail-no-thumb-1";
-import { caseStudies } from "../data/caseStudies.js?v=order-detail-no-thumb-1";
-import { shell } from "../components/layout.js?v=order-detail-no-thumb-1";
-import { state } from "../state/appState.js?v=order-detail-no-thumb-1";
+import { categories, homepageNavItems, products } from "../data/catalog.js?v=home-core-gapless-1";
+import { caseStudies } from "../data/caseStudies.js?v=home-core-gapless-1";
+import { shell } from "../components/layout.js?v=home-core-gapless-1";
+import { state } from "../state/appState.js?v=home-core-gapless-1";
 
 function stripHtml(html = "") {
   return String(html).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
@@ -48,7 +48,7 @@ export function homePage() {
       </div>
     </section>
     <section class="quick-grid">
-      <button data-route="pilot"><i>飞</i><span><small>PILOT SERVICE</small><b>飞手加入</b><em>认证入驻 · 承接任务</em></span><strong>→</strong></button>
+      <button data-route="pilot"><i>飞</i><span><small>PILOT SERVICE</small><b>飞手加入</b><em>填写资料 · 认证入驻</em></span><strong>→</strong></button>
       <button data-route="report"><i>报</i><span><small>FLIGHT REPORT</small><b>飞行报备</b><em>材料提交 · 进度跟进</em></span><strong>→</strong></button>
     </section>
     <section class="task-entry-panel">

@@ -714,6 +714,212 @@ function propertyRow(label, key, product) {
   return `<label class="property-row"><span>${label}</span><input type="checkbox" data-action="toggle-product-property" data-key="${key}"${checked ? " checked" : ""}></label>`;
 }
 
+const showDetailPageConfig = false;
+
+const detailSectionTypeLabels = {
+  intro: "单文本",
+  grid: "四宫格",
+  checklist: "勾选列表",
+  fee: "费用明细",
+  contact: "联系方式",
+  image: "单图片"
+};
+
+const detailCtaLabels = {
+  order: "立即下单",
+  signup: "立即报名",
+  contact: "联系客服",
+  external: "外部跳转"
+};
+
+function detailSectionTypeOptions(selected) {
+  return Object.entries(detailSectionTypeLabels)
+    .map(([value, label]) => `<option value="${value}"${selected === value ? " selected" : ""}>${label}</option>`)
+    .join("");
+}
+
+function detailCtaOptions(selected) {
+  return Object.entries(detailCtaLabels)
+    .map(([value, label]) => `<option value="${value}"${selected === value ? " selected" : ""}>${label}</option>`)
+    .join("");
+}
+
+function normalizeDetailPage(product) {
+  if (!product.detailPage) product.detailPage = detailPageFor(product.id || "p3", product.name || "未命名商品");
+  product.detailPage.templateType = product.detailPage.templateType || "service";
+  product.detailPage.hero = {
+    title: product.detailPage.hero?.title || product.name || "未命名商品",
+    subtitle: product.detailPage.hero?.subtitle || product.desc || "",
+    bannerImage: product.detailPage.hero?.bannerImage || "",
+    icon: product.detailPage.hero?.icon || product.id || "service"
+  };
+  product.detailPage.cta = product.detailPage.cta || { text: "立即下单", actionType: "order" };
+  product.detailPage.cta.text = product.detailPage.cta.text || detailCtaLabels[product.detailPage.cta.actionType] || "立即下单";
+  product.detailPage.cta.actionType = product.detailPage.cta.actionType || "order";
+  if (!Array.isArray(product.detailPage.sections)) product.detailPage.sections = [];
+  product.detailPage.sections = product.detailPage.sections.map((section, index) => ({
+    id: section.id || `section-${Date.now()}-${index}`,
+    type: section.type || "intro",
+    title: section.title || "详情模块",
+    enabled: section.enabled !== false,
+    sort: Number(section.sort) || index + 1,
+    ...section
+  })).sort((a, b) => (Number(a.sort) || 0) - (Number(b.sort) || 0));
+  return product.detailPage;
+}
+
+function detailSectionSummary(section) {
+  if (section.content) return section.content;
+  if (Array.isArray(section.items)) {
+    return section.items.map(item => {
+      if (typeof item === "string") return item;
+      if (item.price) return `${item.name || item.title || "项目"}：${item.price}`;
+      if (item.content) return `${item.title || item.name || "项目"}：${item.content}`;
+      return item.title || item.name || "";
+    }).filter(Boolean).join("、");
+  }
+  if (section.type === "eventInfo") {
+    return [section.date, section.address, section.deadline, ...(section.groups || [])].filter(Boolean).join("、");
+  }
+  if (section.type === "contact") {
+    return [section.phone, section.address].filter(Boolean).join("、");
+  }
+  return "";
+}
+
+function splitDetailSummary(value) {
+  return String(value || "")
+    .split(/[\n、,，/]+/)
+    .map(item => item.trim())
+    .filter(Boolean);
+}
+
+function applySummaryToDetailSection(section, summary) {
+  const value = String(summary || "").trim();
+  const parts = splitDetailSummary(value);
+  const next = { ...section };
+  delete next.content;
+  delete next.items;
+  if (["intro", "company", "license", "externalLink"].includes(next.type)) {
+    next.content = value;
+  } else if (next.type === "image") {
+    next.imageUrl = value;
+    next.content = value;
+  } else if (next.type === "grid") {
+    next.items = parts.map(title => ({ title }));
+  } else if (["checklist", "condition"].includes(next.type)) {
+    next.items = parts;
+  } else if (next.type === "fee") {
+    next.items = parts.map(item => {
+      const [name, price] = item.split(/[：:]/).map(part => part.trim());
+      return { name: name || item, price: price || "线下确认" };
+    });
+  } else if (next.type === "feature") {
+    next.items = parts.map(item => {
+      const [title, content] = item.split(/[：:]/).map(part => part.trim());
+      return { title: title || item, content: content || "可在后台继续维护详细说明" };
+    });
+  } else if (next.type === "eventInfo") {
+    next.date = next.date || parts[0] || "待确认";
+    next.address = next.address || parts[1] || "待确认";
+    next.deadline = next.deadline || parts[2] || "报名截止时间待确认";
+    next.groups = next.groups?.length ? next.groups : parts.slice(3);
+  } else if (next.type === "contact") {
+    next.phone = next.phone || "0577-55558188";
+    next.address = next.address || "浙江省宁波市鄞州区低空经济产业园";
+  } else {
+    next.content = value;
+  }
+  return next;
+}
+
+function detailPagePanel(product) {
+  const detailPage = normalizeDetailPage(product);
+  const hero = detailPage.hero || {};
+  const cta = detailPage.cta || {};
+  const rows = detailPage.sections.map((section, index) => [
+    `<span class="detail-sort">${index + 1}</span>`,
+    `<input data-field="detail-section-title" data-index="${index}" value="${catalogEscape(section.title)}" placeholder="模块名称">`,
+    `<select data-field="detail-section-type" data-index="${index}">${detailSectionTypeOptions(section.type)}</select>`,
+    `<textarea data-field="detail-section-summary" data-index="${index}" placeholder="内容摘要，多个内容用顿号或换行分隔">${catalogEscape(detailSectionSummary(section))}</textarea>`,
+    `<label class="detail-enabled"><input type="checkbox" data-field="detail-section-enabled" data-index="${index}"${section.enabled !== false ? " checked" : ""}>启用</label>`,
+    `<div class="actions">
+      ${button("上移","move-detail-section","small",`data-index="${index}" data-dir="-1"`)}
+      ${button("下移","move-detail-section","small",`data-index="${index}" data-dir="1"`)}
+      ${button("删除","delete-detail-section","small danger",`data-index="${index}"`)}
+    </div>`
+  ]);
+  return panel("详情页配置", `<div class="detail-config">
+    ${formGrid([
+      { label: "行动按钮", html: `<div class="inline-field"><input data-field="detail-cta-text" value="${catalogEscape(cta.text)}" placeholder="按钮文案"><select data-field="detail-cta-action">${detailCtaOptions(cta.actionType)}</select></div>` },
+      { label: "标题", html: `<input data-field="detail-hero-title" value="${catalogEscape(hero.title)}" placeholder="详情页主标题">` },
+      { label: "副标题", html: `<input data-field="detail-hero-subtitle" value="${catalogEscape(hero.subtitle)}" placeholder="详情页副标题">` },
+      { label: "头图地址", html: `<input data-field="detail-hero-banner" value="${catalogEscape(hero.bannerImage)}" placeholder="可填图片路径；留空则使用商品图">` },
+      { label: "图标标识", html: `<input data-field="detail-hero-icon" value="${catalogEscape(hero.icon)}" placeholder="无头图时展示的图标标识">` }
+    ])}
+    <div class="detail-config-actions">
+      ${button("新增模块","add-detail-section","primary")}
+    </div>
+    <div class="detail-table-wrap">
+      ${table(["排序","模块名称","模块类型","内容摘要","状态","操作"], rows, "detail-config-table")}
+    </div>
+    <p class="muted">详情页配置只影响商品介绍与转化按钮；下单页需求字段仍由「需求采集字段」独立控制，历史订单保留下单时字段快照。</p>
+  </div>`);
+}
+
+function readDetailPageFormFromPage(product) {
+  const page = document.querySelector(".page");
+  const previous = normalizeDetailPage(product);
+  if (!page?.querySelector('[data-field="detail-hero-title"]')) return previous;
+  const templateType = previous.templateType || "service";
+  const sections = previous.sections.map((section, index) => {
+    const type = page.querySelector(`[data-field="detail-section-type"][data-index="${index}"]`)?.value || section.type || "intro";
+    const title = page.querySelector(`[data-field="detail-section-title"][data-index="${index}"]`)?.value.trim() || section.title || "详情模块";
+    const summary = page.querySelector(`[data-field="detail-section-summary"][data-index="${index}"]`)?.value || "";
+    const enabled = page.querySelector(`[data-field="detail-section-enabled"][data-index="${index}"]`)?.checked !== false;
+    return applySummaryToDetailSection({
+      ...section,
+      type,
+      title,
+      enabled,
+      sort: index + 1
+    }, summary);
+  });
+  return {
+    templateType,
+    hero: {
+      title: page.querySelector('[data-field="detail-hero-title"]')?.value.trim() || product.name || "未命名商品",
+      subtitle: page.querySelector('[data-field="detail-hero-subtitle"]')?.value.trim() || "",
+      bannerImage: page.querySelector('[data-field="detail-hero-banner"]')?.value.trim() || "",
+      icon: page.querySelector('[data-field="detail-hero-icon"]')?.value.trim() || product.id || "service"
+    },
+    sections,
+    cta: {
+      text: page.querySelector('[data-field="detail-cta-text"]')?.value.trim() || detailCtaLabels[page.querySelector('[data-field="detail-cta-action"]')?.value] || "立即下单",
+      actionType: page.querySelector('[data-field="detail-cta-action"]')?.value || "order",
+      externalUrl: previous.cta?.externalUrl
+    }
+  };
+}
+
+function addDetailSection(product) {
+  const detailPage = normalizeDetailPage(product);
+  detailPage.sections.push(detailSection(`custom-${Date.now()}`, "intro", "自定义模块", {
+    content: "请输入模块内容摘要",
+    sort: detailPage.sections.length + 1
+  }));
+}
+
+function moveDetailSection(product, index, dir) {
+  const detailPage = normalizeDetailPage(product);
+  const next = index + dir;
+  if (next < 0 || next >= detailPage.sections.length) return;
+  [detailPage.sections[index], detailPage.sections[next]] = [detailPage.sections[next], detailPage.sections[index]];
+  detailPage.sections.forEach((section, sectionIndex) => {
+    section.sort = sectionIndex + 1;
+  });
+}
+
 function productEditPage() {
   const product = activeProduct();
   const creating = isCreatingProduct();
@@ -730,6 +936,7 @@ function productEditPage() {
   + productImagesPanel(product)
   + productReviewsPanel(product)
   + panel("多规格配置", `${table(["规格名称","价格（元）","操作"], specs)}<div style="margin-top:12px">${button("添加规格","add-spec")}</div>`)
+  + (showDetailPageConfig ? detailPagePanel(product) : "")
   + requirementFieldsPanel(product)
   + panel("业务属性", `<div class="check-list">${propertyRow("是否在线支付","onlinePay",product)}${propertyRow("是否需要飞手服务","needPilot",product)}</div>
     <p class="muted" style="margin:12px 0 0">业务属性与商品绑定。订单生成时保存最终属性快照，后续修改商品不会改变历史订单。</p>`);
@@ -792,6 +999,7 @@ function readProductFormFromPage() {
     });
     product.requirementFields = product.requirementFields.map(normalizeRequirementField);
   }
+  product.detailPage = readDetailPageFormFromPage(product);
   return product;
 }
 
@@ -1039,6 +1247,31 @@ DroneAdmin.registerModule({
       activeProduct().specs.splice(Number(target.dataset.index), 1);
           render();
     },
+    "reset-detail-template": function (target) {
+      const product = readProductFormFromPage();
+          const templateType = product.detailPage?.templateType || "service";
+          product.detailPage = detailPageForTemplate(templateType, product.id || "p3", product.name || "未命名商品");
+          render();
+          toast("已套用当前模板默认模块");
+    },
+    "add-detail-section": function (target) {
+      const product = readProductFormFromPage();
+          addDetailSection(product);
+          render();
+    },
+    "delete-detail-section": function (target) {
+      const product = readProductFormFromPage();
+          normalizeDetailPage(product).sections.splice(Number(target.dataset.index), 1);
+          product.detailPage.sections.forEach((section, index) => {
+            section.sort = index + 1;
+          });
+          render();
+    },
+    "move-detail-section": function (target) {
+      const product = readProductFormFromPage();
+          moveDetailSection(product, Number(target.dataset.index), Number(target.dataset.dir));
+          render();
+    },
     "add-requirement-field": function (target) {
       const product = readProductFormFromPage();
           ensureCustomRequirementFields(product);
@@ -1160,6 +1393,13 @@ DroneAdmin.registerModule({
           if (field) field.type = event.target.value;
           product.requirementFields = product.requirementFields.map(normalizeRequirementField);
           render();
+          return;
+    },
+    "change-detail-template": function (target) {
+      const product = readProductFormFromPage();
+          product.detailPage = detailPageForTemplate(event.target.value, product.id || "p3", product.name || "未命名商品");
+          render();
+          toast("已生成对应模板默认模块");
           return;
     }
   },

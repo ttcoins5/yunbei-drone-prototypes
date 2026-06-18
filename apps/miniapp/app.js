@@ -1,9 +1,9 @@
-import { hoistingProducts } from "./src/data/catalog.js?v=order-detail-no-thumb-1";
-import { caseStudies } from "./src/data/caseStudies.js?v=order-detail-no-thumb-1";
-import { state } from "./src/state/appState.js?v=order-detail-no-thumb-1";
-import { navigate, render } from "./src/router/navigation.js?v=order-detail-no-thumb-1";
-import { toast } from "./src/utils/toast.js?v=task-toast-center-1";
-import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=order-detail-no-thumb-1";
+import { hoistingProducts } from "./src/data/catalog.js?v=home-core-gapless-1";
+import { caseStudies } from "./src/data/caseStudies.js?v=home-core-gapless-1";
+import { state } from "./src/state/appState.js?v=home-core-gapless-1";
+import { navigate, render } from "./src/router/navigation.js?v=home-core-gapless-1";
+import { toast } from "./src/utils/toast.js?v=home-core-gapless-1";
+import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=home-core-gapless-1";
 
 function formatDateTime(date = new Date()) {
   const year = date.getFullYear();
@@ -501,6 +501,55 @@ function togglePilotAgreement() {
   render(true);
 }
 
+function generatePilotApplicationId(date = new Date()) {
+  const dateKey = `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, "0")}${String(date.getDate()).padStart(2, "0")}`;
+  return `FS${dateKey}001`;
+}
+
+function submitPilotApplication(form) {
+  const now = formatDateTime();
+  const isCompany = state.pilotJoinType === "company";
+  const fields = Object.fromEntries(new FormData(form).entries());
+  const previous = state.pilotApplication;
+  const history = previous?.status === "已驳回"
+    ? [
+        { time: previous.reviewedAt || previous.appliedAt, status: "已驳回", reason: previous.rejectReason || "资料不完整，请补充后重新提交。" },
+        ...(previous.history || [])
+      ]
+    : (previous?.history || []);
+
+  state.pilotApplication = {
+    id: previous?.id || generatePilotApplicationId(),
+    status: "待审核",
+    applicant: fields.applicant?.trim() || state.userProfile.nickname,
+    subject: isCompany ? "公司主体" : "个人主体",
+    phone: fields.phone?.trim() || state.userProfile.phone,
+    birthday: fields.birthday || "",
+    area: fields.area?.trim() || state.userProfile.region,
+    companyName: isCompany ? (fields.companyName?.trim() || "宁波低空服务有限公司") : "",
+    droneModel: fields.droneModel?.trim() || "DJI Mavic 3E",
+    serialNo: fields.serialNo?.trim() || "",
+    uniqueId: fields.uniqueId?.trim() || "",
+    appliedAt: now,
+    reviewedAt: "",
+    rejectReason: "",
+    progress: [
+      { time: now, title: "提交申请", desc: "已提交飞手入驻资料，等待后台审核" },
+      { time: "待更新", title: "平台审核", desc: "运营人员将核验身份、执照和设备资料" }
+    ],
+    history
+  };
+  state.pilotAgreement = false;
+  toast("飞手申请已提交");
+  navigate("pilotStatus");
+}
+
+function reapplyPilotApplication() {
+  state.pilotJoinType = state.pilotApplication?.subject === "公司主体" ? "company" : "personal";
+  state.pilotAgreement = false;
+  navigate("pilot");
+}
+
 function toggleOperatorAgreement() {
   state.operatorAgreement = !state.operatorAgreement;
   render();
@@ -567,6 +616,7 @@ document.addEventListener("click", (event) => {
   if (action.dataset.action === "pilot-type") return setPilotType(action.dataset.type);
   if (action.dataset.action === "pilot-company-mode") return setPilotCompanyMode(action.dataset.mode);
   if (action.dataset.action === "pilot-agreement") return togglePilotAgreement();
+  if (action.dataset.action === "pilot-reapply") return reapplyPilotApplication();
   if (action.dataset.action === "operator-agreement") return toggleOperatorAgreement();
   if (action.dataset.action === "pilot-only-close") return closePilotOnlyDialog();
   if (action.dataset.action === "wechat-profile-auth") return updateWechatProfile();
@@ -601,6 +651,7 @@ document.addEventListener("submit", (event) => {
     toast("请先勾选飞手入驻协议");
     return;
   }
+  if (event.target.dataset.form === "pilot") return submitPilotApplication(event.target);
   if (event.target.dataset.form === "operator" && !state.operatorAgreement) {
     toast("请先勾选城市运营商入驻协议");
     return;

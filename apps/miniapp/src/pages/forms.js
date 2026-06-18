@@ -1,6 +1,6 @@
 import { icon } from "../components/icons.js";
-import { shell } from "../components/layout.js?v=order-detail-no-thumb-1";
-import { state } from "../state/appState.js?v=order-detail-no-thumb-1";
+import { shell } from "../components/layout.js?v=home-core-gapless-1";
+import { state } from "../state/appState.js?v=home-core-gapless-1";
 
 function addressCard(address) {
   return `<article class="address-card ${address.isDefault ? "is-default" : ""}">
@@ -296,8 +296,8 @@ export function reportPage() {
   </form>`, { title: "飞行报备", back: true, tab: "home" });
 }
 
-function formField(label, placeholder, value = "", type = "text") {
-  return `<label>${label}<input type="${type}" required placeholder="${placeholder}" value="${value}"></label>`;
+function formField(label, placeholder, value = "", type = "text", name = "") {
+  return `<label>${label}<input name="${name || label}" type="${type}" required placeholder="${placeholder}" value="${value}"></label>`;
 }
 
 function uploadField(label, placeholder, name = "") {
@@ -312,28 +312,31 @@ function uploadField(label, placeholder, name = "") {
 }
 
 function deviceFields(prefix = "") {
+  const app = state.pilotApplication || {};
   return `<div class="pilot-section">
     <div class="pilot-section-title"><b>${prefix}设备信息</b><small>用于审核无人机资产与任务派单匹配</small></div>
-    ${formField("机型选择", "请选择无人机机型")}
-    ${formField("序列号", "请输入无人机序列号")}
-    ${formField("唯一识别码", "请输入 UAS 码或设备唯一识别码")}
+    ${formField("机型选择", "请选择无人机机型", app.droneModel || "", "text", "droneModel")}
+    ${formField("序列号", "请输入无人机序列号", app.serialNo || "", "text", "serialNo")}
+    ${formField("唯一识别码", "请输入 UAS 码或设备唯一识别码", app.uniqueId || "", "text", "uniqueId")}
   </div>`;
 }
 
 function pilotCompanyFields() {
+  const app = state.pilotApplication || {};
   return `<div class="pilot-section">
     <div class="pilot-section-title"><b>公司信息</b><small>选择公司主体时仅需填写公司名称</small></div>
-    ${formField("公司名称", "请输入公司名称")}
+    ${formField("公司名称", "请输入公司名称", app.companyName || "", "text", "companyName")}
   </div>`;
 }
 
 function pilotPersonalFields() {
+  const app = state.pilotApplication || {};
   return `<div class="pilot-section">
     <div class="pilot-section-title"><b>个人信息</b><small>用于实名认证、资质审核与联系确认</small></div>
-    ${formField("申请人", "请输入申请人姓名", "云北用户")}
-    ${formField("联系电话", "请输入联系电话", "13888888821", "tel")}
-    ${formField("出生年月", "请选择出生年月", "", "month")}
-    ${formField("所在区域", "请选择省市区", "上海市 浦东新区")}
+    ${formField("申请人", "请输入申请人姓名", app.applicant || state.userProfile.nickname, "text", "applicant")}
+    ${formField("联系电话", "请输入联系电话", app.phone || state.userProfile.phone, "tel", "phone")}
+    ${formField("出生年月", "请选择出生年月", app.birthday || "", "month", "birthday")}
+    ${formField("所在区域", "请选择省市区", app.area || state.userProfile.region, "text", "area")}
     ${uploadField("上传无人机操作执照", "请上传 CAAC 或对应操作执照")}
     ${uploadField("上传无人机照片", "请上传无人机实物照片")}
   </div>`;
@@ -341,9 +344,10 @@ function pilotPersonalFields() {
 
 function pilotPage() {
   const isCompany = state.pilotJoinType === "company";
+  const isReapply = state.pilotApplication?.status === "已驳回";
 
   return shell(`<form class="form-page pilot-page" data-form="pilot">
-    <div class="form-intro"><b>飞手加入</b><p>个人信息为必填资料；若所属主体为公司，还需要选择或补充公司信息。</p></div>
+    <div class="form-intro"><b>${isReapply ? "重新提交飞手申请" : "飞手加入"}</b><p>${isReapply ? "请根据驳回原因修改资料，重新提交后进入待审核状态。" : "个人信息为必填资料；若所属主体为公司，还需要选择或补充公司信息。"}</p></div>
     ${pilotPersonalFields()}
     <div class="pilot-section">
       <div class="pilot-section-title"><b>所属主体</b><small>若归属公司，仅补充公司名称</small></div>

@@ -48,8 +48,8 @@ button { cursor: pointer; }
 .hero-dots { position: absolute; z-index: 2; right: 18px; bottom: 10px; display: flex; gap: 5px; }
 .hero-dots i { width: 5px; height: 5px; border-radius: 5px; background: rgba(255,255,255,.5); }
 .hero-dots .active { width: 20px; background: #6cddd7; }
-.home-nav-panel { margin: 9px 10px 0; padding: 10px 9px 12px; border-radius: 22px; background: linear-gradient(180deg,rgba(255,255,255,.98),rgba(246,250,251,.98)); box-shadow: 0 12px 30px rgba(18,42,55,.08); }
-.home-nav-head { display: flex; align-items: flex-end; justify-content: space-between; padding: 3px 5px 10px; }
+.home-nav-panel { margin: 0 10px 0; padding: 6px 9px 5px; border-radius: 22px; background: linear-gradient(180deg,rgba(255,255,255,.98),rgba(246,250,251,.98)); box-shadow: 0 12px 30px rgba(18,42,55,.08); }
+.home-nav-head { display: flex; align-items: flex-end; justify-content: space-between; padding: 1px 5px 7px; }
 .home-nav-head span { display: grid; gap: 4px; }
 .home-nav-head small { color: #53a7a5; font-size: 7px; font-weight: 800; letter-spacing: .14em; }
 .home-nav-head b { color: #15333f; font-size: 17px; line-height: 1; }
@@ -59,7 +59,7 @@ button { cursor: pointer; }
 .home-nav-divider { position: absolute; background: #e8eef0; pointer-events: none; }
 .home-nav-divider.vertical { top: 18px; bottom: 18px; left: calc(50% - .5px); width: 1px; }
 .home-nav-divider.horizontal { right: 18px; left: 18px; top: calc(50% - .5px); height: 1px; }
-.home-nav-small-row { display: flex; align-items: stretch; margin-top: 6px; padding: 3px 2px 0; }
+.home-nav-small-row { display: flex; align-items: stretch; margin-top: 4px; padding: 1px 2px 0; }
 .home-nav-small { flex: 1 1 0; display: flex; align-items: center; justify-content: center; padding: 4px 3px; border: 0; background: transparent; }
 .home-nav-small img { display: block; width: 100%; max-width: 68px; height: auto; border-radius: 13px; }
 .home-nav-small-divider { flex: 0 0 1px; align-self: center; width: 1px; height: 54px; background: #e8eef0; }
@@ -84,7 +84,7 @@ button { cursor: pointer; }
 .minor-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 4px; margin-top: 13px; padding-top: 12px; border-top: 1px solid #edf2f3; }
 .minor-grid button { padding: 0; border: 0; color: #39555f; background: transparent; font-size: 9px; }
 .minor-grid span { display: block; margin-top: 4px; }
-.quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 10px 12px; }
+.quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 4px 10px 10px; }
 .quick-grid button { position: relative; display: grid; min-height: 78px; grid-template-columns: 38px 1fr; align-items: center; gap: 9px; padding: 11px; border: 0; border-radius: 15px; color: #fff; background: linear-gradient(135deg,#10556d,#16847f); text-align: left; }
 .quick-grid button:nth-child(2) { background: linear-gradient(135deg,#176179,#28a49d); }
 .quick-grid > button > i { display: grid; width: 38px; height: 38px; place-items: center; border: 1px solid rgba(255,255,255,.35); border-radius: 13px; background: rgba(255,255,255,.12); font-style: normal; font-weight: 800; }
@@ -171,6 +171,32 @@ button { cursor: pointer; }
 .profile-field-row small { color: var(--muted); font-size: 9px; }
 .profile-field-row b { color: #17313c; font-size: 13px; line-height: 1.45; }
 .profile-field-row em { flex: 0 0 auto; padding: 4px 7px; border-radius: 999px; color: #087075; background: #def8f4; font-size: 8px; font-style: normal; font-weight: 800; }
+.pilot-status-page { min-height: 760px; padding: 13px 13px 92px; background: #eef3f4; }
+.pilot-status-hero { position: relative; padding: 18px; border-radius: 18px; color: #fff; background: linear-gradient(135deg,#0b536a,#18a79c); box-shadow: 0 16px 32px rgba(18,94,118,.16); }
+.pilot-status-hero.pending { background: linear-gradient(135deg,#0b536a,#1a92b7); }
+.pilot-status-hero.rejected { background: linear-gradient(135deg,#7b4f5b,#d65454); }
+.pilot-status-hero.approved { background: linear-gradient(135deg,#0b536a,#18a79c); }
+.pilot-status-hero small { color: rgba(255,255,255,.72); font-size: 8px; font-weight: 800; letter-spacing: .16em; }
+.pilot-status-hero h2 { margin: 8px 0 6px; font-size: 22px; }
+.pilot-status-hero p { width: 76%; margin: 0; color: rgba(255,255,255,.86); font-size: 11px; line-height: 1.55; }
+.pilot-status-hero em { position: absolute; right: 16px; bottom: 16px; padding: 7px 10px; border-radius: 999px; background: rgba(255,255,255,.16); font-size: 10px; font-style: normal; font-weight: 800; }
+.pilot-status-card { display: grid; gap: 12px; margin-top: 11px; padding: 15px; border-radius: 16px; background: #fff; box-shadow: 0 10px 24px rgba(18,42,55,.06); }
+.profile-card-title small { color: var(--muted); font-size: 9px; font-weight: 700; }
+.pilot-status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.pilot-status-grid span { display: grid; gap: 4px; min-width: 0; padding: 10px; border-radius: 12px; background: #f7fbfc; }
+.pilot-status-grid small, .pilot-reject-status small { color: var(--muted); font-size: 9px; font-weight: 700; }
+.pilot-status-grid b { color: #17313c; font-size: 12px; line-height: 1.45; overflow-wrap: anywhere; }
+.pilot-reject-status { display: grid; gap: 8px; }
+.pilot-reject-status span { display: grid; gap: 5px; padding: 10px; border-radius: 12px; background: #fff7f7; }
+.pilot-reject-status b { color: #17313c; font-size: 12px; line-height: 1.55; }
+.pilot-reject-status span:first-child b { color: #d65454; }
+.pilot-status-tip { margin: 0; color: #516973; font-size: 11px; line-height: 1.65; }
+.reject-reason button, .pilot-status-actions button, .pilot-status-empty button { height: 40px; border: 0; border-radius: 12px; color: #fff; background: linear-gradient(135deg,var(--blue),var(--teal)); font-size: 13px; font-weight: 800; }
+.pilot-status-actions { position: sticky; bottom: 0; margin: 12px -1px 0; padding: 10px 0; background: linear-gradient(180deg,rgba(238,243,244,0),#eef3f4 28%); }
+.pilot-status-actions button { width: 100%; }
+.pilot-status-empty { display: grid; gap: 12px; margin-top: 18px; padding: 20px; border-radius: 18px; background: #fff; box-shadow: 0 12px 28px rgba(18,42,55,.08); text-align: center; }
+.pilot-status-empty b { color: #0c2935; font-size: 17px; }
+.pilot-status-empty p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.65; }
 .list-page, .form-page, .about-page, .detail-page { padding: 13px; }
 .page-lead { color: var(--muted); font-size: 12px; }
 .list-row { display: grid; width: 100%; min-height: 74px; grid-template-columns: 50px 1fr 18px; align-items: center; gap: 10px; margin-bottom: 9px; padding: 10px; border: 0; border-radius: 13px; color: inherit; background: #fff; text-align: left; }

@@ -288,6 +288,19 @@ td .actions .button.small { min-width: 52px; min-height: 30px; padding: 0 10px; 
 .property-row span { color: var(--ink); font-weight: 600; }
 .property-row input[type="checkbox"] { width: 16px; height: 16px; margin: 0; cursor: pointer; }
 .detail-config { display: grid; gap: 14px; }
+.detail-config .inline-field { display: grid; grid-template-columns: minmax(0, 1fr) 150px; gap: 10px; }
+.detail-config-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.detail-table-wrap { overflow-x: auto; }
+.detail-config-table { min-width: 1060px; }
+.detail-config-table input, .detail-config-table select, .detail-config-table textarea { width: 100%; min-height: 32px; padding: 6px 8px; border: 1px solid var(--line-dark); border-radius: 4px; color: var(--ink); background: #fff; }
+.detail-config-table textarea { min-height: 58px; resize: vertical; line-height: 1.5; }
+.detail-config-table th:first-child, .detail-config-table td:first-child { width: 58px; text-align: center; }
+.detail-config-table th:nth-child(3), .detail-config-table td:nth-child(3) { width: 140px; }
+.detail-config-table th:nth-child(5), .detail-config-table td:nth-child(5) { width: 90px; }
+.detail-config-table th:last-child, .detail-config-table td:last-child { width: 210px; }
+.detail-sort { display: inline-grid; width: 26px; height: 26px; place-items: center; border: 1px solid #d9ecff; border-radius: 4px; color: #409eff; background: #ecf5ff; font-weight: 600; }
+.detail-enabled { display: inline-flex; align-items: center; gap: 6px; color: #4f6068; white-space: nowrap; }
+.detail-enabled input { width: 15px; height: 15px; }
 .detail-section-list { padding: 14px; border: 1px solid var(--line); border-radius: 4px; background: #fff; }
 .detail-section-list ul { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .detail-section-list li { display: grid; grid-template-columns: 34px minmax(120px, 1fr) 110px 90px; align-items: center; gap: 10px; min-height: 38px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 4px; background: #fff; }

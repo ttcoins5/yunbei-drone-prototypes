@@ -1,5 +1,5 @@
-import { shell } from "../components/layout.js?v=order-detail-no-thumb-1";
-import { state } from "../state/appState.js?v=order-detail-no-thumb-1";
+import { shell } from "../components/layout.js?v=home-core-gapless-1";
+import { state } from "../state/appState.js?v=home-core-gapless-1";
 
 const defaultAboutConfig = {
   name: "四川奉飞飞无人机科技有限公司",

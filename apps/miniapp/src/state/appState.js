@@ -1,4 +1,4 @@
-import { hoistingProducts } from "../data/catalog.js?v=order-detail-no-thumb-1";
+import { hoistingProducts } from "../data/catalog.js?v=home-core-gapless-1";
 
 const productById = Object.fromEntries(hoistingProducts.map(product => [product.id, product]));
 
@@ -85,6 +85,27 @@ export const state = {
     avatarText: "云",
     wechatAuthorized: true,
     phoneAuthorized: true
+  },
+  pilotApplication: {
+    id: "FS20260612008",
+    status: "已通过",
+    applicant: "云北用户",
+    subject: "个人主体",
+    phone: "13888888821",
+    area: "浙江省 宁波市",
+    companyName: "",
+    droneModel: "DJI Mavic 3E",
+    appliedAt: "2026-06-12 10:20",
+    reviewedAt: "2026-06-12 16:40",
+    rejectReason: "",
+    progress: [
+      { time: "2026-06-12 10:20", title: "提交申请", desc: "已提交个人资料、操作执照和设备信息" },
+      { time: "2026-06-12 14:10", title: "平台审核", desc: "运营人员核验资质与设备资料" },
+      { time: "2026-06-12 16:40", title: "审核通过", desc: "飞手权限已开通，可进入任务大厅和报备功能" }
+    ],
+    history: [
+      { time: "2026-06-10 18:30", status: "已驳回", reason: "操作执照照片不清晰，请重新上传完整文件。" }
+    ]
   },
   selectedOrderNo: "ORD20260617001",
   orders: [

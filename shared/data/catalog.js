@@ -389,7 +389,7 @@ export const serviceModules = [
   { name: "开票中心", desc: "开票中心 32", route: "invoice", icon: 2 },
   { name: "意见反馈", desc: "意见反馈 29", route: "feedback", icon: 3 },
   { name: "关于我们", desc: "关于我们 28", route: "about", icon: 4 },
-  { name: "飞手加入", desc: "飞手加入 25", route: "pilot", icon: 5 },
+  { name: "飞手加入", desc: "填写入驻资料", route: "pilot", icon: 5 },
   { name: "城市运营申请", desc: "城市运营申请", route: "operator", icon: 6 },
   { name: "任务大厅", desc: "任务大厅", route: "tasks", icon: 7, pilotOnly: true }
 ];
