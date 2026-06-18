@@ -1,7 +1,11 @@
-import { shell } from "../components/layout.js?v=profile-auto-role-1";
-import { state } from "../state/appState.js?v=product-order-fixtures-1";
+import { shell } from "../components/layout.js?v=order-detail-no-thumb-1";
+import { state } from "../state/appState.js?v=order-detail-no-thumb-1";
 
 const orderTabs = ["全部", "待付款", "待接单", "待服务", "待评价", "已取消"];
+
+function reviewStars(rating = 5) {
+  return `<span class="review-stars">${"★".repeat(rating)}${"☆".repeat(5 - rating)}</span><em class="review-rating">${rating}星</em>`;
+}
 
 function selectedOrder() {
   return state.orders.find(order => order.orderNo === state.selectedOrderNo) || state.orders[0] || null;
@@ -50,7 +54,6 @@ function orderCard(order) {
       <em>${order.status}</em>
     </div>
     <div class="order-card-body">
-      <div class="order-thumb"></div>
       <div>
         <h3>${order.title}</h3>
         <div class="order-card-meta">
@@ -60,6 +63,28 @@ function orderCard(order) {
     </div>
     ${paymentFoot}
   </button>`;
+}
+
+function orderReviewEntry(order) {
+  if (order.status === "待评价") {
+    return `<section class="order-detail-card order-review-card">
+      <div class="order-review-entry-head">
+        <span>
+          <b>服务评价</b>
+          <small>服务已完成，可提交 1-5 星评价与文字反馈</small>
+        </span>
+        <button class="order-review-entry" data-action="order-review-open" data-id="${order.orderNo}">去评价</button>
+      </div>
+    </section>`;
+  }
+  if (!order.review) return "";
+  return `<section class="order-detail-card order-review-card">
+    <div class="order-detail-title"><b>服务评价</b><small>${order.review.time}</small></div>
+    <div class="order-review-result">
+      <div>${reviewStars(order.review.rating)}</div>
+      <p>${order.review.content}</p>
+    </div>
+  </section>`;
 }
 
 function requirementSnapshotGrid(snapshot) {
@@ -95,10 +120,10 @@ export function ordersPage() {
 
   return shell(`<div class="orders-page">
     <form class="order-search" data-form="order-search">
-      <input name="keyword" placeholder="请输入订单号" value="${state.orderSearch}">
+      <input name="keyword" placeholder="订单号/商品名字" value="${state.orderSearch}">
       <button type="submit">搜索</button>
     </form>
-    <div class="order-tabs">${orderTabs.map(tab => `<button class="${state.orderFilter === tab ? "active" : ""}" data-action="order-filter" data-filter="${tab}">${tab}</button>`).join("")}</div>
+    <div class="order-tabs">${orderTabs.map(tab => `<button type="button" class="${state.orderFilter === tab ? "active" : ""}" data-action="order-filter" data-filter="${tab}">${tab}</button>`).join("")}</div>
     <section class="order-list">
       ${list.map(orderCard).join("") || `<div class="order-empty"><b>暂无订单</b><p>换个订单号或状态试试</p></div>`}
     </section>
@@ -177,7 +202,6 @@ export function orderDetailPage() {
     <section class="order-detail-card">
       <div class="order-detail-title"><b>服务信息</b><small>${order.title}</small></div>
       <div class="order-detail-product">
-        <div class="order-thumb"></div>
         <span>
           <b>${order.title}</b>
           <small>规格：${order.spec}</small>
@@ -199,5 +223,40 @@ export function orderDetailPage() {
         </article>`).join("")}
       </div>
     </section>
+    ${orderReviewEntry(order)}
   </div>`, { title: "订单详情", back: true, tab: "orders" });
+}
+
+export function orderReviewPage() {
+  const order = selectedOrder();
+  if (!order) {
+    return shell(`<div class="order-detail-page"><div class="order-empty"><b>暂无可评价订单</b><p>请先从订单列表中选择一笔订单。</p></div></div>`, { title: "评价订单", back: true, tab: "orders" });
+  }
+  const rating = Math.min(5, Math.max(1, Number(state.orderReviewDraft?.rating) || 5));
+  const content = state.orderReviewDraft?.content || "";
+  return shell(`<form class="order-review-page" data-form="order-review">
+    <section class="order-detail-card order-review-summary">
+      <div class="order-detail-title"><b>评价订单</b><small>${order.orderNo}</small></div>
+      <div class="order-detail-product">
+        <span>
+          <b>${order.title}</b>
+          <small>${order.contactName || "平台用户"} · ${order.time}</small>
+        </span>
+      </div>
+    </section>
+    <section class="order-detail-card order-review-form-card">
+      <div class="order-detail-title"><b>服务星级</b><small>请选择 1-5 星</small></div>
+      <div class="order-review-stars">
+        ${[1, 2, 3, 4, 5].map(item => `<button type="button" class="${item <= rating ? "active" : ""}" data-action="order-review-rating" data-rating="${item}">★</button>`).join("")}
+      </div>
+      <div class="order-review-rating-text">${rating} 星评价</div>
+      <label class="order-review-field">
+        <span>评价内容</span>
+        <textarea name="content" data-input="order-review-content" rows="5" placeholder="请填写本次服务体验，例如响应速度、服务质量、沟通情况等">${content}</textarea>
+      </label>
+    </section>
+    <div class="confirm-pay-bar order-review-submit">
+      <button type="submit">提交评价</button>
+    </div>
+  </form>`, { title: "评价订单", back: true, tab: "orders" });
 }

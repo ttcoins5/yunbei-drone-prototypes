@@ -1,5 +1,5 @@
-import { routes } from "./routes.js?v=product-line-icons-1";
-import { state } from "../state/appState.js?v=product-order-fixtures-1";
+import { routes } from "./routes.js?v=order-detail-no-thumb-1";
+import { state } from "../state/appState.js?v=order-detail-no-thumb-1";
 
 export function render(preserveScroll = false) {
   if (!routes[state.page]) state.page = "home";

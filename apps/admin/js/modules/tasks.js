@@ -32,7 +32,7 @@ const taskRecords = DroneAdmin.data.taskRecords = [
     "description": "<p>商业活动开幕航拍，需 1 名飞手配合地面导演完成指定机位拍摄。</p>",
     "status": "已关闭",
     "interest": 4,
-    "assignedPilots": [{ "name": "赵宇", "area": "成都武侯", "device": "Mavic 3E", "status": "已指派" }]
+    "assignedPilots": [{ "name": "赵宇", "area": "成都武侯", "device": "Mavic 3E", "status": "已完成" }]
   },
   {
     "id": "RW26060402",
@@ -87,20 +87,21 @@ function initTaskDescriptionViewer() {
 function tasksPage() {
   const rows = taskRecords.map(item => [
     item.id, item.title, item.serviceTime, item.address, tag(item.status), item.interest,
-    item.assignedPilots?.length ? tag(`已指派 ${item.assignedPilots.length} 人`) : tag("待指派"),
+    taskAssignmentStatus(item),
     taskListActions(item)
   ]);
   return panel("任务需求", `<div class="toolbar" style="margin-bottom:14px">
     <input placeholder="需求标题 / 地址"><select><option>全部状态</option><option>征集中</option><option>已关闭</option></select>${button("查询","filter","primary")}
     <span class="spacer"></span>${button("发布任务需求","publish-task","primary")}
-  </div>${paginatedTable("tasks", ["需求编号","标题","服务时间","地址","状态","意愿人数","指派状态","操作"], rows)}
+  </div>${paginatedTable("tasks", ["需求编号","标题","服务时间","地址","状态","意愿人数","指派状态","操作"], rows, "tasks-table")}
   <p class="muted" style="margin:14px 0 0">任务大厅展示后台自建任务，飞手只能提交参与意愿；最终由后台从有意愿或已合作/认证飞手中统一指派。用户提交的服务订单不进入任务大厅。</p>`);
 }
 
 function taskListActions(task) {
   const detail = `<button class="button small" data-route="task-detail" data-task-id="${task.id}">查看详情</button>`;
-  const interest = button("意愿/指派", "task-interest", "small primary", `data-task-id="${task.id}"`);
-  return `<div class="row-actions">${detail}${interest}</div>`;
+  const interest = canReassignTask(task) ? button(task.assignedPilots?.length ? "重新指派" : "意愿/指派", "task-interest", "small primary", `data-task-id="${task.id}"`) : "";
+  const close = task.status === "征集中" ? button("关闭征集", "close-task-collection", "small", `data-task-id="${task.id}"`) : "";
+  return `<div class="row-actions">${detail}${interest}${close}</div>`;
 }
 
 function taskDetailPage() {
@@ -108,17 +109,35 @@ function taskDetailPage() {
   const assigned = task.assignedPilots?.length
     ? table(["飞手","区域","设备","指派状态"], task.assignedPilots.map(p => [p.name, p.area, p.device, tag(p.status)]))
     : `<p class="empty">尚未从意愿名单中指派飞手</p>`;
+  const taskActions = [
+    canReassignTask(task) ? button(task.assignedPilots?.length ? "重新指派" : "查看意愿并指派", "task-interest", "primary", `data-task-id="${task.id}"`) : "",
+    task.status === "征集中" ? button("关闭征集", "close-task-collection", "", `data-task-id="${task.id}"`) : ""
+  ].filter(Boolean).join("");
   return panel("任务信息", detailGrid([
     ["需求编号", task.id], ["标题", task.title], ["服务时间", task.serviceTime],
     ["地址", task.address, true], ["备注", task.remark || "—", true], ["状态", tag(task.status)],
-    ["意愿人数", `${task.interest} 人`], ["指派状态", task.assignedPilots?.length ? tag(`已指派 ${task.assignedPilots.length} 人`) : tag("待指派")]
+    ["意愿人数", `${task.interest} 人`], ["指派状态", taskAssignmentStatus(task)]
   ]), routeButton("返回列表", "tasks", ""))
   + panel("附文本说明", richEditorContainer({
     toolbarId: "task-description-toolbar",
     editorId: "task-description-editor",
     readOnly: true
   }))
-  + panel("后台指派结果", assigned, button("查看意愿并指派", "task-interest", "primary", `data-task-id="${task.id}"`));
+  + panel("后台指派结果", assigned, taskActions);
+}
+
+function taskAllPilotsDone(task) {
+  return !!task.assignedPilots?.length && task.assignedPilots.every(pilot => pilot.status === "已完成");
+}
+
+function taskAssignmentStatus(task) {
+  if (taskAllPilotsDone(task)) return tag("已完成");
+  if (task.assignedPilots?.length) return tag(`已指派 ${task.assignedPilots.length} 人`);
+  return tag("待指派");
+}
+
+function canReassignTask(task) {
+  return !taskAllPilotsDone(task);
 }
 
 DroneAdmin.registerModule({
@@ -276,9 +295,17 @@ DroneAdmin.registerModule({
         device: deviceMap[name]?.[1] || "Mavic 3E",
         status: "已指派"
       }));
+      if (task.status === "征集中") task.status = "已关闭";
       closeModal();
       render();
       toast(`已指派 ${selected.length} 名飞手，飞手端统一查看服务订单`);
+    },
+    "close-task-collection": function (target) {
+      const task = taskRecords.find(item => item.id === target.dataset.taskId);
+      if (!task || task.status === "已关闭") return;
+      task.status = "已关闭";
+      render();
+      toast("已关闭征集，飞手端不再接收新的参与意愿");
     },
     "save-modal": function (target) {
       closeModal();

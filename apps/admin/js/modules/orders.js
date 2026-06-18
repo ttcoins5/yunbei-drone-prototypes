@@ -337,11 +337,15 @@ function orderListActions(order) {
   const price = order.amount === "线下报价" || order.onlinePay === false
     ? button("改价", "edit-order-price", "small", `data-order-id="${order.id}"`)
     : "";
-  const assign = order.needPilot && order.status === "待派单"
-    ? button("去派单", "assign-pilots", "small primary", `data-order-id="${order.id}"`)
+  const assign = canReassignOrderPilot(order)
+    ? button(order.assignedPilots?.length ? "调飞手" : "去派单", "assign-pilots", "small primary", `data-order-id="${order.id}"`)
     : "";
   const detail = `<button class="button small" data-route="order-detail" data-order-id="${order.id}">查看详情</button>`;
   return `<div class="row-actions">${price}${assign}${detail}</div>`;
+}
+
+function canReassignOrderPilot(order) {
+  return order.needPilot && order.status !== "已完成";
 }
 
 function orderSteps(order) {
@@ -369,10 +373,10 @@ function ordersPage() {
 function orderDetailPage() {
   const order = activeOrder();
   const canEditPrice = order.amount === "线下报价" || order.onlinePay === false;
-  const canAssignPilot = order.needPilot && ["待派单", "待服务"].includes(order.status);
+  const canAssignPilot = canReassignOrderPilot(order);
   const priceAction = canEditPrice ? button("修改金额", "edit-order-price", "small primary", `data-order-id="${order.id}"`) : "";
   const pilotAction = canAssignPilot
-    ? (order.status === "待派单" ? button("分配飞手", "assign-pilots", "primary") : button("调整飞手", "assign-pilots", "small"))
+    ? (order.assignedPilots?.length ? button("重新指派", "assign-pilots", "small") : button("分配飞手", "assign-pilots", "primary"))
     : "";
   const pilots = order.assignedPilots.length
     ? table(["飞手","区域","设备","个人状态"], order.assignedPilots.map(p => [p.name, p.area, p.device, tag(p.status)]))
@@ -557,7 +561,7 @@ DroneAdmin.registerModule({
     "assign-pilots": function (target) {
       if (target.dataset.orderId) state.viewingOrderId = target.dataset.orderId;
           const order = activeOrder();
-          const modalTitle = order.status === "待服务" ? "调整飞手" : "分配飞手";
+          const modalTitle = order.assignedPilots?.length ? "重新指派飞手" : "分配飞手";
           const pilots = [
             ["李明","成都高新 · Mavic 3E","空闲",true],["王伟","成都双流 · M350 RTK","空闲",true],
             ["周航","成都双流 · M350 RTK","服务中",false],["赵宇","成都武侯 · Mavic 3E","空闲",false]

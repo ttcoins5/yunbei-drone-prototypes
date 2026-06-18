@@ -1,9 +1,9 @@
-import { hoistingProducts } from "./src/data/catalog.js?v=contact-address-1";
-import { caseStudies } from "./src/data/caseStudies.js?v=product-line-icons-1";
-import { state } from "./src/state/appState.js?v=contact-address-1";
-import { navigate, render } from "./src/router/navigation.js?v=product-line-icons-1";
-import { toast } from "./src/utils/toast.js";
-import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=product-line-icons-1";
+import { hoistingProducts } from "./src/data/catalog.js?v=order-detail-no-thumb-1";
+import { caseStudies } from "./src/data/caseStudies.js?v=order-detail-no-thumb-1";
+import { state } from "./src/state/appState.js?v=order-detail-no-thumb-1";
+import { navigate, render } from "./src/router/navigation.js?v=order-detail-no-thumb-1";
+import { toast } from "./src/utils/toast.js?v=task-toast-center-1";
+import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=order-detail-no-thumb-1";
 
 function formatDateTime(date = new Date()) {
   const year = date.getFullYear();
@@ -143,6 +143,18 @@ function openOrder(orderNo) {
   navigate("orderDetail");
 }
 
+function openOrderReview(orderNo) {
+  const order = state.orders.find(item => item.orderNo === orderNo);
+  if (!order) return;
+  if (order.status !== "待评价") return toast("当前订单暂无评价入口");
+  state.selectedOrderNo = orderNo;
+  state.orderReviewDraft = {
+    rating: order.review?.rating || 5,
+    content: order.review?.content || ""
+  };
+  navigate("orderReview");
+}
+
 function openCase(caseId) {
   state.selectedCaseId = caseStudies.find(item => item.id === caseId)?.id || caseStudies[0]?.id || "";
   navigate("caseDetail");
@@ -223,6 +235,72 @@ function filterProductReviews(filter) {
   render();
 }
 
+function setOrderReviewRating(rating) {
+  state.orderReviewDraft = {
+    ...state.orderReviewDraft,
+    rating: Math.min(5, Math.max(1, Number(rating) || 5))
+  };
+  render();
+}
+
+function syncOrderReviewContent(value) {
+  state.orderReviewDraft = {
+    ...state.orderReviewDraft,
+    content: String(value || "")
+  };
+}
+
+function appendProductReview(order, rating, content, time) {
+  const product = hoistingProducts.find(item => item.id === order.productId);
+  if (!product) return;
+  const newReview = {
+    user: order.contactName || state.userProfile.nickname || "平台用户",
+    rating,
+    content,
+    time
+  };
+  product.reviews = [newReview, ...(product.reviews || [])];
+  const baseCount = Number(product.reviewCount) || Math.max((product.reviews?.length || 1) - 1, 0);
+  product.reviewCount = baseCount + 1;
+}
+
+function submitOrderReview(form) {
+  const order = state.orders.find(item => item.orderNo === state.selectedOrderNo);
+  if (!order) return toast("未找到待评价订单");
+  const rating = Math.min(5, Math.max(1, Number(state.orderReviewDraft?.rating) || 5));
+  const content = String(new FormData(form).get("content") || "").trim();
+  if (!content) return toast("请填写评价内容");
+
+  const time = formatDateTime();
+  state.orders = state.orders.map(item => (
+    item.orderNo === order.orderNo
+      ? {
+          ...item,
+          status: "已完成",
+          tab: "已完成",
+          review: {
+            rating,
+            content,
+            time
+          },
+          timeline: [
+            ...item.timeline,
+            { time, title: "评价完成", desc: `用户已提交 ${rating} 星评价` }
+          ]
+        }
+      : item
+  ));
+  appendProductReview(order, rating, content, time);
+  state.orderReviewDraft = {
+    rating: 5,
+    content: ""
+  };
+  state.orderFilter = "全部";
+  state.orderSearch = "";
+  toast("评价提交成功");
+  navigate("orders");
+}
+
 function setTaskHallTab(tab) {
   state.taskHallTab = tab;
   render();
@@ -238,7 +316,7 @@ function joinPilotTask(id) {
   state.pilotTasks = state.pilotTasks.map(item => (
     item.id === id ? { ...item, joined: true } : item
   ));
-  toast("已提交报名意愿");
+  toast("您已提交报名意愿", { placement: "center" });
   render();
 }
 
@@ -474,6 +552,8 @@ document.addEventListener("click", (event) => {
   if (action.dataset.action === "report-filter") return filterReports(action.dataset.filter);
   if (action.dataset.action === "flight-report-open") return openFlightReport(action.dataset.id);
   if (action.dataset.action === "review-filter") return filterProductReviews(action.dataset.filter);
+  if (action.dataset.action === "order-review-open") return openOrderReview(action.dataset.id);
+  if (action.dataset.action === "order-review-rating") return setOrderReviewRating(action.dataset.rating);
   if (action.dataset.action === "task-hall-tab") return setTaskHallTab(action.dataset.tab);
   if (action.dataset.action === "pilot-task-join") return joinPilotTask(action.dataset.id);
   if (action.dataset.action === "pilot-order-open") return openAssignedPilotOrder(action.dataset.id);
@@ -515,6 +595,7 @@ document.addEventListener("submit", (event) => {
   }
   if (event.target.dataset.form === "address") return saveAddress(event.target);
   if (event.target.dataset.form === "product-order") return submitProductOrder(event.target);
+  if (event.target.dataset.form === "order-review") return submitOrderReview(event.target);
   if (event.target.dataset.form === "flight-report") return submitFlightReport(event.target);
   if (event.target.dataset.form === "pilot" && !state.pilotAgreement) {
     toast("请先勾选飞手入驻协议");
@@ -537,6 +618,12 @@ document.addEventListener("change", (event) => {
   control.classList.toggle("has-file", Boolean(fileName));
   control.querySelector("em").textContent = fileName || upload.dataset.uploadLabel;
   control.querySelector("small").textContent = fileName ? "图片已选择，可重新点击更换" : "支持 JPG / PNG 图片";
+});
+
+document.addEventListener("input", (event) => {
+  const input = event.target.closest("[data-input]");
+  if (!input) return;
+  if (input.dataset.input === "order-review-content") return syncOrderReviewContent(input.value);
 });
 
 window.addEventListener("hashchange", () => {

@@ -1,7 +1,7 @@
-import { categories, homepageNavItems, products } from "../data/catalog.js?v=contact-address-1";
-import { caseStudies } from "../data/caseStudies.js?v=product-line-icons-1";
-import { shell } from "../components/layout.js?v=profile-auto-role-1";
-import { state } from "../state/appState.js?v=contact-address-1";
+import { categories, homepageNavItems, products } from "../data/catalog.js?v=order-detail-no-thumb-1";
+import { caseStudies } from "../data/caseStudies.js?v=order-detail-no-thumb-1";
+import { shell } from "../components/layout.js?v=order-detail-no-thumb-1";
+import { state } from "../state/appState.js?v=order-detail-no-thumb-1";
 
 function stripHtml(html = "") {
   return String(html).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();

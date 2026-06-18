@@ -198,15 +198,24 @@ tbody tr:hover { background: #f5f7fa; }
 .products-table td:first-child, .products-table th:first-child { width: 72px; min-width: 72px; }
 
 .element-rich-editor { overflow: hidden; border: 1px solid #dcdfe6; border-radius: 4px; background: #fff; }
-.element-rich-editor__toolbar { border-bottom: 1px solid #e4e7ed; }
-.element-rich-editor__editor { min-height: 220px; overflow-y: hidden; }
-.element-rich-editor.is-readonly .element-rich-editor__toolbar { display: none; }
+.element-rich-editor__toolbar { display: flex; min-height: 40px; align-items: center; padding: 0 8px; border-bottom: 1px solid #e4e7ed; background: #f5f7fa; }
+.element-rich-editor__editor { min-height: 220px; overflow-y: hidden; background: #fff; }
+.ruoyi-rich-editor.is-readonly .element-rich-editor__toolbar { min-height: 38px; padding: 0 12px; color: #606266; background: #f5f7fa; }
+.ruoyi-rich-editor.is-readonly .element-rich-editor__toolbar::before { content: "富文本内容"; font-size: 13px; font-weight: 600; }
+.ruoyi-rich-editor.is-readonly .element-rich-editor__editor { min-height: 160px; }
+.element-rich-editor .w-e-bar { background: transparent !important; }
 .element-rich-editor .w-e-text-container { background: #fff !important; }
-.element-rich-editor .w-e-bar-item button { border-radius: 4px; }
-.element-rich-editor.is-readonly .w-e-text-container [contenteditable="true"] { cursor: default; }
+.element-rich-editor .w-e-text-container [contenteditable="true"],
+.element-rich-editor .w-e-text-container [data-slate-editor] { min-height: 180px !important; padding: 12px 14px !important; line-height: 1.8; }
+.ruoyi-rich-editor.is-readonly .w-e-text-container [contenteditable="true"],
+.ruoyi-rich-editor.is-readonly .w-e-text-container [data-slate-editor] { min-height: 140px !important; cursor: default; }
+.element-rich-editor .w-e-bar-item button { min-width: 28px; min-height: 28px; border-radius: 4px; color: #606266; }
+.element-rich-editor .w-e-bar-item button:hover { color: var(--primary); background: #ecf5ff; }
+.element-rich-editor .w-e-select-list,
+.element-rich-editor .w-e-drop-panel { border-color: #dcdfe6 !important; border-radius: 4px !important; box-shadow: 0 2px 12px rgba(0,0,0,.08) !important; }
 
 .row-actions { display: flex; flex-wrap: nowrap; align-items: center; justify-content: flex-end; gap: 6px; }
-.row-actions .button.small { min-width: 52px; min-height: 30px; padding: 0 10px; justify-content: center; }
+.row-actions .button.small { min-width: 52px; min-height: 30px; flex: 0 0 auto; padding: 0 10px; justify-content: center; white-space: nowrap; }
 td .row-actions, .media-row .row-actions { margin-left: auto; }
 td .actions .button.small { min-width: 52px; min-height: 30px; padding: 0 10px; justify-content: center; }
 
@@ -478,6 +487,8 @@ td .actions .button.small { min-width: 52px; min-height: 30px; padding: 0 10px; 
 .case-showcase-image-meta { min-width: 0; flex: 1; }
 .case-showcase-image-meta input { width: 100%; min-height: 36px; padding: 7px 10px; border: 1px solid var(--line-dark); border-radius: 4px; }
 .case-showcase-image-meta .toolbar { margin-top: 10px; }
+.tasks-table th:last-child,
+.tasks-table td:last-child { min-width: 250px; }
 
 .overlay { position: fixed; z-index: 20; inset: 0; display: grid; place-items: center; padding: 30px; background: rgba(0,0,0,.46); }
 .modal { width: min(560px, 92vw); max-height: 86vh; overflow: auto; border-radius: 4px; background: #fff; box-shadow: var(--shadow); }

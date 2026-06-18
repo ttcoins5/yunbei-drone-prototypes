@@ -1,4 +1,12 @@
-const defaultRichToolbarKeys = ["bold", "italic", "through", "|", "bulletedList", "numberedList", "|", "insertLink", "undo", "redo"];
+const defaultRichToolbarKeys = [
+  "headerSelect", "fontSize", "|",
+  "bold", "italic", "underline", "through", "|",
+  "color", "bgColor", "|",
+  "bulletedList", "numberedList", "|",
+  "justifyLeft", "justifyCenter", "justifyRight", "|",
+  "insertLink", "insertImage", "|",
+  "undo", "redo"
+];
 
 const aboutRichToolbarKeys = [
   "headerSelect", "fontSize", "fontFamily", "lineHeight", "|",
@@ -68,8 +76,8 @@ function richEditorContainer({
   editorId = "product-intro-editor",
   readOnly = false
 } = {}) {
-  return `<div class="element-rich-editor${readOnly ? " is-readonly" : ""}">
-    <div class="element-rich-editor__toolbar" id="${toolbarId}"></div>
-    <div class="element-rich-editor__editor" id="${editorId}"></div>
+  return `<div class="element-rich-editor ruoyi-rich-editor${readOnly ? " is-readonly" : ""}">
+    <div class="element-rich-editor__toolbar ruoyi-rich-editor__toolbar" id="${toolbarId}"></div>
+    <div class="element-rich-editor__editor ruoyi-rich-editor__editor" id="${editorId}"></div>
   </div>`;
 }

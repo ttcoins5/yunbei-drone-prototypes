@@ -1,7 +1,7 @@
-import { orderStatuses, serviceModules } from "../data/catalog.js?v=contact-address-1";
+import { orderStatuses, serviceModules } from "../data/catalog.js?v=order-detail-no-thumb-1";
 import { orderIcon, serviceIcon } from "../components/icons.js";
-import { shell } from "../components/layout.js?v=profile-auto-role-1";
-import { state } from "../state/appState.js?v=contact-address-1";
+import { shell } from "../components/layout.js?v=order-detail-no-thumb-1";
+import { state } from "../state/appState.js?v=order-detail-no-thumb-1";
 
 function isPilot() {
   return state.userProfile.role === "pilot";

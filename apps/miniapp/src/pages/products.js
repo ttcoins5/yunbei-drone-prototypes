@@ -1,7 +1,7 @@
-import { products } from "../data/catalog.js?v=contact-address-1";
-import { shell } from "../components/layout.js?v=profile-auto-role-1";
-import { productCard } from "../components/productCard.js?v=product-line-icons-1";
-import { state } from "../state/appState.js?v=contact-address-1";
+import { products } from "../data/catalog.js?v=order-detail-no-thumb-1";
+import { shell } from "../components/layout.js?v=order-detail-no-thumb-1";
+import { productCard } from "../components/productCard.js?v=order-detail-no-thumb-1";
+import { state } from "../state/appState.js?v=order-detail-no-thumb-1";
 
 export function currentProducts() {
   return products;

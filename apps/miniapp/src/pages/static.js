@@ -1,5 +1,5 @@
-import { shell } from "../components/layout.js?v=profile-auto-role-1";
-import { state } from "../state/appState.js?v=product-order-fixtures-1";
+import { shell } from "../components/layout.js?v=order-detail-no-thumb-1";
+import { state } from "../state/appState.js?v=order-detail-no-thumb-1";
 
 const defaultAboutConfig = {
   name: "四川奉飞飞无人机科技有限公司",
@@ -90,7 +90,7 @@ export function tasksPage() {
       <p>仅展示后台自建的飞手征集任务；用户订单被平台指派后，会进入我的服务统一查看。</p>
     </section>
     <div class="task-hall-tabs">
-      ${["任务征集", "我的服务"].map(tab => `<button class="${state.taskHallTab === tab ? "active" : ""}" data-action="task-hall-tab" data-tab="${tab}">${tab}</button>`).join("")}
+      ${["任务征集", "我的服务"].map(tab => `<button type="button" class="${state.taskHallTab === tab ? "active" : ""}" data-action="task-hall-tab" data-tab="${tab}">${tab}</button>`).join("")}
     </div>
     ${isTaskTab ? pilotTaskList() : assignedPilotOrderList()}
   </div>`, { title: "任务大厅", back: true, tab: "profile" });
@@ -189,10 +189,6 @@ export function pilotOrderDetailPage() {
       <small>ASSIGNED ORDER</small>
       <h2>${order.status}</h2>
       <p>${order.orderNo} · ${order.productName}</p>
-      <div>
-        <span><small>服务日期</small><b>${order.bookingDate}</b></span>
-        <span><small>服务时段</small><b>${order.bookingTime}</b></span>
-      </div>
     </section>
     <section class="pilot-order-card">
       <div class="pilot-order-title"><b>订单信息</b><small>${order.sourceType === "backendTask" ? "后台任务转指派" : "用户订单转指派"}</small></div>

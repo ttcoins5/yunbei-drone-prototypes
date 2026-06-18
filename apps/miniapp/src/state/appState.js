@@ -1,4 +1,4 @@
-import { hoistingProducts } from "../data/catalog.js?v=contact-address-1";
+import { hoistingProducts } from "../data/catalog.js?v=order-detail-no-thumb-1";
 
 const productById = Object.fromEntries(hoistingProducts.map(product => [product.id, product]));
 
@@ -43,6 +43,7 @@ function miniOrder(config) {
   };
   const snapshot = productRequirementSnapshot(product, values);
   return {
+    productId: product.id,
     orderNo: config.orderNo,
     status: config.status,
     tab: config.tab || config.status,
@@ -234,7 +235,11 @@ export const state = {
         phone: "13888880007",
         email: "event@example.com",
         remark: "团队报名 6 人，需确认参赛资料"
-      }
+      },
+      timeline: [
+        { time: "2026-06-10 10:30", title: "订单提交", desc: "已提交无人机赛事报名需求" },
+        { time: "2026-06-11 15:20", title: "服务完成", desc: "赛事服务已完成，等待用户评价" }
+      ]
     }),
     miniOrder({
       orderNo: "ORD20260617008",
@@ -522,6 +527,10 @@ export const state = {
   selectedFlightReportNo: "BB20260615001",
   orderFilter: "全部",
   orderSearch: "",
+  orderReviewDraft: {
+    rating: 5,
+    content: ""
+  },
   invoiceTab: "apply",
   selectedInvoiceOrders: ["FF20260615001"],
   invoicePreview: null,

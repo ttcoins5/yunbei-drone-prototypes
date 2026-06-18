@@ -1,4 +1,4 @@
-import { state } from "../state/appState.js?v=product-order-fixtures-1";
+import { state } from "../state/appState.js?v=order-detail-no-thumb-1";
 
 function contactSheet() {
   if (!state.showContactSheet) return "";

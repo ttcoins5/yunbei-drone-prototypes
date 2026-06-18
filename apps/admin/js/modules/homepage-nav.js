@@ -1,13 +1,13 @@
 const homepageNavDefaults = {
   items: [
-    { id: "nav-hoisting", title: "吊运", size: "large", image: "./assets/icons/home-nav/entry-hoisting-large.png", imageName: "entry-hoisting-large.png", jumpType: "internal", link: "/pages/services/hoisting/index", enabled: true },
-    { id: "nav-agriculture", title: "表演", size: "large", image: "./assets/icons/home-nav/entry-agriculture-large.png", imageName: "entry-agriculture-large.png", jumpType: "internal", link: "/pages/services/performance/index", enabled: true },
-    { id: "nav-cleaning", title: "培训", size: "large", image: "./assets/icons/home-nav/entry-cleaning-large.png", imageName: "entry-cleaning-large.png", jumpType: "internal", link: "/pages/training/index", enabled: true },
-    { id: "nav-transport", title: "无人机巡检", size: "large", image: "./assets/icons/home-nav/entry-transport-large.png", imageName: "entry-transport-large.png", jumpType: "internal", link: "/pages/services/inspection/index", enabled: true },
-    { id: "nav-sales", title: "外卖", size: "small", image: "./assets/icons/home-nav/entry-sales-small.png", imageName: "entry-sales-small.png", jumpType: "internal", link: "/pages/services/takeout/index", enabled: true },
-    { id: "nav-rental", title: "无人机租赁", size: "small", image: "./assets/icons/home-nav/entry-rental-small.png", imageName: "entry-rental-small.png", jumpType: "internal", link: "/pages/services/rental/index", enabled: true },
-    { id: "nav-maintenance", title: "少儿研学", size: "small", image: "./assets/icons/home-nav/entry-maintenance-small.png", imageName: "entry-maintenance-small.png", jumpType: "internal", link: "/pages/training/children/index", enabled: true },
-    { id: "nav-all", title: "更多", size: "small", image: "./assets/icons/home-nav/entry-all-small.png", imageName: "entry-all-small.png", jumpType: "internal", link: "/pages/categories/index", enabled: true }
+    { id: "nav-hoisting", title: "吊运", size: "large", image: "./assets/icons/home-nav-v2/entry-hoisting-large-v2.png", imageName: "entry-hoisting-large-v2.png", jumpType: "internal", link: "/pages/services/hoisting/index", enabled: true },
+    { id: "nav-agriculture", title: "表演", size: "large", image: "./assets/icons/home-nav-v2/entry-agriculture-large-v2.png", imageName: "entry-agriculture-large-v2.png", jumpType: "internal", link: "/pages/services/performance/index", enabled: true },
+    { id: "nav-cleaning", title: "培训", size: "large", image: "./assets/icons/home-nav-v2/entry-cleaning-large-v2.png", imageName: "entry-cleaning-large-v2.png", jumpType: "internal", link: "/pages/training/index", enabled: true },
+    { id: "nav-transport", title: "无人机巡检", size: "large", image: "./assets/icons/home-nav-v2/entry-transport-large-v2.png", imageName: "entry-transport-large-v2.png", jumpType: "internal", link: "/pages/services/inspection/index", enabled: true },
+    { id: "nav-sales", title: "外卖", size: "small", image: "./assets/icons/home-nav-v2/entry-sales-small-v2.png", imageName: "entry-sales-small-v2.png", jumpType: "internal", link: "/pages/services/takeout/index", enabled: true },
+    { id: "nav-rental", title: "无人机租赁", size: "small", image: "./assets/icons/home-nav-v2/entry-rental-small-v2.png", imageName: "entry-rental-small-v2.png", jumpType: "internal", link: "/pages/services/rental/index", enabled: true },
+    { id: "nav-maintenance", title: "少儿研学", size: "small", image: "./assets/icons/home-nav-v2/entry-maintenance-small-v2.png", imageName: "entry-maintenance-small-v2.png", jumpType: "internal", link: "/pages/training/children/index", enabled: true },
+    { id: "nav-all", title: "更多", size: "small", image: "./assets/icons/home-nav-v2/entry-all-small-v2.png", imageName: "entry-all-small-v2.png", jumpType: "internal", link: "/pages/categories/index", enabled: true }
   ]
 };
 

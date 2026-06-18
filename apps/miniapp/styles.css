@@ -204,7 +204,7 @@ button { cursor: pointer; }
 .order-search input::placeholder { color: #8a8a8a; }
 .order-search button { height: 36px; border: 0; border-radius: 13px; color: #fff; background: linear-gradient(135deg,var(--blue),var(--teal)); font-size: 13px; font-weight: 800; }
 .order-tabs { display: grid; grid-template-columns: repeat(6,1fr); height: 40px; background: #fff; }
-.order-tabs button { position: relative; border: 0; color: #5e6065; background: transparent; font-size: 12px; font-weight: 800; }
+.order-tabs button { position: relative; display: flex; width: 100%; height: 100%; align-items: center; justify-content: center; padding: 0; border: 0; color: #5e6065; background: transparent; font-size: 12px; font-weight: 800; }
 .order-tabs .active { color: #126b79; }
 .order-tabs .active::after { position: absolute; right: 14px; bottom: 0; left: 14px; height: 3px; border-radius: 3px; background: var(--teal); content: ""; }
 .order-list { display: grid; gap: 8px; padding: 9px 10px 18px; }
@@ -215,7 +215,7 @@ button { cursor: pointer; }
 .order-card-head b { overflow: hidden; color: #050505; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
 .order-card-head small { color: #9a9a9a; font-size: 10px; font-weight: 700; }
 .order-card-head em { flex: 0 0 auto; color: #126b79; font-size: 12px; font-style: normal; font-weight: 800; }
-.order-card-body { display: grid; grid-template-columns: 48px 1fr; gap: 10px; align-items: center; padding: 9px 2px 8px; }
+.order-card-body { display: block; padding: 9px 2px 8px; }
 .order-thumb { width: 44px; height: 44px; border-radius: 9px; background: linear-gradient(145deg,#eef5f5,#d9ecea); }
 .order-card-body h3 { margin: 0 0 4px; color: #333; font-size: 14px; line-height: 1.25; }
 .order-card-meta { display: grid; gap: 2px; min-width: 0; }
@@ -239,7 +239,7 @@ button { cursor: pointer; }
 .order-detail-title { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
 .order-detail-title b { color: #0c2935; font-size: 15px; }
 .order-detail-title small { color: var(--muted); font-size: 9px; }
-.order-detail-product { display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: center; }
+.order-detail-product { display: block; }
 .order-detail-product span { display: grid; gap: 5px; min-width: 0; }
 .order-detail-product b { color: #0c2935; font-size: 14px; }
 .order-detail-product small { color: var(--muted); font-size: 10px; line-height: 1.5; }
@@ -248,6 +248,15 @@ button { cursor: pointer; }
 .order-detail-grid span.wide { grid-column: 1 / -1; }
 .order-detail-grid small { color: var(--muted); font-size: 9px; }
 .order-detail-grid b { color: #17313c; font-size: 12px; line-height: 1.55; }
+.order-review-card { gap: 12px; }
+.order-review-entry-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.order-review-entry-head span { display: grid; gap: 5px; min-width: 0; }
+.order-review-entry-head b { color: #0c2935; font-size: 15px; }
+.order-review-entry-head small { color: var(--muted); font-size: 10px; line-height: 1.5; }
+.order-review-entry { flex: 0 0 auto; min-width: 88px; height: 38px; padding: 0 16px; border: 0; border-radius: 999px; color: #fff; background: linear-gradient(135deg,var(--blue),var(--teal)); font-size: 12px; font-weight: 800; }
+.order-review-result { display: grid; gap: 8px; }
+.order-review-result > div { display: flex; align-items: center; gap: 8px; }
+.order-review-result p { margin: 0; color: #405964; font-size: 12px; line-height: 1.7; }
 .order-detail-price { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .order-detail-price span { display: grid; gap: 4px; padding: 10px 11px; border-radius: 12px; background: #f7fbfc; }
 .order-detail-price small { color: var(--muted); font-size: 9px; }
@@ -265,6 +274,19 @@ button { cursor: pointer; }
 .order-progress-item b { color: #0c2935; font-size: 13px; }
 .order-progress-item small { color: var(--muted); font-size: 9px; }
 .order-progress-item p { margin: 0; color: #536c75; font-size: 11px; line-height: 1.6; }
+.order-review-page { min-height: 760px; padding: 13px 13px 92px; background: #eef3f4; }
+.order-review-summary,
+.order-review-form-card { display: grid; gap: 14px; }
+.order-review-stars { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.order-review-stars button { height: 48px; border: 1px solid #dce7e9; border-radius: 14px; color: #c3d0d5; background: #fff; font-size: 22px; }
+.order-review-stars button.active { border-color: #f2c56a; color: #e0a44b; background: #fff8e8; }
+.order-review-rating-text { color: #6f8188; font-size: 11px; font-weight: 700; }
+.order-review-field { display: grid; gap: 8px; }
+.order-review-field span { color: #17313c; font-size: 12px; font-weight: 800; }
+.order-review-field textarea { width: 100%; resize: none; border: 1px solid #dce7e9; border-radius: 14px; padding: 12px 14px; color: #17313c; background: #fff; font-size: 12px; line-height: 1.7; }
+.order-review-field textarea::placeholder { color: #98a8ad; }
+.order-review-submit { padding-top: 2px; }
+.order-review-submit button { background: linear-gradient(135deg,var(--blue),var(--teal)); }
 .message-center { min-height: 760px; padding: 13px 13px 92px; background: linear-gradient(180deg,#eef3f4 0,#f6f9fa 100%); }
 .message-list { display: grid; gap: 16px; padding-top: 2px; }
 .message-card { position: relative; display: grid; width: 100%; min-height: 96px; grid-template-columns: 58px minmax(0,1fr) 46px; align-items: center; gap: 14px; padding: 17px 14px; border: 1px solid rgba(220,231,233,.64); border-radius: 18px; color: #17313c; background: rgba(255,255,255,.96); box-shadow: 0 14px 34px rgba(18,42,55,.08); text-align: left; }
@@ -704,7 +726,7 @@ button { cursor: pointer; }
 .task-hall-hero h2 { margin: 6px 0; font-size: 22px; }
 .task-hall-hero p { margin: 0; color: #d4f5f3; font-size: 11px; line-height: 1.65; }
 .task-hall-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; padding: 4px; border-radius: 12px; background: #fff; }
-.task-hall-tabs button { min-height: 38px; border: 0; border-radius: 9px; color: #72858d; background: transparent; font-size: 12px; font-weight: 800; }
+.task-hall-tabs button { display: flex; width: 100%; min-height: 38px; align-items: center; justify-content: center; padding: 0; border: 0; border-radius: 9px; color: #72858d; background: transparent; font-size: 12px; font-weight: 800; }
 .task-hall-tabs .active { color: #086e78; background: #dff8f5; box-shadow: inset 0 0 0 1px rgba(32,164,158,.18); }
 .pilot-task-list, .assigned-order-list { display: grid; gap: 11px; }
 .pilot-task-card { display: grid; gap: 13px; padding: 15px; border: 1px solid rgba(32,164,158,.2); border-radius: 16px; background: #fff; box-shadow: 0 12px 28px rgba(18,42,55,.08); }
@@ -733,7 +755,7 @@ button { cursor: pointer; }
 .pilot-order-hero small { color: rgba(255,255,255,.78); font-size: 8px; font-weight: 800; letter-spacing: .16em; }
 .pilot-order-hero h2 { margin: 8px 0 5px; font-size: 24px; }
 .pilot-order-hero p { margin: 0; color: rgba(255,255,255,.86); font-size: 11px; line-height: 1.5; }
-.pilot-order-hero > div { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 14px; }
+.pilot-order-hero > div { display: grid; grid-template-columns: 1fr; gap: 9px; margin-top: 14px; }
 .pilot-order-hero span { display: grid; gap: 4px; padding: 11px 12px; border-radius: 13px; background: rgba(255,255,255,.14); }
 .pilot-order-hero span small { color: rgba(255,255,255,.7); font-size: 8px; letter-spacing: 0; }
 .pilot-order-hero span b { font-size: 13px; }
@@ -748,12 +770,13 @@ button { cursor: pointer; }
 .pilot-photo-file { display: flex; align-items: center; gap: 12px; min-height: 72px; padding: 12px; border: 1px solid #dce9eb; border-radius: 13px; background: #f7fbfc; }
 .pilot-photo-file i { display: grid; width: 50px; height: 50px; place-items: center; border-radius: 12px; color: #6f7f87; background: #e2eaf0; font-size: 13px; font-style: normal; font-weight: 800; }
 .pilot-photo-file span { color: #6f7f87; font-size: 13px; font-weight: 800; overflow-wrap: anywhere; }
-.pilot-order-actions { position: sticky; bottom: 76px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; padding: 10px 0 2px; }
+.pilot-order-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; padding: 10px 12px; border-radius: 14px; background: rgba(255,255,255,.96); box-shadow: 0 14px 30px rgba(18,42,55,.14); }
 .pilot-order-actions button { height: 42px; border: 0; border-radius: 12px; font-weight: 800; }
 .pilot-order-actions button:first-child { color: #126b79; background: #e6f6f5; }
 .pilot-order-actions button:last-child { color: #fff; background: linear-gradient(135deg,var(--blue),var(--teal)); }
 .pilot-order-actions button:disabled { color: #7a8e96; background: #edf3f4; cursor: default; }
-.toast { position: fixed; z-index: 50; top: 30px; left: 50%; padding: 11px 18px; border-radius: 999px; color: #fff; background: #103443; box-shadow: 0 12px 30px rgba(8,42,52,.25); transform: translateX(-50%); }
+.toast { position: fixed; z-index: 50; top: 30px; left: 50%; padding: 11px 18px; border-radius: 999px; color: #fff; background: #103443; box-shadow: 0 12px 30px rgba(8,42,52,.25); text-align: center; transform: translateX(-50%); }
+.toast.center { top: 50%; min-width: 190px; max-width: min(300px, calc(100vw - 56px)); padding: 18px 22px; border-radius: 18px; font-size: 16px; font-weight: 800; line-height: 1.45; transform: translate(-50%,-50%); }
 @media (max-width: 1050px) {
   .preview-shell { grid-template-columns: 1fr; padding: 12px; }
   .phone { width: min(390px, calc(100vw - 16px)); }

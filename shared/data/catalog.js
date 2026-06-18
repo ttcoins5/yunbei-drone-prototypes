@@ -200,7 +200,7 @@ export const homepageNavItems = [
     id: "nav-hoisting",
     name: "吊运",
     size: "large",
-    image: "../../shared/assets/home-nav/entry-hoisting-large.png",
+    image: "../../shared/assets/home-nav-v2/entry-hoisting-large-v2.png",
     jumpType: "internal",
     link: "/pages/services/hoisting/index",
     enabled: true
@@ -209,7 +209,7 @@ export const homepageNavItems = [
     id: "nav-agriculture",
     name: "表演",
     size: "large",
-    image: "../../shared/assets/home-nav/entry-agriculture-large.png",
+    image: "../../shared/assets/home-nav-v2/entry-agriculture-large-v2.png",
     jumpType: "internal",
     link: "/pages/services/performance/index",
     enabled: true
@@ -218,7 +218,7 @@ export const homepageNavItems = [
     id: "nav-cleaning",
     name: "培训",
     size: "large",
-    image: "../../shared/assets/home-nav/entry-cleaning-large.png",
+    image: "../../shared/assets/home-nav-v2/entry-cleaning-large-v2.png",
     jumpType: "internal",
     link: "/pages/training/index",
     enabled: true
@@ -227,7 +227,7 @@ export const homepageNavItems = [
     id: "nav-transport",
     name: "无人机巡检",
     size: "large",
-    image: "../../shared/assets/home-nav/entry-transport-large.png",
+    image: "../../shared/assets/home-nav-v2/entry-transport-large-v2.png",
     jumpType: "internal",
     link: "/pages/services/inspection/index",
     enabled: true
@@ -236,7 +236,7 @@ export const homepageNavItems = [
     id: "nav-sales",
     name: "外卖",
     size: "small",
-    image: "../../shared/assets/home-nav/entry-sales-small.png",
+    image: "../../shared/assets/home-nav-v2/entry-sales-small-v2.png",
     jumpType: "external",
     link: "https://microapp.zndkfx.com",
     enabled: true
@@ -245,7 +245,7 @@ export const homepageNavItems = [
     id: "nav-rental",
     name: "无人机租赁",
     size: "small",
-    image: "../../shared/assets/home-nav/entry-rental-small.png",
+    image: "../../shared/assets/home-nav-v2/entry-rental-small-v2.png",
     jumpType: "internal",
     link: "/pages/services/rental/index",
     enabled: true
@@ -254,7 +254,7 @@ export const homepageNavItems = [
     id: "nav-maintenance",
     name: "少儿研学",
     size: "small",
-    image: "../../shared/assets/home-nav/entry-maintenance-small.png",
+    image: "../../shared/assets/home-nav-v2/entry-maintenance-small-v2.png",
     jumpType: "internal",
     link: "/pages/training/children/index",
     enabled: true
@@ -263,7 +263,7 @@ export const homepageNavItems = [
     id: "nav-all",
     name: "更多",
     size: "small",
-    image: "../../shared/assets/home-nav/entry-all-small.png",
+    image: "../../shared/assets/home-nav-v2/entry-all-small-v2.png",
     jumpType: "internal",
     link: "/pages/categories/index",
     enabled: true
