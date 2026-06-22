@@ -1,7 +1,7 @@
-import { products } from "../data/catalog.js?v=home-core-gapless-1";
-import { shell } from "../components/layout.js?v=home-core-gapless-1";
-import { productCard } from "../components/productCard.js?v=home-core-gapless-1";
-import { state } from "../state/appState.js?v=home-core-gapless-1";
+import { products } from "../data/catalog.js?v=hoisting-pay-4";
+import { shell } from "../components/layout.js?v=hoisting-pay-4";
+import { productCard } from "../components/productCard.js?v=hoisting-pay-4";
+import { state } from "../state/appState.js?v=hoisting-pay-4";
 
 export function currentProducts() {
   return products;
@@ -14,6 +14,20 @@ function currentSpec() {
     price: product.price,
     desc: product.desc
   };
+}
+
+function specPrice(spec) {
+  const value = Number(spec?.price);
+  return Number.isFinite(value) ? value : 0;
+}
+
+function currentQuantity() {
+  const value = Number(state.orderQuantity);
+  return Number.isFinite(value) && value > 0 ? Math.min(99, Math.floor(value)) : 1;
+}
+
+function orderAmount(spec = currentSpec(), quantity = currentQuantity()) {
+  return specPrice(spec) * quantity;
 }
 
 function stars(rating = 5) {
@@ -95,6 +109,14 @@ function renderEventInfoSection(section) {
   </section>`;
 }
 
+function renderImageSection(section) {
+  const image = section.imageUrl || section.content;
+  if (!image) return "";
+  return `<section class="detail-template-card">${sectionTitle(section.title)}
+    <img class="detail-section-image" src="${image}" alt="${section.title}">
+  </section>`;
+}
+
 function renderDetailSection(section) {
   if (section.type === "grid") return renderGridSection(section);
   if (section.type === "checklist" || section.type === "condition") return renderChecklistSection(section);
@@ -102,6 +124,7 @@ function renderDetailSection(section) {
   if (section.type === "feature") return renderFeatureSection(section);
   if (section.type === "contact") return renderContactSection(section);
   if (section.type === "eventInfo") return renderEventInfoSection(section);
+  if (section.type === "image") return renderImageSection(section);
   return `<section class="detail-template-card">${sectionTitle(section.title)}
     <p>${section.content || "详情信息整理中，请联系客服了解更多。"}</p>
   </section>`;
@@ -230,8 +253,31 @@ export function productReviewsPage() {
 export function orderConfirmPage() {
   const product = state.selectedProduct;
   const spec = currentSpec();
+  const quantity = currentQuantity();
+  const hasPaidSpecs = (product.specs || []).some(item => specPrice(item) > 0);
+  const totalAmount = orderAmount(spec, quantity);
+  const onlinePay = hasPaidSpecs && specPrice(spec) > 0;
   const defaultAddress = state.addressBook.find(item => item.isDefault) || state.addressBook[0];
   const template = selectedRequirementTemplate(product);
+  const paidConfig = hasPaidSpecs ? `
+      <div class="confirm-spec-list">
+        ${(product.specs || []).map((item, index) => `<button type="button" class="${state.selectedSpecIndex === index ? "active" : ""}" data-action="product-spec" data-index="${index}">
+          <span><b>${item.name}</b><small>${item.desc || "选择服务规格"}</small></span>
+          <strong>${specPrice(item) > 0 ? `￥${specPrice(item)}` : "线下确认"}</strong>
+        </button>`).join("")}
+      </div>
+      <div class="confirm-quantity-row">
+        <span><b>数量</b><small>按次计价，提交时保存快照</small></span>
+        <div class="quantity-stepper">
+          <button type="button" data-action="order-quantity" data-dir="-1">-</button>
+          <input name="quantity" type="number" min="1" max="99" value="${quantity}" data-input="order-quantity-input" data-order-quantity>
+          <button type="button" data-action="order-quantity" data-dir="1">+</button>
+        </div>
+      </div>
+      <div class="confirm-amount-row">
+        <span><small>费用计算</small><b data-order-unit-line>${specPrice(spec) > 0 ? `￥${specPrice(spec)} x ${quantity}` : "线下确认"}</b></span>
+        <strong data-order-total>${totalAmount > 0 ? `￥${totalAmount}` : "线下确认"}</strong>
+      </div>` : "";
 
   return shell(`<form class="order-confirm-page" data-form="product-order">
     <section class="confirm-card">
@@ -242,11 +288,13 @@ export function orderConfirmPage() {
       <div class="confirm-title"><b>商品信息</b><small>提交后由平台联系确认</small></div>
       <div class="confirm-product">
         <img src="${product.image}" alt="${product.name}">
-        <span><b>${product.name}</b><small>${spec.name} · ${spec.desc}</small></span>
+        <span><b>${product.name}</b><small data-order-summary>${spec.name} · ${spec.desc}</small></span>
       </div>
+      ${paidConfig}
     </section>
-    <div class="confirm-pay-bar">
-      <button type="submit">提交需求</button>
+    <div class="confirm-pay-bar ${onlinePay ? "paid" : "plain"}">
+      ${onlinePay ? `<span><small>需在线支付</small><b data-order-pay-total>${totalAmount > 0 ? `￥${totalAmount}` : "线下确认"}</b></span>` : ""}
+      <button type="submit">${onlinePay ? "提交并支付" : "提交需求"}</button>
     </div>
   </form>`, { title: "确认订单", back: true, tab: "products" });
 }
@@ -256,18 +304,24 @@ export function paymentPage() {
   const product = state.selectedProduct;
   const spec = currentSpec();
   const orderNo = order?.orderNo || "ORD20260615001";
+  const amount = Number(order?.amount ?? specPrice(spec));
+  const quantity = Number(order?.quantity || currentQuantity());
+  const totalAmount = Number(order?.paid ?? amount * quantity);
 
   return shell(`<div class="payment-page">
     <section class="payment-total-card">
-      <small>当前订单无需在线支付</small>
-      <b>提交成功</b>
-      <p>${product.name} · ${order?.specName || spec.name}</p>
+      <small>微信支付模拟</small>
+      <b>￥${totalAmount}</b>
+      <p>${product.name} · ${order?.specName || spec.name} · x${quantity}</p>
       <p>订单号：${orderNo}</p>
     </section>
-    <p class="payment-notice">平台会根据需求信息、规格和服务地址安排后台接单与后续履约。</p>
+    <div class="payment-methods">
+      <label class="payment-method"><i>微</i><span><b>微信支付</b><small>原型模拟支付成功后进入待接单</small></span><em>✓</em></label>
+    </div>
+    <p class="payment-notice">支付成功后订单进入待接单，后台根据需求快照安排飞手和履约。</p>
     <div class="payment-pay-bar">
-      <span><small>订单状态</small><b>待接单</b></span>
-      <button data-route="orders">查看订单</button>
+      <span><small>需支付</small><b>￥${totalAmount}</b></span>
+      <button data-action="mock-pay-order">确认支付</button>
     </div>
   </div>`, { title: "订单提交", back: true, tab: "products" });
 }
@@ -281,12 +335,13 @@ export function paymentResultPage() {
     <section class="payment-success">
       <i>✓</i>
       <h2>提交成功</h2>
-      <p>订单已进入待接单状态，后台将根据服务需求处理接单并尽快与您联系。</p>
+      <p>${order?.paid ? "支付成功，订单已进入待接单状态。" : "订单已提交，后台将根据服务需求处理接单并尽快与您联系。"}</p>
     </section>
     <section class="payment-order-card">
       <b>${order?.orderNo || "ORD20260615001"}</b>
-      <p>${product.name} · ${spec.name}</p>
-      <span>状态：待接单</span>
+      <p>${product.name} · ${order?.specName || spec.name} · x${order?.quantity || currentQuantity()}</p>
+      ${order?.paid ? `<strong>实付款：￥${order.paid}</strong>` : ""}
+      <span>状态：${order?.status || "待接单"}</span>
     </section>
     <div class="payment-actions">
       <button data-route="orders">查看订单</button>

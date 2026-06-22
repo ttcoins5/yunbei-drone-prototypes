@@ -1,5 +1,5 @@
-import { routes } from "./routes.js?v=home-core-gapless-1";
-import { state } from "../state/appState.js?v=home-core-gapless-1";
+import { routes } from "./routes.js?v=hoisting-pay-4";
+import { state } from "../state/appState.js?v=hoisting-pay-4";
 
 export function render(preserveScroll = false) {
   if (!routes[state.page]) state.page = "home";

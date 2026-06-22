@@ -1,7 +1,7 @@
-import { categories, homepageNavItems, products } from "../data/catalog.js?v=home-core-gapless-1";
-import { caseStudies } from "../data/caseStudies.js?v=home-core-gapless-1";
-import { shell } from "../components/layout.js?v=home-core-gapless-1";
-import { state } from "../state/appState.js?v=home-core-gapless-1";
+import { categories, homepageNavItems, products } from "../data/catalog.js?v=hoisting-pay-4";
+import { caseStudies } from "../data/caseStudies.js?v=hoisting-pay-4";
+import { shell } from "../components/layout.js?v=hoisting-pay-4";
+import { state } from "../state/appState.js?v=hoisting-pay-4";
 
 function stripHtml(html = "") {
   return String(html).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();

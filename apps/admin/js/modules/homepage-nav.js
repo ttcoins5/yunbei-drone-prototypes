@@ -71,7 +71,7 @@ function homepageNavPage() {
   return panel("导航配置", `
     <div class="homepage-nav-template">
       <div><strong>固定 8 个首页导航入口</strong><span class="muted">图片已自带标题文案；序号 1-4 为大图片入口，5-8 为小图片入口；大图和小图可分别排序。</span></div>
-      <div class="toolbar">${button("重置", "reset-homepage-nav")}${button("保存配置", "save-homepage-nav", "primary")}</div>
+      <div class="toolbar">${button("保存配置", "save-homepage-nav", "primary")}</div>
     </div>
     <div class="table-scroll">${table(["序号", "入口图片", "入口类型", "跳转配置", "图片文件", "状态", "排序 / 操作"], homepageNavRows(), "homepage-nav-table")}</div>
   `);
@@ -116,15 +116,20 @@ DroneAdmin.registerModule({
         "图片自带入口标题文案，后台不再配置标题和副标题",
         "可维护跳转类型、跳转链接、图片、启用状态和组内排序",
         "点击选择图片可替换单个入口测试图",
-        "保存前校验内链或外链格式；重置可恢复默认演示配置"
+        "保存前校验内链或外链格式"
       ],
       fields: [
         ["序号", "固定 1-8，不在导航配置页调整入口数量"],
         ["入口类型", "1-4 固定为大图片入口，5-8 固定为小图片入口；排序仅在同类型内进行"],
+        ["入口图片", "当前入口展示图，图片内已包含入口标题文案"],
         ["导航图片", "当前使用蓝绿色简约科技风样稿裁切图作为测试数据"],
         ["跳转类型", "仅支持内链和外链"],
+        ["跳转配置", "由跳转类型和跳转链接组成，决定点击入口后的目标页面"],
         ["跳转链接", "内链填写小程序路径，外链填写 http:// 或 https:// 开头的链接"],
-        ["启用状态", "关闭后小程序端不展示或置灰该入口"]
+        ["图片文件", "当前入口图片文件名，用于后台核对素材"],
+        ["状态", "入口启用或停用状态"],
+        ["启用状态", "关闭后小程序端不展示或置灰该入口"],
+        ["排序 / 操作", "同类型入口内支持上移、下移和替换图片；大图与小图不跨组排序"]
       ]
     }
   },
@@ -161,18 +166,6 @@ DroneAdmin.registerModule({
         return;
       }
       toast("首页导航配置已保存");
-    },
-    "reset-homepage-nav": function () {
-      modal("重置首页导航", "<p>确认恢复默认的 8 个首页导航入口？当前修改将被清除。</p>",
-        `${button("取消", "close-modal")}${button("确认重置", "confirm-reset-homepage-nav", "danger")}`);
-    },
-    "confirm-reset-homepage-nav": function () {
-      state.homepageNavImageUrls.forEach(url => URL.revokeObjectURL(url));
-      state.homepageNavImageUrls = [];
-      state.homepageNav = cloneHomepageNavDefaults();
-      closeModal();
-      render();
-      toast("已恢复默认首页导航");
     }
   },
   changeActions: {

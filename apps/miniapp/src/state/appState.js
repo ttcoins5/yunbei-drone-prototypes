@@ -31,7 +31,8 @@ function productRequirementSnapshot(product, values) {
 
 function miniOrder(config) {
   const product = productById[config.productId] || hoistingProducts[0];
-  const spec = product.specs?.[0] || { name: "信息提交", price: 0 };
+  const spec = product.specs?.[config.specIndex || 0] || { name: "信息提交", price: 0 };
+  const quantity = config.quantity || 1;
   const values = {
     contactName: config.contactName,
     contactPhone: config.contactPhone,
@@ -51,7 +52,7 @@ function miniOrder(config) {
     title: product.name,
     spec: spec.name,
     price: config.amount ?? spec.price,
-    count: 1,
+    count: quantity,
     paid: config.paid ?? config.amount ?? spec.price,
     serviceType: product.category,
     contactName: config.contactName,
@@ -74,6 +75,7 @@ export const state = {
   productListMode: "hoisting",
   productReviewFilter: "全部",
   selectedSpecIndex: 0,
+  orderQuantity: 1,
   pendingProductOrder: null,
   userProfile: {
     role: "pilot",
@@ -164,6 +166,10 @@ export const state = {
       status: "待服务",
       time: "2026-06-15 09:30",
       productId: "hoisting",
+      specIndex: 1,
+      amount: 2320,
+      paid: 2320,
+      quantity: 2,
       contactName: "成都建工",
       contactPhone: "13888887772",
       address: "成都市天府新区某工地",
@@ -379,8 +385,8 @@ export const state = {
       user: "成都建工",
       category: "无人机服务",
       productName: "无人机吊运服务",
-      amount: 0,
-      onlinePay: "否（下单快照）",
+      amount: 2320,
+      onlinePay: "是（下单快照）",
       needPilot: "是（下单快照）",
       bookingDate: "2026-06-18",
       bookingTime: "14:00-16:00",
@@ -393,6 +399,8 @@ export const state = {
         fields: [
           { label: "登记联系人", type: "text", value: "成都建工" },
           { label: "联系电话", type: "text", value: "028-55****90" },
+          { label: "服务规格", type: "select", value: "标准吊运（20-50kg）" },
+          { label: "下单数量", type: "text", value: "2" },
           { label: "吊运物品", type: "text", value: "空调外机" },
           { label: "物品重量（kg）", type: "text", value: "35" },
           { label: "作业地点", type: "text", value: "成都市天府新区某工地" },

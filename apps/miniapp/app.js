@@ -1,9 +1,9 @@
-import { hoistingProducts } from "./src/data/catalog.js?v=home-core-gapless-1";
-import { caseStudies } from "./src/data/caseStudies.js?v=home-core-gapless-1";
-import { state } from "./src/state/appState.js?v=home-core-gapless-1";
-import { navigate, render } from "./src/router/navigation.js?v=home-core-gapless-1";
-import { toast } from "./src/utils/toast.js?v=home-core-gapless-1";
-import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=home-core-gapless-1";
+import { hoistingProducts } from "./src/data/catalog.js?v=hoisting-pay-4";
+import { caseStudies } from "./src/data/caseStudies.js?v=hoisting-pay-4";
+import { state } from "./src/state/appState.js?v=hoisting-pay-4";
+import { navigate, render } from "./src/router/navigation.js?v=hoisting-pay-4";
+import { toast } from "./src/utils/toast.js?v=hoisting-pay-4";
+import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=hoisting-pay-4";
 
 function formatDateTime(date = new Date()) {
   const year = date.getFullYear();
@@ -347,14 +347,70 @@ function completeAssignedPilotOrder(orderNo) {
   render();
 }
 
+function orderUnitPrice(spec) {
+  const value = Number(spec?.price);
+  return Number.isFinite(value) ? value : 0;
+}
+
+function currentOrderSpec() {
+  return state.selectedProduct.specs?.[state.selectedSpecIndex] || state.selectedProduct;
+}
+
+function currentOrderQuantity() {
+  const value = Number(state.orderQuantity);
+  return Number.isFinite(value) && value > 0 ? Math.min(99, Math.floor(value)) : 1;
+}
+
+function refreshOrderPriceDom() {
+  if (state.page !== "orderConfirm") return;
+  const spec = currentOrderSpec();
+  const quantity = currentOrderQuantity();
+  const unitPrice = orderUnitPrice(spec);
+  const total = unitPrice * quantity;
+
+  document.querySelectorAll(".confirm-spec-list button").forEach((button, index) => {
+    button.classList.toggle("active", index === state.selectedSpecIndex);
+  });
+  const summary = document.querySelector("[data-order-summary]");
+  if (summary) summary.textContent = `${spec.name || "信息提交"} · ${spec.desc || ""}`;
+  const quantityInput = document.querySelector("[data-order-quantity]");
+  if (quantityInput) quantityInput.value = String(quantity);
+  const unitLine = document.querySelector("[data-order-unit-line]");
+  if (unitLine) unitLine.textContent = unitPrice > 0 ? `￥${unitPrice} x ${quantity}` : "线下确认";
+  const totalText = total > 0 ? `￥${total}` : "线下确认";
+  const totalNode = document.querySelector("[data-order-total]");
+  if (totalNode) totalNode.textContent = totalText;
+  const payTotal = document.querySelector("[data-order-pay-total]");
+  if (payTotal) payTotal.textContent = totalText;
+}
+
 function selectProductSpec(index) {
   state.selectedSpecIndex = index;
-  render();
+  refreshOrderPriceDom();
+}
+
+function adjustOrderQuantity(dir) {
+  const current = Number(state.orderQuantity) || 1;
+  state.orderQuantity = Math.min(99, Math.max(1, current + Number(dir || 0)));
+  refreshOrderPriceDom();
+}
+
+function syncOrderQuantity(value) {
+  const next = Number(value);
+  if (!Number.isFinite(next)) return;
+  state.orderQuantity = Math.min(99, Math.max(1, Math.floor(next)));
+  refreshOrderPriceDom();
 }
 
 function submitProductOrder(form) {
   const formData = new FormData(form);
   const spec = state.selectedProduct.specs?.[state.selectedSpecIndex] || state.selectedProduct;
+  const unitPrice = Number(spec.price) || 0;
+  const quantityValue = Number(formData.get("quantity") || state.orderQuantity || 1);
+  const quantity = Number.isFinite(quantityValue) ? Math.min(99, Math.max(1, Math.floor(quantityValue))) : 1;
+  const totalAmount = unitPrice * quantity;
+  const onlinePay = totalAmount > 0;
+  const initialStatus = onlinePay ? "待付款" : "待接单";
   const orderNo = `ORD${Date.now()}`;
   const template = selectedRequirementTemplate(state.selectedProduct);
   const requirementFields = [...template.fields].sort((a, b) => a.sort - b.sort).map(field => {
@@ -383,10 +439,13 @@ function submitProductOrder(form) {
   const remark = findValue("remark") || "暂无备注";
   state.pendingProductOrder = {
     orderNo,
-    status: "待接单",
+    status: initialStatus,
     productName: state.selectedProduct.name,
     specName: spec.name,
-    amount: spec.price,
+    amount: unitPrice,
+    quantity,
+    paid: totalAmount,
+    onlinePay,
     contactName,
     contactPhone,
     address,
@@ -402,14 +461,15 @@ function submitProductOrder(form) {
   state.orders = [
     {
       orderNo: order.orderNo,
-      status: "待接单",
-      tab: "待接单",
+      status: initialStatus,
+      tab: initialStatus,
       time: formatDateTime(),
       title: order.productName,
       spec: order.specName,
       price: order.amount,
-      count: 1,
-      paid: order.amount,
+      count: order.quantity,
+      paid: order.paid,
+      onlinePay: order.onlinePay,
       serviceType: order.requirementSnapshot?.serviceType || "需求服务",
       contactName: order.contactName,
       contactPhone: order.contactPhone,
@@ -417,14 +477,38 @@ function submitProductOrder(form) {
       remark: order.remark,
       requirementSnapshot: order.requirementSnapshot,
       timeline: [
-        { time: formatDateTime(), title: "订单提交", desc: "已提交服务需求，等待平台接单" },
-        { time: formatDateTime(), title: "待接单", desc: "后台正在确认需求信息并安排后续服务" }
+        { time: formatDateTime(), title: "订单提交", desc: onlinePay ? "已提交服务需求，等待用户完成支付" : "已提交服务需求，等待平台接单" },
+        { time: formatDateTime(), title: initialStatus, desc: onlinePay ? "需完成在线支付后进入后台接单" : "后台正在确认需求信息并安排后续服务" }
       ]
     },
     ...state.orders
   ];
-  pushServiceNotification(order.orderNo, "提交成功", "待接单");
-  toast("提交成功，订单待接单");
+  pushServiceNotification(order.orderNo, "提交成功", initialStatus);
+  toast(onlinePay ? "订单已提交，请完成支付" : "提交成功，订单待接单");
+  navigate(onlinePay ? "payment" : "paymentResult");
+}
+
+function payPendingProductOrder() {
+  const order = state.pendingProductOrder;
+  if (!order) return toast("暂无待支付订单");
+  const target = state.orders.find(item => item.orderNo === order.orderNo);
+  const time = formatDateTime();
+  if (target) {
+    target.status = "待接单";
+    target.tab = "待接单";
+    target.timeline = [
+      ...target.timeline,
+      { time, title: "支付成功", desc: `已支付 ￥${target.paid}，订单进入后台接单` },
+      { time, title: "待接单", desc: "后台正在确认需求信息并安排飞手服务" }
+    ];
+  }
+  state.pendingProductOrder = {
+    ...order,
+    status: "待接单",
+    paidAt: time
+  };
+  pushServiceNotification(order.orderNo, "待付款", "待接单", time);
+  toast("支付成功，订单待接单");
   navigate("paymentResult");
 }
 
@@ -588,6 +672,7 @@ document.addEventListener("click", (event) => {
 
   const action = event.target.closest("[data-action]");
   if (!action) return;
+  event.preventDefault();
 
   if (action.dataset.action === "back") return navigate(state.history.pop() || "home", false);
   if (action.dataset.action === "toast") return toast(action.dataset.message);
@@ -608,6 +693,8 @@ document.addEventListener("click", (event) => {
   if (action.dataset.action === "pilot-order-open") return openAssignedPilotOrder(action.dataset.id);
   if (action.dataset.action === "pilot-order-complete") return completeAssignedPilotOrder(action.dataset.id);
   if (action.dataset.action === "product-spec") return selectProductSpec(Number(action.dataset.index));
+  if (action.dataset.action === "order-quantity") return adjustOrderQuantity(action.dataset.dir);
+  if (action.dataset.action === "mock-pay-order") return payPendingProductOrder();
   if (action.dataset.action === "invoice-tab") return setInvoiceTab(action.dataset.tab);
   if (action.dataset.action === "invoice-toggle") return toggleInvoiceOrder(action.dataset.id);
   if (action.dataset.action === "invoice-submit") return submitInvoice();
@@ -631,6 +718,7 @@ document.addEventListener("click", (event) => {
     const list = currentProducts();
     state.selectedProduct = list.find(item => item.id === action.dataset.productId) || list[Number(action.dataset.index)];
     state.selectedSpecIndex = 0;
+    state.orderQuantity = 1;
     state.productReviewFilter = "全部";
     navigate("product");
   }
@@ -675,6 +763,7 @@ document.addEventListener("input", (event) => {
   const input = event.target.closest("[data-input]");
   if (!input) return;
   if (input.dataset.input === "order-review-content") return syncOrderReviewContent(input.value);
+  if (input.dataset.input === "order-quantity-input") return syncOrderQuantity(input.value);
 });
 
 window.addEventListener("hashchange", () => {

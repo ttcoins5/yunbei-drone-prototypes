@@ -82,10 +82,15 @@ const orderRecords = DroneAdmin.data.orderRecords = [
     "id": "YB26061703",
     "user": "成都建工",
     "service": "无人机吊运服务",
-    "amount": "线下报价",
+    "amount": "¥2,320",
+    "unitPrice": "¥1,160",
+    "quantity": 2,
+    "spec": "标准吊运（20-50kg）",
+    "paymentStatus": "已支付",
+    "paidAt": "2026-06-15 09:32",
     "needPilot": true,
     "status": "待服务",
-    "onlinePay": false,
+    "onlinePay": true,
     "assignedPilots": [
       {
         "name": "王伟",
@@ -107,6 +112,8 @@ const orderRecords = DroneAdmin.data.orderRecords = [
     "requirementSnapshot": orderSnapshot("无人机吊运服务", [
       orderField("登记联系人", "text", "成都建工"),
       orderField("联系电话", "text", "028-55****90"),
+      orderField("服务规格", "select", "标准吊运（20-50kg）"),
+      orderField("下单数量", "text", "2"),
       orderField("吊运物品", "text", "空调外机"),
       orderField("物品重量（kg）", "text", "35"),
       orderField("作业地点", "text", "成都市天府新区某工地"),
@@ -387,6 +394,16 @@ function orderDetailPage() {
   const logs = order.priceChangeLogs?.length
     ? table(["操作时间","操作人","原金额","新金额","改价原因"], order.priceChangeLogs.map(item => [item.time, item.operator || "平台管理员", item.oldAmount, item.newAmount, item.reason]))
     : `<p class="empty">暂无改价记录。线下报价订单确认金额后会在这里留痕。</p>`;
+  const paymentPanel = order.onlinePay
+    ? panel("支付信息快照", detailGrid([
+        ["支付方式", "在线支付"],
+        ["支付状态", order.paymentStatus || "待付款"],
+        ["规格", order.spec || "—"],
+        ["单价", order.unitPrice || order.amount],
+        ["数量", order.quantity || 1],
+        ["支付时间", order.paidAt || "未支付"]
+      ]))
+    : "";
   return panel("订单状态", `<div class="steps steps--flow">${orderSteps(order)}</div>
     <p class="muted order-flow-summary">本单流转：${orderFlowSummary(order)}</p>`, routeButton("返回订单列表","orders",""))
   + panel("订单信息快照", detailGrid([
@@ -394,6 +411,7 @@ function orderDetailPage() {
     ["在线支付", order.onlinePay ? "是（下单快照）" : "否（下单快照）"],
     ["需要飞手", order.needPilot ? "是（下单快照）" : "否（下单快照）"]
   ]), priceAction)
+  + paymentPanel
   + orderRequirementPanel(order)
   + pilotPanel
   + panel("改价记录", logs);
@@ -447,6 +465,10 @@ DroneAdmin.registerModule({
         "当前流转节点；待派单为红色待办；合法值因快照组合而异，见订单详情说明"
       ],
       [
+        "操作",
+        "线下报价订单可改价；需飞手且订单未完成前可派单或重新指派；所有订单均可查看详情"
+      ],
+      [
         "流转路径（在线支付+飞手）",
         "订单生成 → 待付款 → 待派单 → 待服务 → 待评价 → 已完成"
       ],
@@ -494,6 +516,18 @@ DroneAdmin.registerModule({
         "记录改价操作时间、操作人、原金额、新金额和改价原因"
       ],
       [
+        "原金额",
+        "改价前的订单金额，线下报价订单可为「线下报价」"
+      ],
+      [
+        "新金额",
+        "本次改价后的订单金额"
+      ],
+      [
+        "改价原因",
+        "后台改价时必填，解释价格调整原因"
+      ],
+      [
         "需求信息快照",
         "默认包含联系人、联系方式；其他字段由后台商品表单配置决定"
       ],
@@ -504,6 +538,26 @@ DroneAdmin.registerModule({
       [
         "飞手分配",
         "仅需要飞手时展示；已指派飞手及个人履约状态"
+      ],
+      [
+        "区域",
+        "已指派飞手的主要服务区域"
+      ],
+      [
+        "设备",
+        "已指派飞手的执飞机型或设备"
+      ],
+      [
+        "个人状态",
+        "该飞手在当前订单下的接单或履约状态"
+      ],
+      [
+        "重新指派",
+        "订单未完成前可调整飞手名单；调整名单不改变当前订单状态"
+      ],
+      [
+        "操作人",
+        "改价记录中的后台操作账号，随原金额、新金额和原因一并留痕"
       ]
     ]
   }

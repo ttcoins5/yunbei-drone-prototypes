@@ -1,5 +1,5 @@
-import { shell } from "../components/layout.js?v=home-core-gapless-1";
-import { state } from "../state/appState.js?v=home-core-gapless-1";
+import { shell } from "../components/layout.js?v=hoisting-pay-4";
+import { state } from "../state/appState.js?v=hoisting-pay-4";
 
 const orderTabs = ["全部", "待付款", "待接单", "待服务", "待评价", "已取消"];
 
@@ -37,11 +37,12 @@ function orderCard(order) {
   const metaRows = [
     order.contactName ? `联系人：${order.contactName}` : "",
     order.contactPhone ? `联系方式：${order.contactPhone}` : "",
-    hasSpec ? `规格：${order.spec}` : ""
+    hasSpec ? `规格：${order.spec}` : "",
+    order.count > 1 ? `数量：${order.count}` : ""
   ].filter(Boolean);
   const paymentFoot = Number(order.paid) > 0
     ? `<div class="order-card-foot">
-      <strong>实付款: ￥${order.paid}</strong>
+      <strong>${order.status === "待付款" ? "待支付" : "实付款"}: ￥${order.paid}</strong>
     </div>`
     : "";
 
@@ -196,7 +197,7 @@ export function orderDetailPage() {
       <p>${order.orderNo}</p>
       <div class="order-detail-hero-meta">
         <span><small>下单时间</small><b>${order.time}</b></span>
-        <span><small>实付款</small><b>￥${order.paid}</b></span>
+        <span><small>${order.status === "待付款" ? "待支付" : "实付款"}</small><b>￥${order.paid}</b></span>
       </div>
     </section>
     <section class="order-detail-card">
@@ -205,6 +206,7 @@ export function orderDetailPage() {
         <span>
           <b>${order.title}</b>
           <small>规格：${order.spec}</small>
+          <small>数量：${order.count || 1}</small>
           <small>服务类型：${order.serviceType}</small>
         </span>
       </div>

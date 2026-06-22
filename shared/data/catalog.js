@@ -39,6 +39,22 @@ function serviceProduct(id, name, desc, fields, image, sales, category = "无人
   };
 }
 
+function paidHoistingProduct(fields, image, sales) {
+  const product = serviceProduct("hoisting", "无人机吊运服务", "按吊运规格计价 · 在线支付", fields, image, sales);
+  product.price = 680;
+  product.location = "在线下单";
+  product.detail = "选择吊运规格和数量后在线支付，平台收款后进入待接单并安排飞手服务。";
+  product.specs = [
+    { name: "轻量吊运（20kg以内）", price: 680, desc: "适合小型设备、物料箱、工具包等" },
+    { name: "标准吊运（20-50kg）", price: 1160, desc: "适合空调外机、建材箱、应急物资等" },
+    { name: "重载吊运（50-100kg）", price: 1980, desc: "适合大型设备或高空施工物资" }
+  ];
+  product.reviews = [
+    { user: "成都建工", rating: 5, content: "标准吊运下单后很快完成派单，价格和数量在订单里看得清楚。", time: "2026-06-16 18:20" }
+  ];
+  return product;
+}
+
 function section(id, type, title, extra = {}) {
   return { id, type, title, enabled: true, sort: extra.sort || 1, ...extra };
 }
@@ -297,7 +313,7 @@ export const hoistingProducts = [
     reqField("remark", "备注说明"),
     reqField("exampleImage", "例图", "image")
   ]), productIcon("icon-logistics.png"), 286),
-  serviceProduct("hoisting", "无人机吊运服务", "吊运物品 · 作业地点", productFields([
+  paidHoistingProduct(productFields([
     reqField("contactName", "登记联系人", "text", true),
     reqField("contactPhone", "联系电话", "text", true),
     reqField("itemName", "吊运物品", "text", true),
@@ -376,7 +392,7 @@ export const hoistingProducts = [
 export const products = hoistingProducts;
 
 export const orderStatuses = [
-  { name: "待付款", count: 0, route: "orders", icon: 0 },
+  { name: "待付款", count: 1, route: "orders", icon: 0 },
   { name: "待接单", count: 3, route: "orders", icon: 1 },
   { name: "待服务", count: 2, route: "orders", icon: 2 },
   { name: "待评价", count: 1, route: "orders", icon: 3 },

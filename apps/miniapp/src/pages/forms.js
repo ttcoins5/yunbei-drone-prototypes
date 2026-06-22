@@ -1,6 +1,6 @@
 import { icon } from "../components/icons.js";
-import { shell } from "../components/layout.js?v=home-core-gapless-1";
-import { state } from "../state/appState.js?v=home-core-gapless-1";
+import { shell } from "../components/layout.js?v=hoisting-pay-4";
+import { state } from "../state/appState.js?v=hoisting-pay-4";
 
 function addressCard(address) {
   return `<article class="address-card ${address.isDefault ? "is-default" : ""}">
@@ -75,7 +75,7 @@ export function addressPage() {
 export function invoicePage() {
   const availableOrders = [
     { id: "ORD20260617001", title: "无人机巡检服务", time: "2026-06-17 17:16", amount: 0 },
-    { id: "ORD20260617003", title: "无人机吊运服务", time: "2026-06-15 09:30", amount: 0 },
+    { id: "ORD20260617003", title: "无人机吊运服务", time: "2026-06-15 09:30", amount: 2320 },
     { id: "ORD20260617006", title: "无人机租赁", time: "2026-06-11 16:00", amount: 0 }
   ];
   const records = [

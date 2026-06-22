@@ -210,7 +210,8 @@ state.products = [
     reqField("remark", "备注说明"),
     reqField("exampleImage", "例图", "image")
   ]), "填写货物、起运点、目的地和运输时效，平台确认后安排无人机物流服务。", "0", true, productIcon("icon-logistics.png")),
-  productItem("p3", "无人机吊运服务", "无人机服务", productFields([
+  {
+    ...productItem("p3", "无人机吊运服务", "无人机服务", productFields([
     reqField("contactName", "登记联系人", "text", true),
     reqField("contactPhone", "联系电话", "text", true),
     reqField("itemName", "吊运物品", "text", true),
@@ -219,7 +220,14 @@ state.products = [
     reqField("height", "吊运高度（m）", "text", true),
     reqField("remark", "需求说明"),
     reqField("exampleImage", "例图", "image")
-  ]), "填写吊运物品、重量、高度和作业地点，平台评估现场条件后安排服务。", "0", true, productIcon("icon-hoisting.png")),
+  ]), "选择吊运规格和数量后在线支付，平台收款后安排飞手服务。", "680", true, productIcon("icon-hoisting.png")),
+    properties: { onlinePay: true, needPilot: true },
+    specs: [
+      { name: "轻量吊运（20kg以内）", price: "680" },
+      { name: "标准吊运（20-50kg）", price: "1160" },
+      { name: "重载吊运（50-100kg）", price: "1980" }
+    ]
+  },
   productItem("p4", "无人机表演服务", "无人机服务", productFields([
     reqField("contactName", "登记联系人", "text", true),
     reqField("contactPhone", "联系电话", "text", true),
@@ -714,7 +722,7 @@ function propertyRow(label, key, product) {
   return `<label class="property-row"><span>${label}</span><input type="checkbox" data-action="toggle-product-property" data-key="${key}"${checked ? " checked" : ""}></label>`;
 }
 
-const showDetailPageConfig = false;
+const showDetailPageConfig = true;
 
 const detailSectionTypeLabels = {
   intro: "单文本",
@@ -836,7 +844,6 @@ function applySummaryToDetailSection(section, summary) {
 function detailPagePanel(product) {
   const detailPage = normalizeDetailPage(product);
   const hero = detailPage.hero || {};
-  const cta = detailPage.cta || {};
   const rows = detailPage.sections.map((section, index) => [
     `<span class="detail-sort">${index + 1}</span>`,
     `<input data-field="detail-section-title" data-index="${index}" value="${catalogEscape(section.title)}" placeholder="模块名称">`,
@@ -849,13 +856,11 @@ function detailPagePanel(product) {
       ${button("删除","delete-detail-section","small danger",`data-index="${index}"`)}
     </div>`
   ]);
-  return panel("详情页配置", `<div class="detail-config">
+  return panel("详情页轻量配置", `<div class="detail-config">
     ${formGrid([
-      { label: "行动按钮", html: `<div class="inline-field"><input data-field="detail-cta-text" value="${catalogEscape(cta.text)}" placeholder="按钮文案"><select data-field="detail-cta-action">${detailCtaOptions(cta.actionType)}</select></div>` },
       { label: "标题", html: `<input data-field="detail-hero-title" value="${catalogEscape(hero.title)}" placeholder="详情页主标题">` },
       { label: "副标题", html: `<input data-field="detail-hero-subtitle" value="${catalogEscape(hero.subtitle)}" placeholder="详情页副标题">` },
-      { label: "头图地址", html: `<input data-field="detail-hero-banner" value="${catalogEscape(hero.bannerImage)}" placeholder="可填图片路径；留空则使用商品图">` },
-      { label: "图标标识", html: `<input data-field="detail-hero-icon" value="${catalogEscape(hero.icon)}" placeholder="无头图时展示的图标标识">` }
+      { label: "头图地址", html: `<input data-field="detail-hero-banner" value="${catalogEscape(hero.bannerImage)}" placeholder="可填图片路径；留空则使用商品图">` }
     ])}
     <div class="detail-config-actions">
       ${button("新增模块","add-detail-section","primary")}
@@ -863,7 +868,7 @@ function detailPagePanel(product) {
     <div class="detail-table-wrap">
       ${table(["排序","模块名称","模块类型","内容摘要","状态","操作"], rows, "detail-config-table")}
     </div>
-    <p class="muted">详情页配置只影响商品介绍与转化按钮；下单页需求字段仍由「需求采集字段」独立控制，历史订单保留下单时字段快照。</p>
+    <p class="muted">详情页轻量配置只负责介绍内容；下单页表单仍由「需求采集字段」独立控制，历史订单保留下单时字段快照。</p>
   </div>`);
 }
 
@@ -891,14 +896,10 @@ function readDetailPageFormFromPage(product) {
       title: page.querySelector('[data-field="detail-hero-title"]')?.value.trim() || product.name || "未命名商品",
       subtitle: page.querySelector('[data-field="detail-hero-subtitle"]')?.value.trim() || "",
       bannerImage: page.querySelector('[data-field="detail-hero-banner"]')?.value.trim() || "",
-      icon: page.querySelector('[data-field="detail-hero-icon"]')?.value.trim() || product.id || "service"
+      icon: previous.hero?.icon || product.id || "service"
     },
     sections,
-    cta: {
-      text: page.querySelector('[data-field="detail-cta-text"]')?.value.trim() || detailCtaLabels[page.querySelector('[data-field="detail-cta-action"]')?.value] || "立即下单",
-      actionType: page.querySelector('[data-field="detail-cta-action"]')?.value || "order",
-      externalUrl: previous.cta?.externalUrl
-    }
+    cta: previous.cta || { text: "立即下单", actionType: "order" }
   };
 }
 
@@ -923,6 +924,7 @@ function moveDetailSection(product, index, dir) {
 function productEditPage() {
   const product = activeProduct();
   const creating = isCreatingProduct();
+  const publishRuleText = "上架前需填写商品名称、商品分类，上传商品图，至少保留 1 个有效规格和价格，并确认业务属性；不满足条件时应先保存为已下架。";
   const specs = product.specs.map((spec, index) => [
     `<input data-field="spec-name" data-index="${index}" value="${spec.name}">`,
     `<input data-field="spec-price" data-index="${index}" value="${spec.price}">`,
@@ -932,7 +934,7 @@ function productEditPage() {
     { label: "商品名称", html: `<input data-field="product-name" value="${product.name}" placeholder="请输入商品名称">` },
     { label: "商品分类", html: `<select data-field="product-category">${categoryOptions(product.category)}</select>` },
     { label: "上架状态", html: `<select data-field="product-status"><option${product.status === "已上架" ? " selected" : ""}>已上架</option><option${product.status === "已下架" ? " selected" : ""}>已下架</option></select>` }
-  ]), `${routeButton("返回商品列表","products","")}${button("保存商品","save-product","primary")}`)
+  ]) + `<div class="module-note" style="margin-top:4px"><b>上下架条件：</b>${publishRuleText}</div>`, `${routeButton("返回商品列表","products","")}${button("保存商品","save-product","primary")}`)
   + productImagesPanel(product)
   + productReviewsPanel(product)
   + panel("多规格配置", `${table(["规格名称","价格（元）","操作"], specs)}<div style="margin-top:12px">${button("添加规格","add-spec")}</div>`)
@@ -1077,6 +1079,10 @@ DroneAdmin.registerModule({
       [
         "状态",
         "停用后小程序端不展示该分类入口"
+      ],
+      [
+        "操作",
+        "编辑分类、上移下移排序或删除空分类；分类下存在商品时不可删除"
       ]
     ]
   },
@@ -1113,20 +1119,25 @@ DroneAdmin.registerModule({
       ],
       [
         "状态",
-        "已上架可在小程序购买，已下架不可见"
+        "上架条件：商品名称、分类、商品图、有效规格/价格和业务属性已完善；已上架可在小程序购买，已下架小程序不可见，历史订单不受影响"
       ],
       [
         "关联订单",
         "该商品产生的历史订单数；大于 0 时不允许删除商品"
+      ],
+      [
+        "操作",
+        "编辑商品或删除无关联订单的商品；删除前需二次确认"
       ]
     ]
   },
   "product-edit": {
-    "summary": "创建或编辑商品，配置单张商品图标、评价展示、规格价格、业务属性及需求采集字段。",
+    "summary": "创建或编辑商品，配置单张商品图标、评价展示、规格价格、详情页轻量配置、需求采集字段和业务属性。",
     "operations": [
       "上传 / 替换 / 删除商品图标，用于列表封面、小程序商品卡片与商品详情页头图",
       "评价管理：分页浏览订单评价列表，多选后随「保存商品」一并生效；默认全不展示",
       "添加 / 删除规格，每个规格独立定价",
+      "详情页轻量配置：维护详情页标题区、模块内容、排序和启停",
       "业务属性通过勾选配置：在线支付、飞手服务；下单字段统一由需求采集字段配置",
       "保存后更新商品；历史订单保留下单时属性快照"
     ],
@@ -1140,6 +1151,10 @@ DroneAdmin.registerModule({
         "决定商品归属与小程序分类入口"
       ],
       [
+        "上架状态",
+        "上架需满足基础信息、商品图、有效规格价格和业务属性完整；下架后小程序不可见"
+      ],
+      [
         "商品图标",
         "单张图片，用于列表封面、小程序商品卡片与商品详情页头图"
       ],
@@ -1150,6 +1165,54 @@ DroneAdmin.registerModule({
       [
         "规格名称 / 价格",
         "多规格 SKU，用户下单时选择"
+      ],
+      [
+        "价格（元）",
+        "规格对应的人民币价格；线下报价商品可填 0 或展示线下报价"
+      ],
+      [
+        "规格操作",
+        "新增或删除规格；至少保留 1 个有效规格和价格才允许作为可上架商品"
+      ],
+      [
+        "详情页轻量配置",
+        "用于小程序商品详情介绍页展示，支持单文本、四宫格、勾选列表、费用明细、联系方式、单图片模块"
+      ],
+      [
+        "模块名称",
+        "详情页模块标题，例如服务介绍、服务项目、服务优势"
+      ],
+      [
+        "模块类型",
+        "决定小程序详情页模块渲染样式，如单文本、四宫格或勾选列表"
+      ],
+      [
+        "内容摘要",
+        "后台快速维护模块正文或条目摘要"
+      ],
+      [
+        "需求采集字段",
+        "用于下单页表单，配置用户提交订单时要填写的字段，与详情页展示内容解耦"
+      ],
+      [
+        "字段名称",
+        "下单页表单中展示给用户的字段标题"
+      ],
+      [
+        "字段类型",
+        "首版仅支持文本、下拉框、图片；下拉框字段才需要维护下拉选项"
+      ],
+      [
+        "必填",
+        "联系人、联系电话等核心字段固定必填；其他字段按商品需求设置"
+      ],
+      [
+        "提示文案",
+        "输入框占位提示或上传说明，引导用户填写正确内容"
+      ],
+      [
+        "下拉选项",
+        "仅字段类型为下拉框时填写，多个选项用斜杠或分隔符区分"
       ],
       [
         "是否在线支付",

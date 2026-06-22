@@ -87,7 +87,7 @@ function usersPage() {
 function userDetailPage() {
   const user = users.find(item => item.id === state.viewingUserId) || users[0];
   const records = state.userTab === "orders"
-    ? table(["订单号","商品/服务","金额","状态"], [["YB26061703","无人机吊运服务","线下报价",tag("待服务")],["YB26061708","飞手培训","线下报价",tag("已完成")]])
+    ? table(["订单号","商品/服务","金额","状态"], [["YB26061703","无人机吊运服务","¥2,320",tag("待服务")],["YB26061708","飞手培训","线下报价",tag("已完成")]])
     : table(["申请编号","抬头","金额","状态"], [["FP26061303","个人","¥1,599",tag("待处理")]]);
   return panel("用户基本资料", detailGrid([
     ["头像", userAvatar(user.avatar)],["昵称", user.nickname],["手机号", user.phone],["性别", user.gender],
@@ -192,8 +192,24 @@ DroneAdmin.registerModule({
         "该用户全部订单及当前状态"
       ],
       [
+        "商品/服务",
+        "用户订单中的商品或服务名称"
+      ],
+      [
+        "金额",
+        "订单支付金额或线下报价状态"
+      ],
+      [
+        "状态",
+        "订单或发票记录当前处理状态"
+      ],
+      [
         "发票记录",
         "该用户提交的开票申请及处理状态"
+      ],
+      [
+        "抬头",
+        "发票申请中的个人或企业抬头"
       ]
     ]
   }
