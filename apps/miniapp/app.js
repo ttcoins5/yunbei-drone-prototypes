@@ -1,9 +1,9 @@
-import { hoistingProducts } from "./src/data/catalog.js?v=hoisting-pay-4";
-import { caseStudies } from "./src/data/caseStudies.js?v=hoisting-pay-4";
-import { state } from "./src/state/appState.js?v=hoisting-pay-4";
-import { navigate, render } from "./src/router/navigation.js?v=hoisting-pay-4";
-import { toast } from "./src/utils/toast.js?v=hoisting-pay-4";
-import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=hoisting-pay-4";
+import { hoistingProducts } from "./src/data/catalog.js?v=orders-list-refresh-1";
+import { caseStudies } from "./src/data/caseStudies.js?v=orders-list-refresh-1";
+import { state } from "./src/state/appState.js?v=orders-list-refresh-1";
+import { navigate, render } from "./src/router/navigation.js?v=orders-list-refresh-1";
+import { toast } from "./src/utils/toast.js?v=orders-list-refresh-1";
+import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=orders-list-refresh-1";
 
 function formatDateTime(date = new Date()) {
   const year = date.getFullYear();

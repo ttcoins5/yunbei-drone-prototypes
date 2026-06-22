@@ -1,5 +1,5 @@
-import { shell } from "../components/layout.js?v=hoisting-pay-4";
-import { state } from "../state/appState.js?v=hoisting-pay-4";
+import { shell } from "../components/layout.js?v=orders-list-refresh-1";
+import { state } from "../state/appState.js?v=orders-list-refresh-1";
 
 const defaultAboutConfig = {
   name: "四川奉飞飞无人机科技有限公司",

@@ -1,6 +1,6 @@
 import { icon } from "../components/icons.js";
-import { shell } from "../components/layout.js?v=hoisting-pay-4";
-import { state } from "../state/appState.js?v=hoisting-pay-4";
+import { shell } from "../components/layout.js?v=orders-list-refresh-1";
+import { state } from "../state/appState.js?v=orders-list-refresh-1";
 
 function addressCard(address) {
   return `<article class="address-card ${address.isDefault ? "is-default" : ""}">

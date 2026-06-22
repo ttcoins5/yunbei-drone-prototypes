@@ -1,7 +1,7 @@
-import { products } from "../data/catalog.js?v=hoisting-pay-4";
-import { shell } from "../components/layout.js?v=hoisting-pay-4";
-import { productCard } from "../components/productCard.js?v=hoisting-pay-4";
-import { state } from "../state/appState.js?v=hoisting-pay-4";
+import { products } from "../data/catalog.js?v=orders-list-refresh-1";
+import { shell } from "../components/layout.js?v=orders-list-refresh-1";
+import { productCard } from "../components/productCard.js?v=orders-list-refresh-1";
+import { state } from "../state/appState.js?v=orders-list-refresh-1";
 
 export function currentProducts() {
   return products;

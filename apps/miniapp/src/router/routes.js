@@ -1,9 +1,9 @@
-import { caseDetailPage, casesPage, categoriesPage, homePage } from "../pages/home.js?v=hoisting-pay-4";
-import { orderConfirmPage, paymentPage, paymentResultPage, productDetailPage, productReviewsPage, productsPage } from "../pages/products.js?v=hoisting-pay-4";
-import { pilotStatusPage, profileDetailPage, profilePage } from "../pages/profile.js?v=hoisting-pay-4";
-import { messagesPage, orderDetailPage, orderReviewPage, ordersPage, serviceNotificationsPage } from "../pages/orders.js?v=hoisting-pay-4";
-import { addressPage, feedbackPage, formPage, invoicePage, operatorPage, reportDetailPage, reportPage } from "../pages/forms.js?v=hoisting-pay-4";
-import { aboutPage, contactPage, contactPhonePage, contactWechatPage, pilotOrderDetailPage, tasksPage } from "../pages/static.js?v=hoisting-pay-4";
+import { caseDetailPage, casesPage, categoriesPage, homePage } from "../pages/home.js?v=orders-list-refresh-1";
+import { orderConfirmPage, paymentPage, paymentResultPage, productDetailPage, productReviewsPage, productsPage } from "../pages/products.js?v=orders-list-refresh-1";
+import { pilotStatusPage, profileDetailPage, profilePage } from "../pages/profile.js?v=orders-list-refresh-1";
+import { messagesPage, orderDetailPage, orderReviewPage, ordersPage, serviceNotificationsPage } from "../pages/orders.js?v=orders-list-refresh-1";
+import { addressPage, feedbackPage, formPage, invoicePage, operatorPage, reportDetailPage, reportPage } from "../pages/forms.js?v=orders-list-refresh-1";
+import { aboutPage, contactPage, contactPhonePage, contactWechatPage, pilotOrderDetailPage, tasksPage } from "../pages/static.js?v=orders-list-refresh-1";
 
 export const routes = {
   home: homePage,
