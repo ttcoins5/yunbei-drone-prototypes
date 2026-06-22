@@ -341,14 +341,17 @@ function orderStatusCell(order) {
 }
 
 function orderListActions(order) {
-  const price = order.amount === "线下报价" || order.onlinePay === false
-    ? button("改价", "edit-order-price", "small", `data-order-id="${order.id}"`)
-    : "";
-  const assign = canReassignOrderPilot(order)
-    ? button(order.assignedPilots?.length ? "调飞手" : "去派单", "assign-pilots", "small primary", `data-order-id="${order.id}"`)
-    : "";
+  const canEditPrice = order.amount === "线下报价" || order.onlinePay === false;
+  const canAssign = canReassignOrderPilot(order);
+  const price = button("改价", "edit-order-price", "small", `data-order-id="${order.id}"${canEditPrice ? "" : " disabled"}`);
+  const assignText = order.assignedPilots?.length ? "调飞手" : "去派单";
+  const assign = button(assignText, "assign-pilots", "small primary", `data-order-id="${order.id}"${canAssign ? "" : " disabled"}`);
   const detail = `<button class="button small" data-route="order-detail" data-order-id="${order.id}">查看详情</button>`;
-  return `<div class="row-actions">${price}${assign}${detail}</div>`;
+  return `<div class="row-actions order-row-actions">
+    <span class="row-action-slot">${price}</span>
+    <span class="row-action-slot">${assign}</span>
+    <span class="row-action-slot">${detail}</span>
+  </div>`;
 }
 
 function canReassignOrderPilot(order) {
@@ -374,7 +377,7 @@ function ordersPage() {
   return panel("订单列表", `<div class="toolbar" style="margin-bottom:14px">
     <input placeholder="订单号 / 用户 / 商品"><select><option>全部状态</option><option>待付款</option><option>待派单</option><option>待服务</option><option>待交付</option><option>待评价</option><option>已完成</option></select>
     <select><option>是否需要飞手</option><option>需要</option><option>不需要</option></select>${button("查询","filter","primary")}
-  </div>${paginatedTable("orders", ["订单号","用户","商品/服务","金额","需要飞手","状态","操作"], rows)}`);
+  </div>${paginatedTable("orders", ["订单号","用户","商品/服务","金额","需要飞手","状态","操作"], rows, "orders-table")}`);
 }
 
 function orderDetailPage() {

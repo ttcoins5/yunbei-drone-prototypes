@@ -41,8 +41,9 @@ function tag(text) {
 }
 
 function table(headers, rows, cls = "") {
-  return `<table class="ruoyi-table el-table ${cls}"><thead><tr>${headers.map(x => `<th>${x}</th>`).join("")}</tr></thead>
-    <tbody>${rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+  const actionIndexes = new Set(headers.map((header, index) => String(header).includes("操作") ? index : -1).filter(index => index >= 0));
+  return `<table class="ruoyi-table el-table ${cls}"><thead><tr>${headers.map((x, index) => `<th class="${actionIndexes.has(index) ? "is-action-cell" : ""}">${x}</th>`).join("")}</tr></thead>
+    <tbody>${rows.map(row => `<tr>${row.map((cell, index) => `<td class="${actionIndexes.has(index) ? "is-action-cell" : ""}">${cell}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
 }
 
 function panel(title, body, actions = "") {

@@ -19,12 +19,14 @@ function dashboardPage() {
     "today-orders": panel("今日新增订单明细", paginatedTable(
       "dashboard-today-orders",
       ["订单号","用户","商品/服务","金额","需要飞手","状态","操作"],
-      todayOrderRows
+      todayOrderRows,
+      "orders-table"
     )),
     "pending-orders": panel("待派单订单明细", paginatedTable(
       "dashboard-pending-orders",
       ["订单号","用户","商品/服务","服务时间","等待时长","操作"],
-      pendingOrderRows
+      pendingOrderRows,
+      "orders-table"
     )),
     "pilot-applications": panel("待审核飞手明细", paginatedTable(
       "dashboard-pilot-applications",
@@ -39,7 +41,7 @@ function dashboardPage() {
   };
   return `<div class="metrics">
     <button class="metric ${state.dashboardMetric === "today-orders" ? "active" : ""}" data-action="dashboard-metric" data-key="today-orders"><span>今日新增订单</span><strong>26</strong><small>其中 7 单需要飞手</small></button>
-    <button class="metric ${state.dashboardMetric === "pending-orders" ? "active" : ""}" data-action="dashboard-metric" data-key="pending-orders"><span>待派单订单</span><strong>9</strong><small>最长等待 2h 18min · 从待派单开始</small></button>
+    <button class="metric ${state.dashboardMetric === "pending-orders" ? "active" : ""}" data-action="dashboard-metric" data-key="pending-orders"><span>待派单订单</span><strong>9</strong><small>最长等待 2h 18min</small></button>
     <button class="metric ${state.dashboardMetric === "pilot-applications" ? "active" : ""}" data-action="dashboard-metric" data-key="pilot-applications"><span>待审核飞手</span><strong>12</strong><small>今日新增申请 5 人</small></button>
     <button class="metric ${state.dashboardMetric === "invoices" ? "active" : ""}" data-action="dashboard-metric" data-key="invoices"><span>待处理发票</span><strong>7</strong><small>合计 ¥48,620</small></button>
   </div>${content[state.dashboardMetric]}`;

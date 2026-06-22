@@ -46,7 +46,7 @@ function orderCard(order) {
     </div>`
     : "";
 
-  return `<button class="order-card" data-action="order-open" data-id="${order.orderNo}">
+  return `<button class="order-card ${paymentFoot ? "has-payment" : ""}" data-action="order-open" data-id="${order.orderNo}">
     <div class="order-card-head">
       <span>
         <b>${order.orderNo}</b>
@@ -61,8 +61,8 @@ function orderCard(order) {
           ${metaRows.map(item => `<p>${item}</p>`).join("")}
         </div>
       </div>
+      ${paymentFoot}
     </div>
-    ${paymentFoot}
   </button>`;
 }
 
