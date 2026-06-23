@@ -28,21 +28,38 @@ function pilotOnlyDialog() {
   </div>`;
 }
 
+function logoutDialog() {
+  if (!state.showLogoutConfirm) return "";
+
+  return `<div class="dialog-mask">
+    <button class="dialog-backdrop" type="button" aria-label="关闭弹窗" data-action="logout-cancel"></button>
+    <section class="contact-confirm-dialog logout-confirm-dialog" role="dialog" aria-label="退出登录">
+      <b>退出登录</b>
+      <p>退出后需要重新授权手机号，才能继续查看个人资料、订单和服务信息。</p>
+      <div class="contact-confirm-actions">
+        <button type="button" data-action="logout-cancel">取消</button>
+        <button type="button" data-action="logout-submit">确认退出</button>
+      </div>
+    </section>
+  </div>`;
+}
+
 export function shell(content, options = {}) {
-  const { title = "", back = false, tab = state.tab } = options;
+  const { title = "", back = false, tab = state.tab, hideTabbar = false } = options;
   return `<div class="preview-shell">
     <div class="phone">
       <div class="status"><span>10:28</span><span>5G · 92%</span></div>
       ${title ? `<header class="page-head">${back ? `<button data-action="back">‹</button>` : `<span></span>`}<h1>${title}</h1><span>•••</span></header>` : ""}
-      <div class="page-content">${content}</div>
-      <nav class="tabbar">
+      <div class="page-content ${hideTabbar ? "no-tabbar" : ""}">${content}</div>
+      ${hideTabbar ? "" : `<nav class="tabbar">
         <button class="${tab === "home" ? "active" : ""}" data-route="home"><b>⌂</b>首页</button>
         <button class="${tab === "orders" ? "active" : ""}" data-route="orders"><b>≡</b>订单</button>
         <button class="${tab === "messages" ? "active" : ""}" data-route="serviceNotifications"><b>✉</b>消息</button>
         <button class="${tab === "profile" ? "active" : ""}" data-route="profile"><b>♙</b>我的</button>
-      </nav>
+      </nav>`}
       ${contactSheet()}
       ${pilotOnlyDialog()}
+      ${logoutDialog()}
     </div>
     <aside class="review-note"><span>FENGFEIFEI PROTOTYPE</span><h2>${title || "奉飞飞首页"}</h2><p>蓝绿冷静科技风 · Image 2 品牌头图 · HTML 可交互原型</p></aside>
   </div>`;

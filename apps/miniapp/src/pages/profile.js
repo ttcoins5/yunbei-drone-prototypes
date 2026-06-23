@@ -41,6 +41,8 @@ function pilotStatusMeta(status) {
 }
 
 export function profilePage() {
+  if (!state.isLoggedIn) return loginPage();
+
   return shell(`<div class="profile-page">
     <button class="profile-hero" data-route="profileDetail">
       <div class="profile-avatar">${profileAvatar()}</div>
@@ -62,14 +64,16 @@ export function profilePage() {
 }
 
 export function profileDetailPage() {
+  if (!state.isLoggedIn) return loginPage();
+
   const profile = state.userProfile;
   const fields = [
-    ["头像", profileAvatar("large"), "微信授权"],
-    ["昵称", profile.nickname, "微信授权"],
-    ["手机号", profile.phone, "手机号授权"],
-    ["性别", profile.gender, "微信授权"],
-    ["生日", profile.birthday, "手动资料"],
-    ["地区", profile.region, "微信授权"]
+    ["头像", profileAvatar("large")],
+    ["昵称", profile.nickname],
+    ["手机号", profile.phone],
+    ["性别", profile.gender],
+    ["生日", profile.birthday],
+    ["地区", profile.region]
   ];
 
   return shell(`<div class="profile-detail-page">
@@ -90,15 +94,47 @@ export function profileDetailPage() {
       <p class="profile-detail-tip">${isPilot() ? "飞手可进入任务大厅查看征集任务，并在我的服务处理已指派订单。" : "普通用户可正常下单、开票和联系客服；任务大厅和飞行报备需飞手申请通过后使用。"}</p>
     </section>
     <section class="profile-detail-card">
-      <div class="profile-card-title"><h3>个人资料</h3><button data-action="wechat-profile-auth">微信授权更新</button></div>
+      <div class="profile-card-title"><h3>个人资料</h3></div>
       <div class="profile-field-list">
-        ${fields.map(([label, value, source]) => `<div class="profile-field-row">
+        ${fields.map(([label, value]) => `<div class="profile-field-row">
           <span><small>${label}</small><b>${value}</b></span>
-          <em>${source}</em>
         </div>`).join("")}
       </div>
     </section>
+    <button class="profile-logout-button" data-action="logout-confirm">退出登录</button>
   </div>`, { title: "个人资料", back: true, tab: "profile" });
+}
+
+export function loginPage() {
+  return shell(`<div class="login-page">
+    <div class="login-mini-nav">
+      <button type="button" data-route="home">‹</button>
+      <span><i>•••</i><b></b></span>
+    </div>
+    <section class="login-brand">
+      <span class="brand-mark login-logo" aria-label="奉飞飞图标"><i></i><i></i><i></i></span>
+      <small>FENGFEIFEI</small>
+      <h2>宁波泰安科技有限公司</h2>
+    </section>
+    <button class="login-phone-button" data-action="phone-auth-open">手机号快捷登录</button>
+    <label class="login-agreement">
+      <button type="button" class="${state.loginAgreement ? "checked" : ""}" data-action="login-agreement" aria-pressed="${state.loginAgreement}"></button>
+      <span>我已阅读并同意 <b>《奉飞飞用户协议》</b> 和 <b>《隐私政策》</b><br>，并同意本机号码登录</span>
+    </label>
+    ${state.showPhoneAuthSheet ? `<div class="phone-auth-layer">
+      <button class="phone-auth-backdrop" type="button" data-action="phone-auth-close" aria-label="关闭手机号授权"></button>
+      <section class="phone-auth-sheet" role="dialog" aria-label="手机号授权">
+        <div class="phone-auth-app"><span class="brand-mark phone-auth-logo"><i></i><i></i><i></i></span><b>奉飞飞</b><em>i</em></div>
+        <h3>申请获取并验证你的手机号</h3>
+        <div class="phone-auth-options">
+          <button type="button" data-action="phone-auth-login" data-phone="173****2698"><b>173****2698</b><small>上次提供</small></button>
+          <button type="button" data-action="phone-auth-login" data-phone="177****8837"><b>177****8837</b></button>
+        </div>
+        <button class="phone-auth-deny" type="button" data-action="phone-auth-close">不允许</button>
+        <button class="phone-auth-manage" type="button" data-action="toast" data-message="原型中不配置管理号码">管理号码</button>
+      </section>
+    </div>` : ""}
+  </div>`, { hideTabbar: true });
 }
 
 export function pilotStatusPage() {

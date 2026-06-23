@@ -91,6 +91,10 @@ function denyPilotOnlyRoute() {
 }
 
 function guardedNavigate(routeName) {
+  if (!state.isLoggedIn && (routeName === "profile" || routeName === "profileDetail")) {
+    navigate("login");
+    return;
+  }
   if (isPilotOnlyRoute(routeName) && !isPilotUser()) {
     denyPilotOnlyRoute();
     return;
@@ -123,6 +127,58 @@ function updateWechatProfile() {
   };
   toast("已同步微信授权资料");
   render();
+}
+
+function showLogoutConfirm() {
+  state.showLogoutConfirm = true;
+  render();
+}
+
+function cancelLogout() {
+  state.showLogoutConfirm = false;
+  render();
+}
+
+function submitLogout() {
+  state.showLogoutConfirm = false;
+  state.isLoggedIn = false;
+  state.loginAgreement = false;
+  state.showPhoneAuthSheet = false;
+  state.userProfile = {
+    ...state.userProfile,
+    phoneAuthorized: false
+  };
+  navigate("login", false);
+  toast("已退出登录");
+}
+
+function toggleLoginAgreement() {
+  state.loginAgreement = !state.loginAgreement;
+  render();
+}
+
+function openPhoneAuthSheet() {
+  if (!state.loginAgreement) return toast("请先阅读并同意用户协议和隐私政策");
+  state.showPhoneAuthSheet = true;
+  render();
+}
+
+function closePhoneAuthSheet() {
+  state.showPhoneAuthSheet = false;
+  render();
+}
+
+function phoneAuthLogin(phone = "13888888821") {
+  state.isLoggedIn = true;
+  state.showPhoneAuthSheet = false;
+  state.userProfile = {
+    ...state.userProfile,
+    phone,
+    phoneAuthorized: true,
+    wechatAuthorized: true
+  };
+  toast("手机号授权登录成功");
+  navigate("profile", false);
 }
 
 function openNotification(id) {
@@ -707,6 +763,13 @@ document.addEventListener("click", (event) => {
   if (action.dataset.action === "operator-agreement") return toggleOperatorAgreement();
   if (action.dataset.action === "pilot-only-close") return closePilotOnlyDialog();
   if (action.dataset.action === "wechat-profile-auth") return updateWechatProfile();
+  if (action.dataset.action === "logout-confirm") return showLogoutConfirm();
+  if (action.dataset.action === "logout-cancel") return cancelLogout();
+  if (action.dataset.action === "logout-submit") return submitLogout();
+  if (action.dataset.action === "login-agreement") return toggleLoginAgreement();
+  if (action.dataset.action === "phone-auth-open") return openPhoneAuthSheet();
+  if (action.dataset.action === "phone-auth-close") return closePhoneAuthSheet();
+  if (action.dataset.action === "phone-auth-login") return phoneAuthLogin(action.dataset.phone);
   if (action.dataset.action === "address-new") return showNewAddressForm();
   if (action.dataset.action === "address-cancel") return closeAddressForm();
   if (action.dataset.action === "address-default") return updateAddressDefault(Number(action.dataset.id));

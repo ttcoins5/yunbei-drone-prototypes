@@ -1,0 +1,42 @@
+[
+  {
+    "iconName": "address",
+    "label": "地址簿",
+    "file": "address.png"
+  },
+  {
+    "iconName": "invoice",
+    "label": "开票中心",
+    "file": "invoice.png"
+  },
+  {
+    "iconName": "operator",
+    "label": "城市运营申请",
+    "file": "operator.png"
+  },
+  {
+    "iconName": "feedback",
+    "label": "意见反馈",
+    "file": "feedback.png"
+  },
+  {
+    "iconName": "pilot",
+    "label": "飞手加入",
+    "file": "pilot.png"
+  },
+  {
+    "iconName": "tasks",
+    "label": "任务大厅",
+    "file": "tasks.png"
+  },
+  {
+    "iconName": "contact",
+    "label": "联系客服",
+    "file": "contact.png"
+  },
+  {
+    "iconName": "about",
+    "label": "关于我们",
+    "file": "about.png"
+  }
+]

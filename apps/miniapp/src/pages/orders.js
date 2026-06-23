@@ -66,6 +66,53 @@ function orderCard(order) {
   </button>`;
 }
 
+function orderProductMeta(order) {
+  const needsPayment = Number(order.paid) > 0 || Number(order.price) > 0;
+  return [
+    needsPayment && order.spec ? `<small>规格：${order.spec}</small>` : "",
+    needsPayment ? `<small>数量：${order.count || 1}</small>` : "",
+    `<small>服务类型：${order.serviceType}</small>`
+  ].filter(Boolean).join("");
+}
+
+function orderFlow(order) {
+  const steps = ["订单生成"];
+  const onlinePay = order.status === "待付款" || Number(order.paid) > 0 || Number(order.price) > 0;
+  const needPilot = order.needPilot ?? true;
+  if (onlinePay) steps.push("待付款");
+  if (needPilot) steps.push("待派单", "待服务");
+  else steps.push("待交付");
+  steps.push("待评价", "已完成");
+  return steps;
+}
+
+function orderFlowStatus(order) {
+  const map = {
+    "订单提交": "订单生成",
+    "待接单": "待派单",
+    "待付款": "待付款",
+    "待服务": "待服务",
+    "待交付": "待交付",
+    "待评价": "待评价",
+    "已完成": "已完成"
+  };
+  return map[order.status] || map[order.timeline?.at(-1)?.title] || "订单生成";
+}
+
+function orderProgressSteps(order) {
+  const flow = orderFlow(order);
+  const currentStatus = orderFlowStatus(order);
+  const current = Math.max(0, flow.indexOf(currentStatus));
+  const timelineTimeMap = Object.fromEntries((order.timeline || []).map(item => [orderFlowStatus({ status: item.title }), item.time]));
+  timelineTimeMap["订单生成"] = timelineTimeMap["订单生成"] || order.time;
+  return flow.map((title, index) => ({
+    title,
+    time: timelineTimeMap[title] || "",
+    latest: index === current,
+    done: index < current
+  }));
+}
+
 function orderReviewEntry(order) {
   if (order.status === "待评价") {
     return `<section class="order-detail-card order-review-card">
@@ -189,6 +236,7 @@ export function orderDetailPage() {
     return shell(`<div class="order-detail-page"><div class="order-empty"><b>暂无订单详情</b><p>请先从订单列表中选择一笔订单。</p></div></div>`, { title: "订单详情", back: true, tab: "orders" });
   }
   const requirementSnapshot = resolvedRequirementSnapshot(order);
+  const progressSteps = orderProgressSteps(order);
 
   return shell(`<div class="order-detail-page">
     <section class="order-detail-hero ${order.tab === "已取消" ? "cancelled" : ""}">
@@ -205,22 +253,19 @@ export function orderDetailPage() {
       <div class="order-detail-product">
         <span>
           <b>${order.title}</b>
-          <small>规格：${order.spec}</small>
-          <small>数量：${order.count || 1}</small>
-          <small>服务类型：${order.serviceType}</small>
+          ${orderProductMeta(order)}
         </span>
       </div>
     </section>
     ${requirementSnapshotGrid(requirementSnapshot)}
     <section class="order-detail-card">
-      <div class="order-detail-title"><b>订单进度</b><small>${order.timeline.length} 条记录</small></div>
+      <div class="order-detail-title"><b>订单进度</b><small>${progressSteps.length} 个节点</small></div>
       <div class="order-progress">
-        ${order.timeline.map((item, index) => `<article class="order-progress-item ${index === order.timeline.length - 1 ? "latest" : ""}">
+        ${progressSteps.map(item => `<article class="order-progress-item ${item.latest ? "latest" : ""} ${item.done ? "done" : ""}">
           <i></i>
           <div>
             <b>${item.title}</b>
-            <small>${item.time}</small>
-            <p>${item.desc}</p>
+            ${item.time ? `<small>${item.time}</small>` : ""}
           </div>
         </article>`).join("")}
       </div>

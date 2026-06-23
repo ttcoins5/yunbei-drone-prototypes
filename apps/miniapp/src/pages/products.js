@@ -74,7 +74,7 @@ function sectionTitle(title) {
 function renderGridSection(section) {
   const items = section.items || [];
   return `<section class="detail-template-card">${sectionTitle(section.title)}
-    <div class="detail-grid-items">${items.map((item, index) => `<span><b>${item.icon || ["⌃", "⚙", "⌂", "⚑"][index % 4]}</b><em>${item.title || item}</em></span>`).join("")}</div>
+    <div class="detail-grid-items">${items.map((item, index) => `<button type="button" class="detail-grid-item"><b>${item.icon || ["⌃", "⚙", "⌂", "⚑"][index % 4]}</b><em>${item.title || item}</em></button>`).join("")}</div>
   </section>`;
 }
 

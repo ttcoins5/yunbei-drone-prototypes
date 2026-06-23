@@ -402,12 +402,12 @@ export const orderStatuses = [
 ];
 
 export const serviceModules = [
-  { name: "地址簿", desc: "地址管理 30", route: "address", icon: 0 },
-  { name: "联系客服", desc: "联系客服 31", route: "contact", icon: 1 },
-  { name: "开票中心", desc: "开票中心 32", route: "invoice", icon: 2 },
-  { name: "意见反馈", desc: "意见反馈 29", route: "feedback", icon: 3 },
-  { name: "关于我们", desc: "关于我们 28", route: "about", icon: 4 },
-  { name: "飞手加入", desc: "填写入驻资料", route: "pilot", icon: 5 },
-  { name: "城市运营申请", desc: "城市运营申请", route: "operator", icon: 6 },
-  { name: "任务大厅", desc: "任务大厅", route: "tasks", icon: 7, pilotOnly: true }
+  { name: "地址簿", desc: "地址管理 30", route: "address", icon: 0, iconName: "address" },
+  { name: "开票中心", desc: "开票中心 32", route: "invoice", icon: 2, iconName: "invoice" },
+  { name: "城市运营申请", desc: "城市运营申请", route: "operator", icon: 6, iconName: "operator" },
+  { name: "意见反馈", desc: "意见反馈 29", route: "feedback", icon: 3, iconName: "feedback" },
+  { name: "飞手加入", desc: "填写入驻资料", route: "pilot", icon: 5, iconName: "pilot" },
+  { name: "任务大厅", desc: "任务大厅", route: "tasks", icon: 7, iconName: "tasks", pilotOnly: true },
+  { name: "联系客服", desc: "联系客服 31", route: "contact", icon: 1, iconName: "contact" },
+  { name: "关于我们", desc: "关于我们 28", route: "about", icon: 4, iconName: "about" }
 ];

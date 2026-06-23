@@ -70,6 +70,10 @@ function miniOrder(config) {
 export const state = {
   page: location.hash.replace("#/", "") || "home",
   history: [],
+  isLoggedIn: true,
+  showLogoutConfirm: false,
+  loginAgreement: false,
+  showPhoneAuthSheet: false,
   selectedProduct: hoistingProducts[0],
   selectedCaseId: "case-hospital-hoisting",
   productListMode: "hoisting",

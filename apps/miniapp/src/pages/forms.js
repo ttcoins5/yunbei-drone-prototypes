@@ -347,7 +347,6 @@ function pilotPage() {
   const isReapply = state.pilotApplication?.status === "已驳回";
 
   return shell(`<form class="form-page pilot-page" data-form="pilot">
-    <div class="form-intro"><b>${isReapply ? "重新提交飞手申请" : "飞手加入"}</b><p>${isReapply ? "请根据驳回原因修改资料，重新提交后进入待审核状态。" : "个人信息为必填资料；若所属主体为公司，还需要选择或补充公司信息。"}</p></div>
     ${pilotPersonalFields()}
     <div class="pilot-section">
       <div class="pilot-section-title"><b>所属主体</b><small>若归属公司，仅补充公司名称</small></div>
