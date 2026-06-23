@@ -1,1 +1,1 @@
-export { categories, homepageNavItems, hoistingProducts, products, orderStatuses, serviceModules } from "../../../../shared/data/catalog.js?v=orders-list-refresh-1";
+export { categories, homepageNavItems, hoistingProducts, products, orderStatuses, serviceModules } from "../../../../shared/data/catalog.js?v=miniapp-live-20260623-8";

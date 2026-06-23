@@ -344,13 +344,9 @@ export const hoistingProducts = [
     reqField("remark", "需求说明"),
     reqField("exampleImage", "例图", "image")
   ]), productIcon("icon-hosting.png"), 156),
-  serviceProduct("rental", "无人机租赁", "租赁机型 · 租赁周期", productFields([
+  serviceProduct("rental", "无人机租赁", "主体信息 · 租赁登记", productFields([
     reqField("contactName", "登记联系人", "text", true),
     reqField("contactPhone", "联系电话", "text", true),
-    reqField("droneModel", "租赁机型", "select", true, { options: ["多旋翼航拍机", "行业巡检机", "物流运输机", "待平台推荐"] }),
-    reqField("rentalPeriod", "租赁周期", "select", true, { options: ["1-3 天", "1 周", "1 个月", "项目制租赁"] }),
-    reqField("useScene", "使用场景", "text", true),
-    reqField("startDate", "期望开始日期", "text", true),
     reqField("remark", "需求说明"),
     reqField("exampleImage", "例图", "image")
   ]), productIcon("icon-rental.png"), 142, "增值服务"),

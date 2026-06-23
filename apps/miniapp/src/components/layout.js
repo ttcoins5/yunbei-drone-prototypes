@@ -1,4 +1,4 @@
-import { state } from "../state/appState.js?v=orders-list-refresh-1";
+import { state } from "../state/appState.js?v=miniapp-live-20260623-8";
 
 function contactSheet() {
   if (!state.showContactSheet) return "";

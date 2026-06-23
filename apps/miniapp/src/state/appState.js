@@ -1,4 +1,4 @@
-import { hoistingProducts } from "../data/catalog.js?v=home-core-gapless-1";
+import { hoistingProducts } from "../data/catalog.js?v=miniapp-live-20260623-8";
 
 const productById = Object.fromEntries(hoistingProducts.map(product => [product.id, product]));
 

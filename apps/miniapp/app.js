@@ -1,9 +1,9 @@
-import { hoistingProducts } from "./src/data/catalog.js?v=orders-list-refresh-1";
-import { caseStudies } from "./src/data/caseStudies.js?v=orders-list-refresh-1";
-import { state } from "./src/state/appState.js?v=orders-list-refresh-1";
-import { navigate, render } from "./src/router/navigation.js?v=orders-list-refresh-1";
-import { toast } from "./src/utils/toast.js?v=orders-list-refresh-1";
-import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=orders-list-refresh-1";
+import { hoistingProducts } from "./src/data/catalog.js?v=miniapp-live-20260623-8";
+import { caseStudies } from "./src/data/caseStudies.js?v=miniapp-live-20260623-8";
+import { state } from "./src/state/appState.js?v=miniapp-live-20260623-8";
+import { navigate, render } from "./src/router/navigation.js?v=miniapp-live-20260623-8";
+import { toast } from "./src/utils/toast.js?v=miniapp-live-20260623-8";
+import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=miniapp-live-20260623-8";
 
 function formatDateTime(date = new Date()) {
   const year = date.getFullYear();
@@ -458,18 +458,8 @@ function syncOrderQuantity(value) {
   refreshOrderPriceDom();
 }
 
-function submitProductOrder(form) {
-  const formData = new FormData(form);
-  const spec = state.selectedProduct.specs?.[state.selectedSpecIndex] || state.selectedProduct;
-  const unitPrice = Number(spec.price) || 0;
-  const quantityValue = Number(formData.get("quantity") || state.orderQuantity || 1);
-  const quantity = Number.isFinite(quantityValue) ? Math.min(99, Math.max(1, Math.floor(quantityValue))) : 1;
-  const totalAmount = unitPrice * quantity;
-  const onlinePay = totalAmount > 0;
-  const initialStatus = onlinePay ? "待付款" : "待接单";
-  const orderNo = `ORD${Date.now()}`;
-  const template = selectedRequirementTemplate(state.selectedProduct);
-  const requirementFields = [...template.fields].sort((a, b) => a.sort - b.sort).map(field => {
+function configuredRequirementFields(template, formData) {
+  return [...template.fields].sort((a, b) => a.sort - b.sort).map(field => {
     const raw = formData.get(`requirement_${field.key}`);
     const isFile = field.type === "image";
     const value = isFile ? (raw?.name || "") : String(raw || "").trim();
@@ -483,15 +473,56 @@ function submitProductOrder(form) {
       required: Boolean(field.required)
     };
   });
+}
+
+function rentalRequirementFields(formData) {
+  const subject = String(formData.get("rentalSubject") || "").trim();
+  const fields = [
+    { key: "customerSubject", label: "主体选择", type: "select", value: subject, required: true }
+  ];
+  const read = (key, label, type = "text") => {
+    const raw = formData.get(key);
+    const value = type === "image" ? (raw?.name || "") : String(raw || "").trim();
+    fields.push({ key, label, type, value, displayValue: value, required: true });
+  };
+  if (subject === "个人主体") {
+    read("personContactName", "登记联系人");
+    read("personContactPhone", "联系电话");
+    read("pickupPoint", "收货/自提点");
+    read("emergencyName", "紧急联系人");
+    read("emergencyPhone", "电话");
+  } else if (subject === "企业/单位主体") {
+    read("companyName", "公司全称");
+    read("socialCreditCode", "统一社会信用代码");
+    read("businessLicense", "营业执照上传", "image");
+    read("companyAddress", "单位通讯地址");
+  }
+  return fields;
+}
+
+function submitProductOrder(form) {
+  const formData = new FormData(form);
+  const spec = state.selectedProduct.specs?.[state.selectedSpecIndex] || state.selectedProduct;
+  const unitPrice = Number(spec.price) || 0;
+  const quantityValue = Number(formData.get("quantity") || state.orderQuantity || 1);
+  const quantity = Number.isFinite(quantityValue) ? Math.min(99, Math.max(1, Math.floor(quantityValue))) : 1;
+  const totalAmount = unitPrice * quantity;
+  const onlinePay = totalAmount > 0;
+  const initialStatus = onlinePay ? "待付款" : "待接单";
+  const orderNo = `ORD${Date.now()}`;
+  const template = selectedRequirementTemplate(state.selectedProduct);
+  const requirementFields = state.selectedProduct.id === "rental"
+    ? rentalRequirementFields(formData)
+    : configuredRequirementFields(template, formData);
   const missing = requirementFields.find(field => field.required && !field.value);
   if (missing) {
     toast(`请填写${missing.label}`);
     return;
   }
   const findValue = (...keys) => requirementFields.find(field => keys.includes(field.key))?.value || "";
-  const contactName = findValue("contactName") || state.userProfile.nickname;
-  const contactPhone = findValue("contactPhone") || state.userProfile.phone;
-  const address = findValue("workAddress", "area", "startAddress", "endAddress") || "";
+  const contactName = findValue("contactName", "name", "parentName", "applicant", "personContactName", "emergencyName", "companyName") || state.userProfile.nickname;
+  const contactPhone = findValue("contactPhone", "phone", "parentPhone", "personContactPhone", "emergencyPhone") || state.userProfile.phone;
+  const address = findValue("workAddress", "area", "startAddress", "endAddress", "pickupPoint", "companyAddress") || "";
   const remark = findValue("remark") || "暂无备注";
   state.pendingProductOrder = {
     orderNo,
@@ -542,6 +573,23 @@ function submitProductOrder(form) {
   pushServiceNotification(order.orderNo, "提交成功", initialStatus);
   toast(onlinePay ? "订单已提交，请完成支付" : "提交成功，订单待接单");
   navigate(onlinePay ? "payment" : "paymentResult");
+}
+
+function syncRentalSubjectFields(form) {
+  const subject = form.querySelector("[data-rental-subject]")?.value || "";
+  form.querySelectorAll("[data-rental-fields]").forEach(group => {
+    const visible = group.dataset.rentalFields === subject;
+    group.hidden = !visible;
+    group.querySelectorAll("[data-rental-control]").forEach(control => {
+      control.disabled = !visible;
+      control.required = visible && control.hasAttribute("data-rental-required");
+    });
+  });
+}
+
+function syncCurrentProductOrderForm() {
+  const form = document.querySelector('[data-form="product-order"]');
+  if (form) syncRentalSubjectFields(form);
 }
 
 function payPendingProductOrder() {
@@ -812,6 +860,12 @@ document.addEventListener("submit", (event) => {
 });
 
 document.addEventListener("change", (event) => {
+  const rentalSubject = event.target.closest("[data-rental-subject]");
+  if (rentalSubject) {
+    const form = rentalSubject.closest('[data-form="product-order"]');
+    if (form) syncRentalSubjectFields(form);
+  }
+
   const upload = event.target.closest("input[type='file'][data-upload-label]");
   if (!upload) return;
 
@@ -823,6 +877,12 @@ document.addEventListener("change", (event) => {
 });
 
 document.addEventListener("input", (event) => {
+  const rentalSubject = event.target.closest("[data-rental-subject]");
+  if (rentalSubject) {
+    const form = rentalSubject.closest('[data-form="product-order"]');
+    if (form) syncRentalSubjectFields(form);
+  }
+
   const input = event.target.closest("[data-input]");
   if (!input) return;
   if (input.dataset.input === "order-review-content") return syncOrderReviewContent(input.value);
@@ -835,7 +895,11 @@ window.addEventListener("hashchange", () => {
     state.page = page;
     if (!guardCurrentRoute()) return;
     render();
+    syncCurrentProductOrderForm();
   }
 });
 
-if (guardCurrentRoute()) render();
+if (guardCurrentRoute()) {
+  render();
+  syncCurrentProductOrderForm();
+}

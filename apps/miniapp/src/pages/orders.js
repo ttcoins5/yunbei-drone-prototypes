@@ -1,5 +1,5 @@
-import { shell } from "../components/layout.js?v=orders-list-refresh-1";
-import { state } from "../state/appState.js?v=orders-list-refresh-1";
+import { shell } from "../components/layout.js?v=miniapp-live-20260623-8";
+import { state } from "../state/appState.js?v=miniapp-live-20260623-8";
 
 const orderTabs = ["全部", "待付款", "待接单", "待服务", "待评价", "已取消"];
 
@@ -99,15 +99,26 @@ function orderFlowStatus(order) {
   return map[order.status] || map[order.timeline?.at(-1)?.title] || "订单生成";
 }
 
+function orderFlowDesc(title) {
+  const descMap = {
+    "订单生成": "用户已提交订单需求，系统已保存本次下单信息。",
+    "待付款": "订单需在线支付，完成付款后进入后续服务安排。",
+    "待派单": "后台确认需求后，为订单分配合适的飞手或服务人员。",
+    "待服务": "服务人员已确认订单，按约定时间执行服务。",
+    "待交付": "订单无需飞手派单，平台正在处理服务交付。",
+    "待评价": "服务已完成，等待用户提交服务评价。",
+    "已完成": "评价完成或订单流程结束，订单归档。"
+  };
+  return descMap[title] || "订单正在按流程推进。";
+}
+
 function orderProgressSteps(order) {
   const flow = orderFlow(order);
   const currentStatus = orderFlowStatus(order);
   const current = Math.max(0, flow.indexOf(currentStatus));
-  const timelineTimeMap = Object.fromEntries((order.timeline || []).map(item => [orderFlowStatus({ status: item.title }), item.time]));
-  timelineTimeMap["订单生成"] = timelineTimeMap["订单生成"] || order.time;
   return flow.map((title, index) => ({
     title,
-    time: timelineTimeMap[title] || "",
+    desc: orderFlowDesc(title),
     latest: index === current,
     done: index < current
   }));
@@ -265,7 +276,7 @@ export function orderDetailPage() {
           <i></i>
           <div>
             <b>${item.title}</b>
-            ${item.time ? `<small>${item.time}</small>` : ""}
+            <p>${item.desc}</p>
           </div>
         </article>`).join("")}
       </div>

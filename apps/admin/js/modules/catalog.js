@@ -250,13 +250,9 @@ state.products = [
   productItem("p6", "无人机租赁", "增值服务", productFields([
     reqField("contactName", "登记联系人", "text", true),
     reqField("contactPhone", "联系电话", "text", true),
-    reqField("droneModel", "租赁机型", "select", true, { options: ["多旋翼航拍机", "行业巡检机", "物流运输机", "待平台推荐"] }),
-    reqField("rentalPeriod", "租赁周期", "select", true, { options: ["1-3 天", "1 周", "1 个月", "项目制租赁"] }),
-    reqField("useScene", "使用场景", "text", true),
-    reqField("startDate", "期望开始日期", "text", true),
     reqField("remark", "需求说明"),
     reqField("exampleImage", "例图", "image")
-  ]), "填写租赁机型、租赁周期和使用场景，平台确认设备档期、押金和交付方式。", "0", false, productIcon("icon-rental.png")),
+  ]), "租赁下单页首版采用小程序固定主体表单，后台仅维护普通字段配置。", "0", false, productIcon("icon-rental.png")),
   productItem("p7", "无人机赛事", "培训教育与赛事举办", productFields([
     reqField("registerType", "注册类型", "select", true, { options: ["个人", "单位", "学校", "机构"] }),
     reqField("organization", "单位名称", "text", true),
@@ -315,11 +311,10 @@ function defaultRequirementFields() {
 
 function normalizeRequirementField(field, index) {
   const type = requirementFieldTypes.includes(field.type) ? field.type : "text";
-  const locked = isLockedRequirementField(field, index);
   const normalized = {
     ...field,
     type,
-    required: locked ? true : Boolean(field.required),
+    required: Boolean(field.required),
     sort: field.sort || index + 1
   };
   if (type === "select") {
@@ -333,7 +328,7 @@ function normalizeRequirementField(field, index) {
 }
 
 function isLockedRequirementField(field, index) {
-  return index < 2 || ["contactName", "contactPhone"].includes(field.key);
+  return false;
 }
 
 const productReviews = DroneAdmin.data.productReviews = [
@@ -662,7 +657,7 @@ function requirementFieldRows(product) {
         ? `<input data-field="requirement-extra" data-index="${index}" value="${requirementFieldValue(field, "options")}" placeholder="选项用 / 分隔">`
         : `<span class="requirement-option-empty">仅下拉框填写</span>`,
       `<div class="row-actions">
-        ${button("上移", "move-requirement-field", "small", `data-index="${index}" data-dir="-1"${locked || index <= 2 ? " disabled" : ""}`)}
+        ${button("上移", "move-requirement-field", "small", `data-index="${index}" data-dir="-1"${locked || index <= 0 ? " disabled" : ""}`)}
         ${button("下移", "move-requirement-field", "small", `data-index="${index}" data-dir="1"${locked || index === fields.length - 1 ? " disabled" : ""}`)}
         ${button("删除", "delete-requirement-field", "small danger", `data-index="${index}"${locked ? " disabled" : ""}`)}
       </div>`
@@ -690,7 +685,7 @@ function requirementFieldsPanel(product) {
         ${button("新增字段", "add-requirement-field", "primary")}
       </div>
       <div class="table-scroll requirement-table-wrap">${table(["排序","字段名称","字段类型","必填","提示文案","下拉选项","操作"], rows, "requirement-table")}</div>
-      <p class="muted requirement-help">字段由当前商品单独维护。首版字段类型仅支持文本、下拉框、图片；不支持字段联动和自动报价。</p>
+      <p class="muted requirement-help">字段由当前商品单独维护。首版字段类型仅支持文本、下拉框、图片；不支持条件字段、字段联动和自动报价。</p>
     </div>
   </div>`);
 }
@@ -722,7 +717,15 @@ function propertyRow(label, key, product) {
   return `<label class="property-row"><span>${label}</span><input type="checkbox" data-action="toggle-product-property" data-key="${key}"${checked ? " checked" : ""}></label>`;
 }
 
-const showDetailPageConfig = true;
+function isInternalProductConfigMode() {
+  return new URLSearchParams(location.search).get("internal") === "ff-super";
+}
+
+function requireInternalProductConfigMode() {
+  if (isInternalProductConfigMode()) return true;
+  toast("内部配置模式可用");
+  return false;
+}
 
 const detailSectionTypeLabels = {
   intro: "单文本",
@@ -924,22 +927,26 @@ function moveDetailSection(product, index, dir) {
 function productEditPage() {
   const product = activeProduct();
   const creating = isCreatingProduct();
+  const showAdvancedConfig = isInternalProductConfigMode();
   const publishRuleText = "上架前需填写商品名称、商品分类，上传商品图，至少保留 1 个有效规格和价格，并确认业务属性；不满足条件时应先保存为已下架。";
   const specs = product.specs.map((spec, index) => [
     `<input data-field="spec-name" data-index="${index}" value="${spec.name}">`,
     `<input data-field="spec-price" data-index="${index}" value="${spec.price}">`,
     opButton("删除","remove-spec","danger",`data-index="${index}"`)
   ]);
+  const internalModeNote = showAdvancedConfig
+    ? `<div class="module-note" style="margin-top:12px"><span class="tag blue">内部配置模式</span> 已开放详情页轻量配置与需求采集字段配置。</div>`
+    : "";
   return panel(creating ? "创建商品" : "编辑商品", formGrid([
     { label: "商品名称", html: `<input data-field="product-name" value="${product.name}" placeholder="请输入商品名称">` },
     { label: "商品分类", html: `<select data-field="product-category">${categoryOptions(product.category)}</select>` },
     { label: "上架状态", html: `<select data-field="product-status"><option${product.status === "已上架" ? " selected" : ""}>已上架</option><option${product.status === "已下架" ? " selected" : ""}>已下架</option></select>` }
-  ]) + `<div class="module-note" style="margin-top:4px"><b>上下架条件：</b>${publishRuleText}</div>`, `${routeButton("返回商品列表","products","")}${button("保存商品","save-product","primary")}`)
+  ]) + `<div class="module-note" style="margin-top:4px"><b>上下架条件：</b>${publishRuleText}</div>${internalModeNote}`, `${routeButton("返回商品列表","products","")}${button("保存商品","save-product","primary")}`)
   + productImagesPanel(product)
   + productReviewsPanel(product)
   + panel("多规格配置", `${table(["规格名称","价格（元）","操作"], specs)}<div style="margin-top:12px">${button("添加规格","add-spec")}</div>`)
-  + (showDetailPageConfig ? detailPagePanel(product) : "")
-  + requirementFieldsPanel(product)
+  + (showAdvancedConfig ? detailPagePanel(product) : "")
+  + (showAdvancedConfig ? requirementFieldsPanel(product) : "")
   + panel("业务属性", `<div class="check-list">${propertyRow("是否在线支付","onlinePay",product)}${propertyRow("是否需要飞手服务","needPilot",product)}</div>
     <p class="muted" style="margin:12px 0 0">业务属性与商品绑定。订单生成时保存最终属性快照，后续修改商品不会改变历史订单。</p>`);
 }
@@ -974,8 +981,10 @@ function readProductFormFromPage() {
     const index = Number(input.dataset.index);
     if (product.specs[index]) product.specs[index].price = input.value.trim();
   });
-  ensureCustomRequirementFields(product);
-  if (product.requirementFields?.length) {
+  if (isInternalProductConfigMode()) {
+    ensureCustomRequirementFields(product);
+  }
+  if (isInternalProductConfigMode() && product.requirementFields?.length) {
     page.querySelectorAll('[data-field="requirement-label"]').forEach(input => {
       const index = Number(input.dataset.index);
       if (product.requirementFields[index]) product.requirementFields[index].label = input.value.trim();
@@ -1001,7 +1010,9 @@ function readProductFormFromPage() {
     });
     product.requirementFields = product.requirementFields.map(normalizeRequirementField);
   }
-  product.detailPage = readDetailPageFormFromPage(product);
+  if (isInternalProductConfigMode()) {
+    product.detailPage = readDetailPageFormFromPage(product);
+  }
   return product;
 }
 
@@ -1132,13 +1143,12 @@ DroneAdmin.registerModule({
     ]
   },
   "product-edit": {
-    "summary": "创建或编辑商品，配置单张商品图标、评价展示、规格价格、详情页轻量配置、需求采集字段和业务属性。",
+    "summary": "创建或编辑商品，配置单张商品图标、评价展示、规格价格和业务属性。",
     "operations": [
       "上传 / 替换 / 删除商品图标，用于列表封面、小程序商品卡片与商品详情页头图",
       "评价管理：分页浏览订单评价列表，多选后随「保存商品」一并生效；默认全不展示",
       "添加 / 删除规格，每个规格独立定价",
-      "详情页轻量配置：维护详情页标题区、模块内容、排序和启停",
-      "业务属性通过勾选配置：在线支付、飞手服务；下单字段统一由需求采集字段配置",
+      "业务属性通过勾选配置：在线支付、飞手服务",
       "保存后更新商品；历史订单保留下单时属性快照"
     ],
     "fields": [
@@ -1173,46 +1183,6 @@ DroneAdmin.registerModule({
       [
         "规格操作",
         "新增或删除规格；至少保留 1 个有效规格和价格才允许作为可上架商品"
-      ],
-      [
-        "详情页轻量配置",
-        "用于小程序商品详情介绍页展示，支持单文本、四宫格、勾选列表、费用明细、联系方式、单图片模块"
-      ],
-      [
-        "模块名称",
-        "详情页模块标题，例如服务介绍、服务项目、服务优势"
-      ],
-      [
-        "模块类型",
-        "决定小程序详情页模块渲染样式，如单文本、四宫格或勾选列表"
-      ],
-      [
-        "内容摘要",
-        "后台快速维护模块正文或条目摘要"
-      ],
-      [
-        "需求采集字段",
-        "用于下单页表单，配置用户提交订单时要填写的字段，与详情页展示内容解耦"
-      ],
-      [
-        "字段名称",
-        "下单页表单中展示给用户的字段标题"
-      ],
-      [
-        "字段类型",
-        "首版仅支持文本、下拉框、图片；下拉框字段才需要维护下拉选项"
-      ],
-      [
-        "必填",
-        "联系人、联系电话等核心字段固定必填；其他字段按商品需求设置"
-      ],
-      [
-        "提示文案",
-        "输入框占位提示或上传说明，引导用户填写正确内容"
-      ],
-      [
-        "下拉选项",
-        "仅字段类型为下拉框时填写，多个选项用斜杠或分隔符区分"
       ],
       [
         "是否在线支付",
@@ -1311,6 +1281,7 @@ DroneAdmin.registerModule({
           render();
     },
     "reset-detail-template": function (target) {
+      if (!requireInternalProductConfigMode()) return;
       const product = readProductFormFromPage();
           const templateType = product.detailPage?.templateType || "service";
           product.detailPage = detailPageForTemplate(templateType, product.id || "p3", product.name || "未命名商品");
@@ -1318,11 +1289,13 @@ DroneAdmin.registerModule({
           toast("已套用当前模板默认模块");
     },
     "add-detail-section": function (target) {
+      if (!requireInternalProductConfigMode()) return;
       const product = readProductFormFromPage();
           addDetailSection(product);
           render();
     },
     "delete-detail-section": function (target) {
+      if (!requireInternalProductConfigMode()) return;
       const product = readProductFormFromPage();
           normalizeDetailPage(product).sections.splice(Number(target.dataset.index), 1);
           product.detailPage.sections.forEach((section, index) => {
@@ -1331,11 +1304,13 @@ DroneAdmin.registerModule({
           render();
     },
     "move-detail-section": function (target) {
+      if (!requireInternalProductConfigMode()) return;
       const product = readProductFormFromPage();
           moveDetailSection(product, Number(target.dataset.index), Number(target.dataset.dir));
           render();
     },
     "add-requirement-field": function (target) {
+      if (!requireInternalProductConfigMode()) return;
       const product = readProductFormFromPage();
           ensureCustomRequirementFields(product);
           product.requirementFields.push({
@@ -1349,24 +1324,22 @@ DroneAdmin.registerModule({
           render();
     },
     "delete-requirement-field": function (target) {
+      if (!requireInternalProductConfigMode()) return;
       const product = readProductFormFromPage();
           ensureCustomRequirementFields(product);
           const index = Number(target.dataset.index);
-          if (isLockedRequirementField(product.requirementFields[index], index)) {
-            toast("联系人和联系电话为默认必填字段");
-            return;
-          }
           product.requirementFields.splice(index, 1);
           setProductRequirementFields(product, product.requirementFields);
           render();
     },
     "move-requirement-field": function (target) {
+      if (!requireInternalProductConfigMode()) return;
       const product = readProductFormFromPage();
           ensureCustomRequirementFields(product);
           const index = Number(target.dataset.index);
           const next = index + Number(target.dataset.dir);
-          if (isLockedRequirementField(product.requirementFields[index], index) || next < 2) {
-            toast("联系人和联系电话固定在前两项");
+          if (next < 0) {
+            toast("已经是第一个字段");
             return;
           }
           if (next >= 0 && next < product.requirementFields.length) {
@@ -1436,20 +1409,17 @@ DroneAdmin.registerModule({
           return;
     },
     "toggle-requirement-required": function (target) {
+      if (!requireInternalProductConfigMode()) return;
       const product = readProductFormFromPage();
           ensureCustomRequirementFields(product);
           const index = Number(event.target.dataset.index);
           const field = product.requirementFields[index];
-          if (isLockedRequirementField(field, index)) {
-            field.required = true;
-            render();
-            return;
-          }
           if (field) field.required = event.target.checked;
           render();
           return;
     },
     "requirement-type-choice": function (target) {
+      if (!requireInternalProductConfigMode()) return;
       const product = readProductFormFromPage();
           ensureCustomRequirementFields(product);
           const field = product.requirementFields[Number(event.target.dataset.index)];
@@ -1459,6 +1429,7 @@ DroneAdmin.registerModule({
           return;
     },
     "change-detail-template": function (target) {
+      if (!requireInternalProductConfigMode()) return;
       const product = readProductFormFromPage();
           product.detailPage = detailPageForTemplate(event.target.value, product.id || "p3", product.name || "未命名商品");
           render();

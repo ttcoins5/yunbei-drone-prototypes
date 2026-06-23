@@ -1,7 +1,7 @@
-import { products } from "../data/catalog.js?v=orders-list-refresh-1";
-import { shell } from "../components/layout.js?v=orders-list-refresh-1";
-import { productCard } from "../components/productCard.js?v=orders-list-refresh-1";
-import { state } from "../state/appState.js?v=orders-list-refresh-1";
+import { products } from "../data/catalog.js?v=miniapp-live-20260623-8";
+import { shell } from "../components/layout.js?v=miniapp-live-20260623-8";
+import { productCard } from "../components/productCard.js?v=miniapp-live-20260623-8";
+import { state } from "../state/appState.js?v=miniapp-live-20260623-8";
 
 export function currentProducts() {
   return products;
@@ -186,6 +186,8 @@ export function selectedRequirementTemplate(product = state.selectedProduct) {
 function defaultRequirementValue(field, defaultAddress) {
   if (field.key === "contactName") return defaultAddress?.name || state.userProfile.nickname || "";
   if (field.key === "contactPhone") return defaultAddress?.phone || state.userProfile.phone || "";
+  if (field.key === "name" || field.key === "parentName" || field.key === "applicant") return state.userProfile.nickname || "";
+  if (field.key === "phone" || field.key === "parentPhone") return state.userProfile.phone || "";
   return "";
 }
 
@@ -213,6 +215,31 @@ function requirementFormFields(template, defaultAddress) {
       ${requirementFieldInput(field, value)}
     </label>`;
   }).join("");
+}
+
+function rentalFormFields(defaultAddress) {
+  const name = defaultAddress?.name || state.userProfile.nickname || "";
+  const phone = defaultAddress?.phone || state.userProfile.phone || "";
+  return `<label class="requirement-field"><span class="requirement-field-head"><span>主体选择<i>*</i></span></span>
+      <select name="rentalSubject" data-rental-subject required>
+        <option value="">请选择主体</option>
+        <option>个人主体</option>
+        <option>企业/单位主体</option>
+      </select>
+    </label>
+    <div class="rental-subject-fields" data-rental-fields="个人主体" hidden>
+      <label class="requirement-field"><span class="requirement-field-head"><span>登记联系人<i>*</i></span></span><input name="personContactName" type="text" value="${name}" placeholder="请输入登记联系人" data-rental-control data-rental-required></label>
+      <label class="requirement-field"><span class="requirement-field-head"><span>联系电话<i>*</i></span></span><input name="personContactPhone" type="text" value="${phone}" placeholder="请输入联系电话" data-rental-control data-rental-required></label>
+      <label class="requirement-field"><span class="requirement-field-head"><span>收货/自提点<i>*</i></span></span><input name="pickupPoint" type="text" placeholder="请输入收货/自提点" data-rental-control data-rental-required></label>
+      <label class="requirement-field"><span class="requirement-field-head"><span>紧急联系人<i>*</i></span></span><input name="emergencyName" type="text" value="${name}" placeholder="请输入紧急联系人" data-rental-control data-rental-required></label>
+      <label class="requirement-field"><span class="requirement-field-head"><span>电话<i>*</i></span></span><input name="emergencyPhone" type="text" value="${phone}" placeholder="请输入电话" data-rental-control data-rental-required></label>
+    </div>
+    <div class="rental-subject-fields" data-rental-fields="企业/单位主体" hidden>
+      <label class="requirement-field"><span class="requirement-field-head"><span>公司全称<i>*</i></span></span><input name="companyName" type="text" placeholder="请输入公司全称" data-rental-control data-rental-required></label>
+      <label class="requirement-field"><span class="requirement-field-head"><span>统一社会信用代码<i>*</i></span></span><input name="socialCreditCode" type="text" placeholder="请输入统一社会信用代码" data-rental-control data-rental-required></label>
+      <label class="requirement-field"><span class="requirement-field-head"><span>营业执照上传<i>*</i></span></span><span class="requirement-upload"><input name="businessLicense" type="file" accept="image/*" data-rental-control data-rental-required><em>上传营业执照</em><small>支持 JPG / PNG</small></span></label>
+      <label class="requirement-field"><span class="requirement-field-head"><span>单位通讯地址<i>*</i></span></span><input name="companyAddress" type="text" placeholder="请输入单位通讯地址" data-rental-control data-rental-required></label>
+    </div>`;
 }
 
 export function productsPage() {
@@ -309,7 +336,7 @@ export function orderConfirmPage() {
   return shell(`<form class="order-confirm-page" data-form="product-order">
     <section class="confirm-card">
       <div class="confirm-title"><b>需求信息</b><small>${template.name} · 提交后保存快照</small></div>
-      ${requirementFormFields(template, defaultAddress)}
+      ${product.id === "rental" ? rentalFormFields(defaultAddress) : requirementFormFields(template, defaultAddress)}
     </section>
     <section class="confirm-card">
       <div class="confirm-title"><b>商品信息</b><small>提交后由平台联系确认</small></div>
