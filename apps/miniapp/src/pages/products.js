@@ -40,6 +40,14 @@ function productReviews(product) {
   ];
 }
 
+function displayedProductReviews(product) {
+  const reviews = productReviews(product);
+  const displayedIds = product.displayedReviewIds || [];
+  if (!displayedIds.length) return [];
+  const displayed = new Set(displayedIds);
+  return reviews.filter(item => displayed.has(item.id));
+}
+
 function enabledSections(detailPage) {
   return [...(detailPage?.sections || [])]
     .filter(section => section.enabled !== false)
@@ -93,6 +101,24 @@ function renderContactSection(section) {
     <div class="detail-contact-list">
       ${section.phone ? `<div class="detail-contact-row compact"><i>☎</i><span><small>联系电话</small><b>${section.phone}</b></span><button data-action="contact-phone">拨打</button></div>` : ""}
       ${section.address ? `<div class="detail-contact-row"><i>⌖</i><span><small>联系地址</small><b>${section.address}</b></span></div>` : ""}
+    </div>
+  </section>`;
+}
+
+function renderSelectedReviewSection(product) {
+  const reviews = displayedProductReviews(product);
+  if (!reviews.length) return "";
+  return `<section class="detail-template-card detail-selected-reviews">
+    <div class="detail-review-title">${sectionTitle("用户评价")}<small>已展示 ${reviews.length} 条</small></div>
+    <div class="detail-review-list">
+      ${reviews.map(item => `<article class="detail-review-item">
+        <span class="review-avatar">${item.user.slice(0, 1)}</span>
+        <div>
+          <header><b>${item.user}</b>${stars(item.rating)}</header>
+          <p>${item.content}</p>
+          <time>${item.time}</time>
+        </div>
+      </article>`).join("")}
     </div>
   </section>`;
 }
@@ -214,6 +240,7 @@ export function productDetailPage() {
     ${detailHero(product, detailPage)}
     <div class="detail-template-body">
       ${enabledSections(detailPage).map(renderDetailSection).join("")}
+      ${renderSelectedReviewSection(product)}
     </div>
     ${detailBottomBar(detailPage)}
   </div>`, { title: "商品详情", back: true, tab: "products" });

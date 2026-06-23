@@ -445,6 +445,17 @@ button { cursor: pointer; }
 .detail-contact-row.compact small { flex: 0 0 auto; font-size: 12px; }
 .detail-contact-row.compact b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .detail-contact-list button { min-width: 58px; height: 32px; border: 0; border-radius: 999px; color: #fff; background: linear-gradient(135deg,var(--blue),var(--teal)); font-size: 12px; font-weight: 800; }
+.detail-review-title { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.detail-selected-reviews { padding-bottom: 15px; }
+.detail-review-title h3 { margin-bottom: 10px; }
+.detail-review-title small { flex: 0 0 auto; padding-top: 4px; color: #93a0a6; font-size: 10px; font-weight: 800; }
+.detail-review-list { display: grid; gap: 8px; }
+.detail-review-item { display: grid; grid-template-columns: 34px minmax(0,1fr); gap: 10px; align-items: start; padding: 10px; border: 1px solid #edf2f3; border-radius: 14px; background: #fbfdfd; }
+.detail-review-item .review-avatar { grid-row: auto; width: 34px; height: 34px; font-size: 12px; }
+.detail-review-item header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.detail-review-item header b { color: #26343c; font-size: 13px; }
+.detail-review-item p { margin: 5px 0 4px; color: #4e5963; font-size: 12px; line-height: 1.55; }
+.detail-review-item time { color: #9aa8ad; font-size: 10px; }
 .detail-info-list { display: grid; gap: 10px; }
 .detail-info-list div { display: grid; grid-template-columns: 72px 1fr; gap: 12px; padding: 12px; border-radius: 12px; background: #f7fafb; }
 .detail-info-list small { color: #7d8b94; font-size: 12px; }

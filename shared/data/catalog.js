@@ -34,8 +34,9 @@ function serviceProduct(id, name, desc, fields, image, sales, category = "无人
     detailPage: detailPageFor(id, name),
     specs: [{ name: "信息提交", price: 0, desc: "填写信息后由平台确认" }],
     reviews: [
-      { user: "平台用户", rating: 5, content: "信息填写清楚，平台沟通及时。", time: "2026-06-12 15:20" }
-    ]
+      { id: `${id}-rv1`, user: "平台用户", rating: 5, content: "信息填写清楚，平台沟通及时。", time: "2026-06-12 15:20" }
+    ],
+    displayedReviewIds: [`${id}-rv1`]
   };
 }
 
@@ -50,8 +51,9 @@ function paidHoistingProduct(fields, image, sales) {
     { name: "重载吊运（50-100kg）", price: 1980, desc: "适合大型设备或高空施工物资" }
   ];
   product.reviews = [
-    { user: "成都建工", rating: 5, content: "标准吊运下单后很快完成派单，价格和数量在订单里看得清楚。", time: "2026-06-16 18:20" }
+    { id: "hoisting-rv1", user: "成都建工", rating: 5, content: "标准吊运下单后很快完成派单，价格和数量在订单里看得清楚。", time: "2026-06-16 18:20" }
   ];
+  product.displayedReviewIds = ["hoisting-rv1"];
   return product;
 }
 
