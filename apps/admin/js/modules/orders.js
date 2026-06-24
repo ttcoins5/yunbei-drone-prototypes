@@ -497,7 +497,7 @@ DroneAdmin.registerModule({
       "列表状态列 hover 可查看该单完整流转路径",
       "状态颜色：待付款/待评价=橙色，待派单=红色（需管理员操作），待服务/待交付=蓝色，已完成=绿色",
       "需飞手且待派单的订单，列表显示「去派单」，点击直接弹窗指派飞手（与详情「分配飞手」同一逻辑）",
-      "无需飞手且状态为待交付的订单，列表显示「交付」；上传或填写交付凭证后进入待评价",
+      "无需飞手且状态为待交付的订单，列表显示「交付」；上传交付凭证后进入待评价",
       "线下报价订单显示「改价」，填写金额和原因后形成改价记录",
       "点击「查看详情」进入订单详情，顶部步骤条展示动态流转进度",
       "待服务阶段在详情页「调整飞手」修改名单，状态不变",
@@ -565,7 +565,7 @@ DroneAdmin.registerModule({
       "需飞手服务时展示「飞手分配与履约」面板：待派单显示「分配飞手」，待服务显示「调整飞手」",
       "列表「去派单」与详情「分配飞手」为同一指派弹窗；调整飞手仅改名单，不改变订单状态",
       "无需飞手时跳过派单节点，使用「待交付」并隐藏飞手面板",
-      "待交付订单点击「交付」上传或填写交付凭证，确认后进入待评价",
+      "待交付订单点击「交付」上传交付凭证，确认后进入待评价",
       "飞手端完成服务前也需上传完成凭证；凭证只在后台订单详情展示，用户端和飞手端详情不展示凭证列表"
     ],
     "fields": [
@@ -599,7 +599,7 @@ DroneAdmin.registerModule({
       ],
       [
         "待交付",
-        "无需飞手时的履约节点，后台上传或填写交付凭证后进入待评价"
+        "无需飞手时的履约节点，后台上传交付凭证后进入待评价"
       ],
       [
         "交付/完成凭证",
@@ -720,12 +720,9 @@ DroneAdmin.registerModule({
         return;
       }
       modal("订单交付", `<div class="price-change-form el-form">
-        <label><span>订单号</span><input value="${order.id}" readonly></label>
-        <label><span>当前状态</span><input value="${order.status}" readonly></label>
         <label><span>交付凭证</span><input name="deliveryProofFile" type="file"></label>
-        <label><span>凭证名称</span><input name="deliveryProofName" value="${order.id}-交付凭证.pdf" placeholder="请输入凭证文件名"></label>
         <label><span>交付说明</span><textarea name="deliveryRemark" placeholder="请输入交付说明">已按订单需求完成交付，凭证仅在后台订单详情留存。</textarea></label>
-      </div><p class="price-change-tip">待交付订单需上传或填写交付凭证后才能进入待评价；凭证不在用户端或飞手端展示。</p>`,
+      </div><p class="price-change-tip">待交付订单需上传交付凭证后才能进入待评价；凭证不在用户端或飞手端展示。</p>`,
       `${button("取消","close-modal")}${button("确认交付","confirm-order-delivery","primary")}`, true);
     },
     "confirm-order-delivery": function (target) {
@@ -735,11 +732,10 @@ DroneAdmin.registerModule({
         return;
       }
       const fileInput = document.querySelector("input[name='deliveryProofFile']");
-      const nameInput = document.querySelector("input[name='deliveryProofName']");
       const remarkInput = document.querySelector("textarea[name='deliveryRemark']");
-      const fileName = fileInput?.files?.[0]?.name || nameInput?.value?.trim();
+      const fileName = fileInput?.files?.[0]?.name;
       if (!fileName) {
-        toast("请上传或填写交付凭证名称");
+        toast("请上传交付凭证");
         return;
       }
       order.deliveryProofs = [
