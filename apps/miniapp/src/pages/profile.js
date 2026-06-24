@@ -1,7 +1,7 @@
-import { orderStatuses, serviceModules } from "../data/catalog.js?v=miniapp-live-20260624-task-detail-clean-1";
+import { orderStatuses, serviceModules } from "../data/catalog.js?v=miniapp-live-20260624-report-clean-1";
 import { orderIcon, serviceIcon } from "../components/icons.js";
-import { shell } from "../components/layout.js?v=miniapp-live-20260624-task-detail-clean-1";
-import { state } from "../state/appState.js?v=miniapp-live-20260624-task-detail-clean-1";
+import { shell } from "../components/layout.js?v=miniapp-live-20260624-report-clean-1";
+import { state } from "../state/appState.js?v=miniapp-live-20260624-report-clean-1";
 
 function isPilot() {
   return state.userProfile.role === "pilot";
@@ -35,7 +35,7 @@ function pilotStatusMeta(status) {
   return {
     className: "pending",
     title: "申请审核中",
-    desc: "平台正在核验身份、执照和设备信息，审核结果会通过服务通知同步。",
+    desc: "平台正在核验飞手资料、持证情况和服务能力，审核结果会通过服务通知同步。",
     tag: "待审核"
   };
 }
@@ -178,14 +178,20 @@ export function pilotStatusPage() {
       <div class="profile-card-title"><h3>申请信息</h3><small>${app.id}</small></div>
       <div class="pilot-status-grid">
         <span><small>申请人</small><b>${app.applicant}</b></span>
+        <span><small>性别</small><b>${app.gender || "—"}</b></span>
         <span><small>联系电话</small><b>${app.phone}</b></span>
-        ${app.birthday ? `<span><small>出生年月</small><b>${app.birthday}</b></span>` : ""}
+        <span><small>常驻城市</small><b>${app.city || app.area || "—"}</b></span>
+        <span><small>紧急联系人</small><b>${app.emergencyContact || "—"}</b></span>
+        <span><small>持证情况</small><b>${app.licenseStatus || "—"}</b></span>
+        <span><small>所持证书等级</small><b>${app.licenseLevel || "—"}</b></span>
+        <span><small>证书编号</small><b>${app.licenseNo || "—"}</b></span>
+        <span><small>擅长飞行种类</small><b>${app.flightTypes || "—"}</b></span>
+        <span><small>飞行实操年限</small><b>${app.flightYears || "—"}</b></span>
+        <span><small>是否自有设备</small><b>${app.hasOwnDevice || "—"}</b></span>
+        <span><small>入职身份</small><b>${app.employmentIdentity || "—"}</b></span>
         <span><small>所属主体</small><b>${app.subject}</b></span>
         ${app.companyName ? `<span><small>公司名称</small><b>${app.companyName}</b></span>` : ""}
-        <span><small>所在区域</small><b>${app.area}</b></span>
-        <span><small>无人机机型</small><b>${app.droneModel}</b></span>
-        ${app.serialNo ? `<span><small>序列号</small><b>${app.serialNo}</b></span>` : ""}
-        ${app.uniqueId ? `<span><small>唯一识别码</small><b>${app.uniqueId}</b></span>` : ""}
+        <span><small>个人简介</small><b>${app.intro || "—"}</b></span>
         <span><small>提交时间</small><b>${app.appliedAt}</b></span>
         <span><small>审核时间</small><b>${app.reviewedAt || "待审核"}</b></span>
       </div>

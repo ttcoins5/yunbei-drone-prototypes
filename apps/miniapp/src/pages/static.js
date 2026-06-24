@@ -1,5 +1,5 @@
-import { shell } from "../components/layout.js?v=miniapp-live-20260624-task-detail-clean-1";
-import { state } from "../state/appState.js?v=miniapp-live-20260624-task-detail-clean-1";
+import { shell } from "../components/layout.js?v=miniapp-live-20260624-report-clean-1";
+import { state } from "../state/appState.js?v=miniapp-live-20260624-report-clean-1";
 
 const defaultAboutConfig = {
   name: "四川奉飞飞无人机科技有限公司",

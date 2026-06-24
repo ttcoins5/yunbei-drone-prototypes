@@ -1,9 +1,9 @@
-import { hoistingProducts } from "./src/data/catalog.js?v=miniapp-live-20260624-task-detail-clean-1";
-import { caseStudies } from "./src/data/caseStudies.js?v=miniapp-live-20260624-task-detail-clean-1";
-import { state } from "./src/state/appState.js?v=miniapp-live-20260624-task-detail-clean-1";
-import { navigate, render } from "./src/router/navigation.js?v=miniapp-live-20260624-task-detail-clean-1";
-import { toast } from "./src/utils/toast.js?v=miniapp-live-20260624-task-detail-clean-1";
-import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=miniapp-live-20260624-task-detail-clean-1";
+import { hoistingProducts } from "./src/data/catalog.js?v=miniapp-live-20260624-report-clean-1";
+import { caseStudies } from "./src/data/caseStudies.js?v=miniapp-live-20260624-report-clean-1";
+import { state } from "./src/state/appState.js?v=miniapp-live-20260624-report-clean-1";
+import { navigate, render } from "./src/router/navigation.js?v=miniapp-live-20260624-report-clean-1";
+import { toast } from "./src/utils/toast.js?v=miniapp-live-20260624-report-clean-1";
+import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=miniapp-live-20260624-report-clean-1";
 
 function formatDateTime(date = new Date()) {
   const year = date.getFullYear();
@@ -754,18 +754,24 @@ function submitPilotApplication(form) {
     applicant: fields.applicant?.trim() || state.userProfile.nickname,
     subject: isCompany ? "公司主体" : "个人主体",
     phone: fields.phone?.trim() || state.userProfile.phone,
-    birthday: fields.birthday || "",
-    area: fields.area?.trim() || state.userProfile.region,
+    gender: fields.gender || state.userProfile.gender,
+    city: fields.city?.trim() || state.userProfile.region,
+    emergencyContact: fields.emergencyContact?.trim() || "",
+    licenseStatus: fields.licenseStatus || "",
+    licenseLevel: fields.licenseLevel?.trim() || "",
+    licenseNo: fields.licenseNo?.trim() || "",
+    flightTypes: fields.flightTypes?.trim() || "",
+    flightYears: fields.flightYears?.trim() || "",
+    hasOwnDevice: fields.hasOwnDevice || "",
+    employmentIdentity: fields.employmentIdentity || "",
+    intro: fields.intro?.trim() || "",
     companyName: isCompany ? (fields.companyName?.trim() || "宁波低空服务有限公司") : "",
-    droneModel: fields.droneModel?.trim() || "DJI Mavic 3E",
-    serialNo: fields.serialNo?.trim() || "",
-    uniqueId: fields.uniqueId?.trim() || "",
     appliedAt: now,
     reviewedAt: "",
     rejectReason: "",
     progress: [
       { time: now, title: "提交申请", desc: "已提交飞手入驻资料，等待后台审核" },
-      { time: "待更新", title: "平台审核", desc: "运营人员将核验身份、执照和设备资料" }
+      { time: "待更新", title: "平台审核", desc: "运营人员将核验飞手能力、持证情况和联系资料" }
     ],
     history
   };

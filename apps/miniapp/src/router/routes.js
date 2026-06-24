@@ -1,9 +1,9 @@
-import { caseDetailPage, casesPage, categoriesPage, homePage } from "../pages/home.js?v=miniapp-live-20260624-task-detail-clean-1";
-import { orderConfirmPage, paymentPage, paymentResultPage, productDetailPage, productReviewsPage, productsPage } from "../pages/products.js?v=miniapp-live-20260624-task-detail-clean-1";
-import { loginPage, pilotStatusPage, profileDetailPage, profilePage } from "../pages/profile.js?v=miniapp-live-20260624-task-detail-clean-1";
-import { messagesPage, orderDetailPage, orderReviewPage, ordersPage, serviceNotificationsPage } from "../pages/orders.js?v=miniapp-live-20260624-task-detail-clean-1";
-import { addressPage, feedbackPage, formPage, invoicePage, operatorPage, reportDetailPage, reportPage } from "../pages/forms.js?v=miniapp-live-20260624-task-detail-clean-1";
-import { aboutPage, contactPage, contactPhonePage, contactWechatPage, pilotOrderDetailPage, tasksPage } from "../pages/static.js?v=miniapp-live-20260624-task-detail-clean-1";
+import { caseDetailPage, casesPage, categoriesPage, homePage } from "../pages/home.js?v=miniapp-live-20260624-report-clean-1";
+import { orderConfirmPage, paymentPage, paymentResultPage, productDetailPage, productReviewsPage, productsPage } from "../pages/products.js?v=miniapp-live-20260624-report-clean-1";
+import { loginPage, pilotStatusPage, profileDetailPage, profilePage } from "../pages/profile.js?v=miniapp-live-20260624-report-clean-1";
+import { messagesPage, orderDetailPage, orderReviewPage, ordersPage, serviceNotificationsPage } from "../pages/orders.js?v=miniapp-live-20260624-report-clean-1";
+import { addressPage, feedbackPage, formPage, invoicePage, operatorPage, reportDetailPage, reportPage } from "../pages/forms.js?v=miniapp-live-20260624-report-clean-1";
+import { aboutPage, contactPage, contactPhonePage, contactWechatPage, pilotOrderDetailPage, tasksPage } from "../pages/static.js?v=miniapp-live-20260624-report-clean-1";
 
 export const routes = {
   home: homePage,

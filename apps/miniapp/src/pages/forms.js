@@ -1,6 +1,6 @@
 import { icon } from "../components/icons.js";
-import { shell } from "../components/layout.js?v=miniapp-live-20260624-task-detail-clean-1";
-import { state } from "../state/appState.js?v=miniapp-live-20260624-task-detail-clean-1";
+import { shell } from "../components/layout.js?v=miniapp-live-20260624-report-clean-1";
+import { state } from "../state/appState.js?v=miniapp-live-20260624-report-clean-1";
 
 function addressCard(address) {
   return `<article class="address-card ${address.isDefault ? "is-default" : ""}">
@@ -217,31 +217,23 @@ export function reportDetailPage() {
       </div>
     </section>
     <section class="flight-report-detail-card">
-      <div class="flight-report-title"><b>报备主体</b><small>委托与飞手信息</small></div>
+      <div class="flight-report-title"><b>报备信息</b><small>委托、飞手与设备</small></div>
       <div class="flight-report-detail-grid">
         ${reportDetailItem("委托主体", report.entrustedSubject)}
         ${reportDetailItem("飞手姓名", report.pilot)}
         ${reportDetailItem("联系方式", report.pilotPhone)}
-        ${reportDetailItem("任务性质", report.taskNature)}
+        ${reportDetailItem("无人机型号", report.droneModel || report.modelLicense)}
+        ${reportDetailItem("序列号", report.serialNo)}
       </div>
     </section>
     <section class="flight-report-detail-card">
-      <div class="flight-report-title"><b>设备与计划</b><small>标准飞行字段</small></div>
+      <div class="flight-report-title"><b>飞行计划</b><small>时间、地点与任务</small></div>
       <div class="flight-report-detail-grid">
-        ${reportDetailItem("无人机型号", report.droneModel || report.modelLicense)}
-        ${reportDetailItem("序列号", report.serialNo)}
         ${reportDetailItem("飞行计划", report.flightPlan || report.duration)}
         ${reportDetailItem("飞行高度", report.flightAltitude)}
         ${reportDetailItem("具体位置", report.flightArea)}
-        ${reportDetailItem("架次", `${report.sorties || 1} 架次`)}
-      </div>
-    </section>
-    <section class="flight-report-detail-card">
-      <div class="flight-report-title"><b>报备说明</b><small>${report.status === "已确认" ? "平台已确认" : "等待后台确认"}</small></div>
-      <p class="flight-report-statement">${report.reportStatement || "特此报备"}</p>
-      <div class="flight-report-detail-progress">
-        <article class="done"><i></i><span><b>提交报备</b><small>${report.reportTime}</small></span></article>
-        <article class="${report.status === "已确认" ? "done" : ""}"><i></i><span><b>平台确认</b><small>${report.status === "已确认" ? "已完成报备确认" : "后台待确认"}</small></span></article>
+        ${reportDetailItem("任务性质", report.taskNature)}
+        ${reportDetailItem("报备说明", report.reportStatement || "特此报备")}
       </div>
     </section>
   </div>`, { title: "报备详情", back: true, tab: "home" });
@@ -300,6 +292,17 @@ function formField(label, placeholder, value = "", type = "text", name = "") {
   return `<label>${label}<input name="${name || label}" type="${type}" required placeholder="${placeholder}" value="${value}"></label>`;
 }
 
+function selectField(label, options, value = "", name = "") {
+  return `<label>${label}<select name="${name || label}" required>
+    <option value="">请选择${label}</option>
+    ${options.map(option => `<option value="${option}" ${value === option ? "selected" : ""}>${option}</option>`).join("")}
+  </select></label>`;
+}
+
+function textareaField(label, placeholder, value = "", name = "") {
+  return `<label>${label}<textarea name="${name || label}" required placeholder="${placeholder}">${value}</textarea></label>`;
+}
+
 function uploadField(label, placeholder, name = "") {
   return `<label class="upload-field">${label}
     <span class="upload-control">
@@ -309,16 +312,6 @@ function uploadField(label, placeholder, name = "") {
       <small>支持 JPG / PNG 图片</small>
     </span>
   </label>`;
-}
-
-function deviceFields(prefix = "") {
-  const app = state.pilotApplication || {};
-  return `<div class="pilot-section">
-    <div class="pilot-section-title"><b>${prefix}设备信息</b><small>用于审核无人机资产与任务派单匹配</small></div>
-    ${formField("机型选择", "请选择无人机机型", app.droneModel || "", "text", "droneModel")}
-    ${formField("序列号", "请输入无人机序列号", app.serialNo || "", "text", "serialNo")}
-    ${formField("唯一识别码", "请输入 UAS 码或设备唯一识别码", app.uniqueId || "", "text", "uniqueId")}
-  </div>`;
 }
 
 function pilotCompanyFields() {
@@ -332,13 +325,20 @@ function pilotCompanyFields() {
 function pilotPersonalFields() {
   const app = state.pilotApplication || {};
   return `<div class="pilot-section">
-    <div class="pilot-section-title"><b>个人信息</b><small>用于实名认证、资质审核与联系确认</small></div>
-    ${formField("申请人", "请输入申请人姓名", app.applicant || state.userProfile.nickname, "text", "applicant")}
-    ${formField("联系电话", "请输入联系电话", app.phone || state.userProfile.phone, "tel", "phone")}
-    ${formField("出生年月", "请选择出生年月", app.birthday || "", "month", "birthday")}
-    ${formField("所在区域", "请选择省市区", app.area || state.userProfile.region, "text", "area")}
-    ${uploadField("上传无人机操作执照", "请上传 CAAC 或对应操作执照")}
-    ${uploadField("上传无人机照片", "请上传无人机实物照片")}
+    <div class="pilot-section-title"><b>飞手信息</b><small>用于审核飞手能力、资质与联系确认</small></div>
+    ${formField("姓名", "请输入姓名", app.applicant || state.userProfile.nickname, "text", "applicant")}
+    ${selectField("性别", ["男", "女"], app.gender || state.userProfile.gender, "gender")}
+    ${formField("手机号", "请输入手机号", app.phone || state.userProfile.phone, "tel", "phone")}
+    ${formField("常驻城市", "请输入常驻城市", app.city || state.userProfile.region, "text", "city")}
+    ${formField("紧急联系人", "请输入紧急联系人", app.emergencyContact || "", "text", "emergencyContact")}
+    ${selectField("持证情况（必填）", ["已持证", "培训中", "暂未持证"], app.licenseStatus || "", "licenseStatus")}
+    ${formField("所持证书等级", "请输入所持证书等级", app.licenseLevel || "", "text", "licenseLevel")}
+    ${formField("证书编号", "请输入证书编号", app.licenseNo || "", "text", "licenseNo")}
+    ${formField("擅长飞行种类", "请输入擅长飞行种类", app.flightTypes || "", "text", "flightTypes")}
+    ${formField("飞行实操年限", "请输入飞行实操年限", app.flightYears || "", "text", "flightYears")}
+    ${selectField("是否自有设备", ["是", "否"], app.hasOwnDevice || "", "hasOwnDevice")}
+    ${selectField("入职身份", ["全职", "兼职", "合作飞手"], app.employmentIdentity || "", "employmentIdentity")}
+    ${textareaField("个人简介", "请简单介绍飞行经历、服务区域或擅长场景", app.intro || "", "intro")}
   </div>`;
 }
 
@@ -356,7 +356,6 @@ function pilotPage() {
       </div>
     </div>
     ${isCompany ? pilotCompanyFields() : ""}
-    ${deviceFields()}
     <label class="pilot-agreement">
       <button type="button" class="${state.pilotAgreement ? "checked" : ""}" data-action="pilot-agreement" aria-pressed="${state.pilotAgreement}"></button>
       <span>我已阅读并同意<b>《飞手入驻协议》</b></span>

@@ -5,33 +5,20 @@ const pilotApplications = DroneAdmin.data.pilotApplications = [
     "id": "FS26061305",
     "applicant": "陈宇",
     "subject": "公司",
+    "gender": "男",
     "phone": "138****2605",
-    "birthday": "1992-08",
-    "area": "成都高新",
-    "idCard": {
-      "uploaded": true,
-      "preview": "身份证正反面.jpg"
-    },
-    "license": {
-      "uploaded": true,
-      "preview": "CAAC 超视距驾驶员.pdf"
-    },
-    "dronePhoto": {
-      "uploaded": true,
-      "preview": "设备实拍.jpg"
-    },
-    "droneModel": "DJI M350 RTK",
-    "serialNo": "3X****91",
-    "uniqueId": "UAS-****8821",
+    "city": "成都高新",
+    "emergencyContact": "王女士 139****8821",
+    "licenseStatus": "已持证",
+    "licenseLevel": "CAAC 超视距驾驶员",
+    "licenseNo": "CAAC-****-2605",
+    "flightTypes": "巡检、测绘、吊运协作",
+    "flightYears": "6 年",
+    "hasOwnDevice": "是",
+    "employmentIdentity": "合作飞手",
+    "intro": "熟悉行业机巡检、测绘与吊运协作，长期服务成都高新区项目。",
     "company": {
-      "name": "四川云航科技有限公司",
-      "phone": "028-88****26",
-      "area": "成都高新",
-      "address": "成都市高新区天府大道中段 88 号",
-      "watermarkedLicense": {
-        "uploaded": true,
-        "preview": "营业执照（水印）.jpg"
-      }
+      "name": "四川云航科技有限公司"
     },
     "appliedAt": "2026-06-13 15:28",
     "status": "待审核"
@@ -40,24 +27,18 @@ const pilotApplications = DroneAdmin.data.pilotApplications = [
     "id": "FS26061302",
     "applicant": "刘洋",
     "subject": "个人",
+    "gender": "男",
     "phone": "139****1102",
-    "birthday": "1995-03",
-    "area": "成都双流",
-    "idCard": {
-      "uploaded": true,
-      "preview": "身份证正反面.jpg"
-    },
-    "license": {
-      "uploaded": true,
-      "preview": "CAAC 视距内驾驶员.pdf"
-    },
-    "dronePhoto": {
-      "uploaded": true,
-      "preview": "设备实拍.jpg"
-    },
-    "droneModel": "Mavic 3E",
-    "serialNo": "1Z****42",
-    "uniqueId": "UAS-****3315",
+    "city": "成都双流",
+    "emergencyContact": "刘女士 138****3315",
+    "licenseStatus": "已持证",
+    "licenseLevel": "CAAC 视距内驾驶员",
+    "licenseNo": "CAAC-****-1102",
+    "flightTypes": "航拍、园区巡检",
+    "flightYears": "3 年",
+    "hasOwnDevice": "是",
+    "employmentIdentity": "兼职",
+    "intro": "可承接成都双流及周边短时航拍、巡检任务。",
     "company": null,
     "appliedAt": "2026-06-13 10:16",
     "status": "待审核"
@@ -66,33 +47,20 @@ const pilotApplications = DroneAdmin.data.pilotApplications = [
     "id": "FS26061208",
     "applicant": "李明",
     "subject": "公司",
+    "gender": "男",
     "phone": "138****9036",
-    "birthday": "1988-11",
-    "area": "成都高新",
-    "idCard": {
-      "uploaded": true,
-      "preview": "身份证正反面.jpg"
-    },
-    "license": {
-      "uploaded": true,
-      "preview": "CAAC 超视距驾驶员.pdf"
-    },
-    "dronePhoto": {
-      "uploaded": true,
-      "preview": "设备实拍.jpg"
-    },
-    "droneModel": "Mavic 3E",
-    "serialNo": "1Z****08",
-    "uniqueId": "UAS-****1205",
+    "city": "成都高新",
+    "emergencyContact": "张先生 137****1205",
+    "licenseStatus": "已持证",
+    "licenseLevel": "CAAC 超视距驾驶员",
+    "licenseNo": "CAAC-****-9036",
+    "flightTypes": "巡检、应急保障",
+    "flightYears": "8 年",
+    "hasOwnDevice": "否",
+    "employmentIdentity": "全职",
+    "intro": "具备园区巡检、低空保障和复杂空域协调经验。",
     "company": {
-      "name": "成都低空服务有限公司",
-      "phone": "028-66****18",
-      "area": "成都高新",
-      "address": "成都市高新区益州大道北段 168 号",
-      "watermarkedLicense": {
-        "uploaded": true,
-        "preview": "营业执照（水印）.jpg"
-      }
+      "name": "成都低空服务有限公司"
     },
     "appliedAt": "2026-06-12 09:06",
     "status": "已通过"
@@ -101,24 +69,18 @@ const pilotApplications = DroneAdmin.data.pilotApplications = [
     "id": "FS26061103",
     "applicant": "周航",
     "subject": "个人",
+    "gender": "男",
     "phone": "137****7720",
-    "birthday": "1990-06",
-    "area": "成都武侯",
-    "idCard": {
-      "uploaded": true,
-      "preview": "身份证正反面.jpg"
-    },
-    "license": {
-      "uploaded": false,
-      "preview": "—"
-    },
-    "dronePhoto": {
-      "uploaded": true,
-      "preview": "设备实拍.jpg"
-    },
-    "droneModel": "M350 RTK",
-    "serialNo": "3X****55",
-    "uniqueId": "UAS-****7720",
+    "city": "成都武侯",
+    "emergencyContact": "周女士 136****7720",
+    "licenseStatus": "培训中",
+    "licenseLevel": "视距内培训中",
+    "licenseNo": "—",
+    "flightTypes": "航拍、培训辅助",
+    "flightYears": "1 年",
+    "hasOwnDevice": "否",
+    "employmentIdentity": "兼职",
+    "intro": "已有基础飞行经验，正在补充证书资料。",
     "company": null,
     "appliedAt": "2026-06-11 17:40",
     "status": "已驳回"
@@ -127,24 +89,18 @@ const pilotApplications = DroneAdmin.data.pilotApplications = [
     "id": "FS26061001",
     "applicant": "赵宇",
     "subject": "个人",
+    "gender": "男",
     "phone": "136****4412",
-    "birthday": "1993-12",
-    "area": "成都锦江",
-    "idCard": {
-      "uploaded": true,
-      "preview": "身份证正反面.jpg"
-    },
-    "license": {
-      "uploaded": true,
-      "preview": "CAAC 视距内驾驶员.pdf"
-    },
-    "dronePhoto": {
-      "uploaded": true,
-      "preview": "设备实拍.jpg"
-    },
-    "droneModel": "Mavic 3E",
-    "serialNo": "1Z****19",
-    "uniqueId": "UAS-****4412",
+    "city": "成都锦江",
+    "emergencyContact": "赵女士 139****4412",
+    "licenseStatus": "已持证",
+    "licenseLevel": "CAAC 视距内驾驶员",
+    "licenseNo": "CAAC-****-4412",
+    "flightTypes": "航拍、活动保障",
+    "flightYears": "4 年",
+    "hasOwnDevice": "是",
+    "employmentIdentity": "合作飞手",
+    "intro": "擅长活动航拍与商业拍摄，可配合现场导演执行机位。",
     "company": null,
     "appliedAt": "2026-06-10 08:55",
     "status": "待审核"
@@ -159,45 +115,27 @@ function pilotCompanyName(profile) {
   return profile.company?.name || "—";
 }
 
-function pilotUploadStatus(file) {
-  return file?.uploaded ? tag("已上传") : tag("未上传");
-}
-
-function pilotUploadRow(label, file) {
-  return [label, file?.preview || "—", pilotUploadStatus(file)];
-}
-
-function pilotCompanyPanel(company) {
-  if (!company) return "";
-  return panel("公司信息", detailGrid([
-    ["公司名称", company.name],
-    ["联系电话", company.phone],
-    ["所在区域", company.area],
-    ["地址", company.address, true],
-    ["水印执照", `${pilotUploadStatus(company.watermarkedLicense)}${company.watermarkedLicense?.preview ? `<span class="muted"> ${company.watermarkedLicense.preview}</span>` : ""}`]
-  ]));
-}
-
-function pilotQualificationPanel(profile, actions = "") {
-  return panel("资质与设备资料", `${table(["资料类型", "资料内容", "状态"], [
-    pilotUploadRow("身份证正反面", profile.idCard),
-    pilotUploadRow("无人机操作执照", profile.license),
-    pilotUploadRow("无人机照片", profile.dronePhoto)
-  ])}<div style="margin-top:16px">${detailGrid([
-    ["机型选择", profile.droneModel || "—"],
-    ["序列号", profile.serialNo || "—"],
-    ["唯一识别码", profile.uniqueId || "—"]
-  ])}</div>`, actions);
+function pilotAbilityPanel(profile, actions = "") {
+  return panel("飞手能力信息", detailGrid([
+    ["持证情况", profile.licenseStatus || "—"],
+    ["所持证书等级", profile.licenseLevel || "—"],
+    ["证书编号", profile.licenseNo || "—"],
+    ["擅长飞行种类", profile.flightTypes || "—"],
+    ["飞行实操年限", profile.flightYears || "—"],
+    ["是否自有设备", profile.hasOwnDevice || "—"],
+    ["入职身份", profile.employmentIdentity || "—"],
+    ["个人简介", profile.intro || "—", true]
+  ]), actions);
 }
 
 function pilotApplicationsPage() {
   const rows = pilotApplications.map(item => [
-    item.id, item.applicant, item.subject, pilotCompanyName(item), item.appliedAt, tag(item.status),
+    item.id, item.applicant, item.gender || "—", item.phone, item.city || "—", item.subject, item.employmentIdentity || "—", item.appliedAt, tag(item.status),
     opRoute(item.status === "待审核" ? "审核" : "查看", "pilot-review", "", `data-pilot-app-id="${item.id}"`)
   ]);
   return panel("入驻申请", `<div class="toolbar" style="margin-bottom:14px">
-    <input placeholder="申请人 / 手机号 / 公司"><select><option>全部主体</option><option>个人</option><option>公司</option></select><select><option>全部状态</option><option>待审核</option><option>已通过</option><option>已驳回</option></select>${button("查询","filter","primary")}
-  </div>${paginatedTable("pilot-applications", ["申请编号","申请人","主体","所属公司","申请时间","状态","操作"], rows)}`);
+    <input placeholder="姓名 / 手机号 / 常驻城市"><select><option>全部主体</option><option>个人</option><option>公司</option></select><select><option>全部状态</option><option>待审核</option><option>已通过</option><option>已驳回</option></select>${button("查询","filter","primary")}
+  </div>${paginatedTable("pilot-applications", ["申请编号","姓名","性别","手机号","常驻城市","主体","入职身份","申请时间","状态","操作"], rows)}`);
 }
 
 function pilotReviewPage() {
@@ -206,12 +144,18 @@ function pilotReviewPage() {
   const actions = readonly
     ? `<span class="tag green">已审核 · 只读查看</span>`
     : `${button("驳回申请","reject-pilot","danger")}${button("审核通过","approve-pilot","primary")}`;
-  return panel("申请信息", detailGrid([
-    ["申请编号", app.id], ["申请人", app.applicant], ["所属主体", app.subject], ["联系电话", app.phone],
-    ["出生年月", app.birthday], ["所在区域", app.area], ["申请时间", app.appliedAt], ["当前状态", tag(app.status)]
-  ]), routeButton("返回申请列表","pilot-applications",""))
-  + pilotCompanyPanel(app.company)
-  + pilotQualificationPanel(app, actions);
+  const applicationFields = [
+    ["申请编号", app.id], ["姓名", app.applicant], ["性别", app.gender || "—"], ["手机号", app.phone],
+    ["常驻城市", app.city || "—"], ["紧急联系人", app.emergencyContact || "—"], ["所属主体", app.subject]
+  ];
+  if (app.company?.name) {
+    applicationFields.push(["公司名称", app.company.name]);
+  }
+  applicationFields.push(
+    ["申请时间", app.appliedAt], ["当前状态", tag(app.status)]
+  );
+  return panel("申请信息", detailGrid(applicationFields), routeButton("返回申请列表","pilot-applications",""))
+  + pilotAbilityPanel(app, actions);
 }
 
 DroneAdmin.registerModule({
@@ -238,72 +182,64 @@ DroneAdmin.registerModule({
         "入驻申请唯一编号"
       ],
       [
-        "申请人",
-        "飞手姓名"
+        "姓名",
+        "飞手申请人姓名，与小程序申请字段一致"
+      ],
+      [
+        "性别",
+        "飞手申请人性别"
+      ],
+      [
+        "手机号",
+        "飞手联系手机号，脱敏展示"
+      ],
+      [
+        "常驻城市",
+        "飞手主要服务城市"
+      ],
+      [
+        "紧急联系人",
+        "飞手紧急联系信息"
+      ],
+      [
+        "持证情况（必填）",
+        "已持证、培训中或暂未持证"
+      ],
+      [
+        "所持证书等级",
+        "飞手当前证书等级"
+      ],
+      [
+        "证书编号",
+        "飞手证书编号"
+      ],
+      [
+        "擅长飞行种类",
+        "飞手擅长的任务类型或飞行场景"
+      ],
+      [
+        "飞行实操年限",
+        "飞手实际飞行经验年限"
+      ],
+      [
+        "是否自有设备",
+        "用于判断是否需要平台协调设备"
+      ],
+      [
+        "入职身份",
+        "全职、兼职或合作飞手"
+      ],
+      [
+        "个人简介",
+        "飞手经验、服务区域和能力补充说明"
       ],
       [
         "主体",
-        "个人或公司"
-      ],
-      [
-        "所属公司",
-        "公司主体申请时展示公司名称，个人主体显示个人"
-      ],
-      [
-        "联系电话",
-        "申请人手机号，脱敏展示"
-      ],
-      [
-        "出生年月",
-        "申请人出生年月"
-      ],
-      [
-        "所在区域",
-        "申请人主要服务区域"
-      ],
-      [
-        "身份证正反面",
-        "小程序上传的身份证影像"
-      ],
-      [
-        "无人机操作执照",
-        "小程序上传的操作执照"
-      ],
-      [
-        "无人机照片",
-        "小程序上传的设备实拍图"
-      ],
-      [
-        "机型选择",
-        "执飞无人机型号"
-      ],
-      [
-        "序列号",
-        "无人机机身序列号"
-      ],
-      [
-        "唯一识别码",
-        "无人机唯一识别码（UAS）"
+        "个人或公司，主体切换逻辑与小程序保持一致"
       ],
       [
         "公司名称",
         "主体为公司时填写"
-      ],
-      [
-        "公司联系电话",
-        "主体为公司时填写"
-      ],
-      [
-        "公司所在区域",
-        "主体为公司时填写"
-      ],
-      [
-        "公司地址",
-        "主体为公司时填写"
-      ],
-      [
-        "水印执照",
-        "主体为公司时上传的营业执照（含水印）"
       ],
       [
         "申请时间",
@@ -322,31 +258,24 @@ DroneAdmin.registerModule({
   "pilot-review": {
     "summary": "查看飞手入驻资料并完成审核决策。",
     "operations": [
-      "核对申请人信息、资质上传与设备信息",
-      "主体为公司时额外核对公司信息与水印执照",
+      "核对姓名、手机号、常驻城市、紧急联系人等基础信息",
+      "核对持证情况、证书等级、飞行实操年限、自有设备与个人简介",
+      "主体为公司时额外核对公司名称",
       "审核通过：飞手进入已认证列表，可参与派单",
       "驳回申请：需填写驳回原因，申请人可重新提交"
     ],
     "fields": [
       [
         "申请信息",
-        "申请人、所属主体、联系电话、出生年月、所在区域"
+        "姓名、性别、手机号、常驻城市、紧急联系人、所属主体；主体为公司时在所属主体旁展示公司名称"
       ],
       [
-        "公司信息",
-        "主体为公司时展示：公司名称、联系电话、所在区域、地址、水印执照"
+        "飞手能力信息",
+        "持证情况、证书等级、证书编号、擅长飞行种类、实操年限、自有设备、入职身份、个人简介"
       ],
       [
-        "资质资料",
-        "身份证正反面、无人机操作执照、无人机照片上传状态"
-      ],
-      [
-        "资料内容",
-        "资质资料表格中的具体文件或上传结果"
-      ],
-      [
-        "设备信息",
-        "机型选择、序列号、唯一识别码"
+        "持证情况（必填）",
+        "用于审核飞手是否具备对应作业资质"
       ],
       [
         "审核操作",

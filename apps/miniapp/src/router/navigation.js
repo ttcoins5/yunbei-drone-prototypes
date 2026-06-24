@@ -1,5 +1,5 @@
-import { routes } from "./routes.js?v=miniapp-live-20260624-task-detail-clean-1";
-import { state } from "../state/appState.js?v=miniapp-live-20260624-task-detail-clean-1";
+import { routes } from "./routes.js?v=miniapp-live-20260624-report-clean-1";
+import { state } from "../state/appState.js?v=miniapp-live-20260624-report-clean-1";
 
 export function render(preserveScroll = false) {
   if (!routes[state.page]) state.page = "home";
