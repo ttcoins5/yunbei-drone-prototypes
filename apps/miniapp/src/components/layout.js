@@ -89,10 +89,10 @@ export function shell(content, options = {}) {
       ${title ? `<header class="page-head">${back ? `<button data-action="back">‹</button>` : `<span></span>`}<h1>${title}</h1><span>•••</span></header>` : ""}
       <div class="page-content ${hideTabbar ? "no-tabbar" : ""}">${content}</div>
       ${hideTabbar ? "" : `<nav class="tabbar">
-        <button class="${tab === "home" ? "active" : ""}" data-route="home"><b>⌂</b>首页</button>
-        <button class="${tab === "orders" ? "active" : ""}" data-route="orders"><b>≡</b>订单</button>
-        <button class="${tab === "messages" ? "active" : ""}" data-route="serviceNotifications"><b>✉</b>消息</button>
-        <button class="${tab === "profile" ? "active" : ""}" data-route="profile"><b>♙</b>我的</button>
+        <button class="${tab === "home" ? "active" : ""}" data-route="home"><i class="tabbar-icon home"></i>首页</button>
+        <button class="${tab === "orders" ? "active" : ""}" data-route="orders"><i class="tabbar-icon orders"></i>订单</button>
+        <button class="${tab === "messages" ? "active" : ""}" data-route="serviceNotifications"><i class="tabbar-icon messages"></i>消息</button>
+        <button class="${tab === "profile" ? "active" : ""}" data-route="profile"><i class="tabbar-icon profile"></i>我的</button>
       </nav>`}
       ${contactSheet()}
       ${pilotOnlyDialog()}
