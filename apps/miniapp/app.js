@@ -1,9 +1,9 @@
-import { hoistingProducts } from "./src/data/catalog.js?v=miniapp-live-20260623-8";
-import { caseStudies } from "./src/data/caseStudies.js?v=miniapp-live-20260623-8";
-import { state } from "./src/state/appState.js?v=miniapp-live-20260623-8";
-import { navigate, render } from "./src/router/navigation.js?v=miniapp-live-20260623-8";
-import { toast } from "./src/utils/toast.js?v=miniapp-live-20260623-8";
-import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=miniapp-live-20260623-8";
+import { hoistingProducts } from "./src/data/catalog.js?v=miniapp-live-20260624-task-detail-clean-1";
+import { caseStudies } from "./src/data/caseStudies.js?v=miniapp-live-20260624-task-detail-clean-1";
+import { state } from "./src/state/appState.js?v=miniapp-live-20260624-task-detail-clean-1";
+import { navigate, render } from "./src/router/navigation.js?v=miniapp-live-20260624-task-detail-clean-1";
+import { toast } from "./src/utils/toast.js?v=miniapp-live-20260624-task-detail-clean-1";
+import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=miniapp-live-20260624-task-detail-clean-1";
 
 function formatDateTime(date = new Date()) {
   const year = date.getFullYear();
@@ -376,6 +376,18 @@ function joinPilotTask(id) {
   render();
 }
 
+function openPilotTaskDescription(id) {
+  const task = state.pilotTasks.find(item => item.id === id);
+  if (!task) return;
+  state.viewingTaskDescriptionId = id;
+  render();
+}
+
+function closePilotTaskDescription() {
+  state.viewingTaskDescriptionId = null;
+  render();
+}
+
 function openAssignedPilotOrder(orderNo) {
   state.selectedAssignedOrderNo = orderNo;
   navigate("pilotOrderDetail");
@@ -403,11 +415,11 @@ function submitPilotCompletionProof() {
   if (!order) return cancelPilotCompletionProof();
   if (order.status === "已完成") return toast("该订单已完成");
 
-  const fileInput = document.querySelector("input[name='pilotProofFile']");
-  const nameInput = document.querySelector("input[name='pilotProofName']");
+  const photoInput = document.querySelector("input[name='pilotProofPhotos']");
   const remarkInput = document.querySelector("textarea[name='pilotProofRemark']");
-  const proofName = fileInput?.files?.[0]?.name || nameInput?.value?.trim();
-  if (!proofName) return toast("请上传或填写完成凭证名称");
+  const photos = [...(photoInput?.files || [])].slice(0, 3).map(file => file.name);
+  if (!photos.length) return toast("请上传交付照片");
+  if ((photoInput?.files?.length || 0) > 3) return toast("交付照片最多上传 3 张");
 
   const time = formatDateTime();
   state.assignedPilotOrders = state.assignedPilotOrders.map(item => (
@@ -416,13 +428,13 @@ function submitPilotCompletionProof() {
           ...item,
           status: "已完成",
           completionProof: {
-            name: proofName,
+            photos,
             time,
-            remark: remarkInput?.value?.trim() || "现场服务已完成"
+            remark: remarkInput?.value?.trim() || "现场服务已完成，成果已交付客户确认。"
           },
           progress: [
             ...item.progress,
-            { time, title: "订单完成", desc: "飞手已上传完成凭证并确认完成现场服务" }
+            { time, title: "订单完成", desc: "飞手已上传交付照片并确认完成现场服务" }
           ]
         }
       : item
@@ -824,6 +836,8 @@ document.addEventListener("click", (event) => {
   if (action.dataset.action === "order-review-rating") return setOrderReviewRating(action.dataset.rating);
   if (action.dataset.action === "task-hall-tab") return setTaskHallTab(action.dataset.tab);
   if (action.dataset.action === "pilot-task-join") return joinPilotTask(action.dataset.id);
+  if (action.dataset.action === "pilot-task-description") return openPilotTaskDescription(action.dataset.id);
+  if (action.dataset.action === "task-description-close") return closePilotTaskDescription();
   if (action.dataset.action === "pilot-order-open") return openAssignedPilotOrder(action.dataset.id);
   if (action.dataset.action === "pilot-order-complete") return completeAssignedPilotOrder(action.dataset.id);
   if (action.dataset.action === "pilot-proof-cancel") return cancelPilotCompletionProof();
@@ -902,10 +916,14 @@ document.addEventListener("change", (event) => {
   if (!upload) return;
 
   const control = upload.closest(".upload-control");
-  const fileName = upload.files?.[0]?.name;
-  control.classList.toggle("has-file", Boolean(fileName));
-  control.querySelector("em").textContent = fileName || upload.dataset.uploadLabel;
-  control.querySelector("small").textContent = fileName ? "图片已选择，可重新点击更换" : "支持 JPG / PNG 图片";
+  const files = [...(upload.files || [])];
+  const fileName = files[0]?.name;
+  const names = files.slice(0, 3).map(file => file.name).join("、");
+  control.classList.toggle("has-file", files.length > 0);
+  control.querySelector("em").textContent = files.length > 1 ? `已选择 ${files.length} 张` : (fileName || upload.dataset.uploadLabel);
+  control.querySelector("small").textContent = files.length
+    ? (files.length > 1 ? names : "图片已选择，可重新点击更换")
+    : "支持 JPG / PNG 图片";
 });
 
 document.addEventListener("input", (event) => {

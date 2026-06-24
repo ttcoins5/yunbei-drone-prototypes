@@ -1,6 +1,6 @@
 import { icon } from "../components/icons.js";
-import { shell } from "../components/layout.js?v=miniapp-live-20260623-8";
-import { state } from "../state/appState.js?v=miniapp-live-20260623-8";
+import { shell } from "../components/layout.js?v=miniapp-live-20260624-task-detail-clean-1";
+import { state } from "../state/appState.js?v=miniapp-live-20260624-task-detail-clean-1";
 
 function addressCard(address) {
   return `<article class="address-card ${address.isDefault ? "is-default" : ""}">

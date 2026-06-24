@@ -1,5 +1,5 @@
-import { shell } from "../components/layout.js?v=miniapp-live-20260623-8";
-import { state } from "../state/appState.js?v=miniapp-live-20260623-8";
+import { shell } from "../components/layout.js?v=miniapp-live-20260624-task-detail-clean-1";
+import { state } from "../state/appState.js?v=miniapp-live-20260624-task-detail-clean-1";
 
 const defaultAboutConfig = {
   name: "四川奉飞飞无人机科技有限公司",
@@ -115,8 +115,11 @@ function pilotTaskList() {
           <span><small>备注</small><b>${task.remark}</b></span>
         </div>
         <footer>
-          <small>${task.intentionCount + (task.joined ? 1 : 0)} 人已提交意愿</small>
+          <small class="pilot-task-footer-meta">${task.intentionCount + (task.joined ? 1 : 0)} 人已提交意愿</small>
+          <span class="pilot-task-actions">
+            <button class="pilot-task-description" type="button" data-action="pilot-task-description" data-id="${task.id}">更多说明</button>
           <button data-action="pilot-task-join" data-id="${task.id}" ${canJoin ? "" : "disabled"}>${task.joined ? "已报名" : task.status === "已关闭" ? "已关闭" : "报名"}</button>
+          </span>
         </footer>
       </article>`;
     }).join("")}
@@ -128,16 +131,13 @@ function assignedPilotOrderList() {
     ${state.assignedPilotOrders.map(order => {
       return `<button class="assigned-order-card ${order.status === "已完成" ? "completed" : ""}" data-action="pilot-order-open" data-id="${order.orderNo}">
       <div class="assigned-order-head">
-        <span><small>订单号</small><b>${order.orderNo}</b></span>
+        <span><small>任务号</small><b>${order.orderNo}</b></span>
         <em>${order.status}</em>
       </div>
       <div class="assigned-order-main">
-        <span><small>${order.sourceType === "backendTask" ? "任务标题" : "商品/服务"}</small><b>${order.productName}</b></span>
-        <span><small>${order.sourceType === "backendTask" ? "任务联系人" : "下单用户"}</small><b>${order.user}</b></span>
-        <span><small>服务时间</small><b>${order.bookingDate} ${order.bookingTime}</b></span>
+        <span><small>任务标题</small><b>${order.productName}</b></span>
         <span><small>指派时间</small><b>${order.assignedTime}</b></span>
       </div>
-      <p>${order.bookingAddress}</p>
     </button>`;
     }).join("")}
   </section>`;
@@ -147,33 +147,35 @@ function selectedAssignedOrder() {
   return state.assignedPilotOrders.find(order => order.orderNo === state.selectedAssignedOrderNo) || state.assignedPilotOrders[0] || null;
 }
 
-function pilotOrderInfoGrid(order) {
+function pilotTaskInfoCard(order) {
   const sourceLabel = order.sourceType === "backendTask" ? "后台自建任务" : "用户下单订单";
-  const fields = [
+  const commonFields = [
     ["订单号", order.orderNo],
-    ["来源", sourceLabel],
-    [order.sourceType === "backendTask" ? "任务联系人" : "下单用户", order.user],
-    ["商品", order.productName]
+    ["任务标题", order.productName],
+    ["指派时间", order.assignedTime],
+    ["订单状态", order.status]
   ];
+  const fields = order.requirementSnapshot?.fields || [
+    { label: "联系人", value: order.user },
+    { label: "联系手机号", value: order.contactPhone },
+    { label: "服务地址", value: order.bookingAddress },
+    { label: "服务时间", value: `${order.bookingDate || ""} ${order.bookingTime || ""}`.trim() },
+    { label: "信息备注", value: order.infoRemark }
+  ];
+  const photo = !order.requirementSnapshot?.fields && order.remarkPhoto
+    ? `<div class="pilot-photo-file"><i>图</i><span>${order.remarkPhoto}</span></div>`
+    : "";
 
-  return `<section class="pilot-order-table">
-    ${fields.map(([label, value]) => `<span><small>${label}</small><b>${value}</b></span>`).join("")}
-  </section>`;
-}
-
-function pilotRequirementFields(order) {
-  const fields = order.requirementSnapshot?.fields;
-  if (!fields?.length) {
-    return `<div class="pilot-order-fields">
-      <span><small>联系手机号</small><b>${order.contactPhone}</b></span>
-      <span><small>服务地址</small><b>${order.bookingAddress}</b></span>
-      <span><small>信息备注</small><b>${order.infoRemark}</b></span>
+  return `<section class="pilot-order-card">
+    <div class="pilot-order-title"><b>任务信息</b></div>
+    <section class="pilot-task-summary">
+      ${commonFields.map(([label, value]) => `<span><small>${label}</small><b>${value || "—"}</b></span>`).join("")}
+    </section>
+    <div class="pilot-task-json">
+      ${fields.map(field => `<p><small>${field.label}</small><b>${field.displayValue || field.value || "—"}${field.unit ? ` ${field.unit}` : ""}</b></p>`).join("")}
     </div>
-    <div class="pilot-photo-file"><i>图</i><span>${order.remarkPhoto}</span></div>`;
-  }
-  return `<div class="pilot-order-fields">
-    ${fields.map(field => `<span><small>${field.label}</small><b>${field.displayValue || field.value || "—"}${field.unit ? ` ${field.unit}` : ""}</b></span>`).join("")}
-  </div>`;
+    ${photo}
+  </section>`;
 }
 
 export function pilotOrderDetailPage() {
@@ -190,27 +192,7 @@ export function pilotOrderDetailPage() {
       <h2>${order.status}</h2>
       <p>${order.orderNo} · ${order.productName}</p>
     </section>
-    <section class="pilot-order-card">
-      <div class="pilot-order-title"><b>订单信息</b><small>${order.sourceType === "backendTask" ? "后台任务转指派" : "用户订单转指派"}</small></div>
-      ${pilotOrderInfoGrid(order)}
-    </section>
-    <section class="pilot-order-card">
-      <div class="pilot-order-title"><b>${order.sourceType === "backendTask" ? "后台任务信息" : "用户需求信息"}</b><small>${order.requirementSnapshot?.templateName || "按来源字段展示"}</small></div>
-      ${pilotRequirementFields(order)}
-    </section>
-    <section class="pilot-order-card">
-      <div class="pilot-order-title"><b>订单进度</b><small>${order.progress.length} 条记录</small></div>
-      <div class="order-progress">
-        ${order.progress.map((item, index) => `<article class="order-progress-item ${index === order.progress.length - 1 ? "latest" : ""}">
-          <i></i>
-          <div>
-            <b>${item.title}</b>
-            <small>${item.time}</small>
-            <p>${item.desc}</p>
-          </div>
-        </article>`).join("")}
-      </div>
-    </section>
+    ${pilotTaskInfoCard(order)}
     <div class="pilot-order-actions">
       <button data-action="contact-sheet">联系客服</button>
       <button data-action="pilot-order-complete" data-id="${order.orderNo}" ${completed ? "disabled" : ""}>${completed ? "已完成" : "完成订单"}</button>

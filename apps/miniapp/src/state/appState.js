@@ -1,4 +1,4 @@
-import { hoistingProducts } from "../data/catalog.js?v=miniapp-live-20260623-8";
+import { hoistingProducts } from "../data/catalog.js?v=miniapp-live-20260624-task-detail-clean-1";
 
 const productById = Object.fromEntries(hoistingProducts.map(product => [product.id, product]));
 
@@ -343,6 +343,7 @@ export const state = {
   ],
   taskHallTab: "任务征集",
   selectedTaskId: "REQ20260614001",
+  viewingTaskDescriptionId: null,
   selectedAssignedOrderNo: "YB26061703",
   pilotTasks: [
     {
@@ -353,6 +354,7 @@ export const state = {
       serviceTime: "2026-06-18 09:00-12:00",
       address: "成都市天府新区某工地",
       remark: "需具备高空吊运作业经验，现场有安全员对接。",
+      description: "<p>协助完成高空吊运作业，现场由项目安全员统一对接。</p><ul><li>需具备无人机吊运或重载飞行经验</li><li>作业前配合完成场地勘查和安全确认</li><li>按现场负责人要求完成吊运物品交接</li></ul>",
       status: "征集中",
       joined: false,
       intentionCount: 6
@@ -365,6 +367,7 @@ export const state = {
       serviceTime: "2026-06-19 14:00-17:30",
       address: "宁波市鄞州区低空经济产业园",
       remark: "重点查看屋面设备、排水沟和西侧幕墙。",
+      description: "<p>园区屋面巡检任务，需按指定路线采集照片和视频素材。</p><ul><li>重点覆盖屋面设备、排水沟、西侧幕墙</li><li>完成后回传原始素材</li><li>现场联系人统一安排起降点</li></ul>",
       status: "征集中",
       joined: false,
       intentionCount: 3
@@ -377,6 +380,7 @@ export const state = {
       serviceTime: "2026-06-16 16:00-18:00",
       address: "杭州市滨江区江南大道 1888 号",
       remark: "天气原因已暂缓，等待后台重新开放。",
+      description: "<p>无人机表演试飞任务已暂缓，后续开放后将重新通知飞手报名。</p>",
       status: "已关闭",
       joined: false,
       intentionCount: 9
@@ -470,10 +474,69 @@ export const state = {
       infoRemark: "医疗样本冷链运输，需 2 小时内送达。",
       remarkPhoto: "冷链箱照片.jpg",
       status: "已完成",
+      completionProof: {
+        photos: ["冷链交付现场.jpg", "客户签收照片.jpg"],
+        time: "2026-06-12 10:42",
+        remark: "医疗样本已按要求送达，客户现场确认签收。"
+      },
       assignedTime: "2026-06-11 16:35",
       progress: [
         { time: "2026-06-11 16:35", title: "后台派单", desc: "平台已将订单分配给当前飞手" },
         { time: "2026-06-12 10:42", title: "订单完成", desc: "飞手已完成现场服务" }
+      ]
+    },
+    {
+      orderNo: "YB26061710",
+      sourceType: "userOrder",
+      user: "天府物业",
+      category: "巡检服务",
+      productName: "无人机巡检服务",
+      amount: 1680,
+      onlinePay: "否（下单快照）",
+      needPilot: "是（下单快照）",
+      bookingDate: "2026-06-14",
+      bookingTime: "09:00-11:00",
+      contactPhone: "138****2109",
+      bookingAddress: "成都市高新区云谷园区",
+      infoRemark: "重点查看屋面排水和空调外机区域。",
+      remarkPhoto: "园区点位图.jpg",
+      status: "已完成",
+      completionProof: {
+        photos: ["园区屋面全景.jpg", "排水沟巡检结果.jpg", "设备点位照片.jpg"],
+        time: "2026-06-14 11:28",
+        remark: "园区屋面、排水沟和设备点位已巡检完成，现场照片已回传。"
+      },
+      assignedTime: "2026-06-14 08:10",
+      progress: [
+        { time: "2026-06-14 08:10", title: "后台派单", desc: "平台已将订单分配给当前飞手" },
+        { time: "2026-06-14 11:28", title: "订单完成", desc: "飞手已上传交付照片并确认完成现场服务" }
+      ]
+    },
+    {
+      orderNo: "YB26061712",
+      sourceType: "userOrder",
+      user: "滨江城投",
+      category: "巡检服务",
+      productName: "桥梁巡检服务",
+      amount: 0,
+      onlinePay: "否（下单快照）",
+      needPilot: "是（下单快照）",
+      bookingDate: "2026-06-18",
+      bookingTime: "08:30-12:00",
+      contactPhone: "028-66****18",
+      bookingAddress: "成都市双流区滨江大桥",
+      infoRemark: "重点采集桥梁底部与墩柱影像。",
+      remarkPhoto: "桥梁巡检范围.jpg",
+      status: "已完成",
+      completionProof: {
+        photos: ["桥面巡检完成.jpg", "墩柱照片.jpg", "裂缝点位复核.jpg"],
+        time: "2026-06-18 12:18",
+        remark: "桥面、墩柱和疑似裂缝点位已完成拍摄，原始素材已交付。"
+      },
+      assignedTime: "2026-06-18 07:50",
+      progress: [
+        { time: "2026-06-18 07:50", title: "后台派单", desc: "平台已将订单分配给当前飞手" },
+        { time: "2026-06-18 12:18", title: "订单完成", desc: "飞手已上传交付照片并确认完成现场服务" }
       ]
     }
   ],

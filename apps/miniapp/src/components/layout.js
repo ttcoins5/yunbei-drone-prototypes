@@ -1,4 +1,4 @@
-import { state } from "../state/appState.js?v=miniapp-live-20260623-8";
+import { state } from "../state/appState.js?v=miniapp-live-20260624-task-detail-clean-1";
 
 function contactSheet() {
   if (!state.showContactSheet) return "";
@@ -49,16 +49,34 @@ function pilotCompletionProofDialog() {
 
   return `<div class="dialog-mask">
     <button class="dialog-backdrop" type="button" aria-label="关闭弹窗" data-action="pilot-proof-cancel"></button>
-    <section class="pilot-proof-dialog" role="dialog" aria-label="上传完成凭证">
-      <b>上传完成凭证</b>
-      <p>飞手完成服务前需上传现场完成凭证。凭证仅进入后台订单详情留存，不在飞手端详情展示。</p>
-      <label><span>完成凭证</span><input name="pilotProofFile" type="file"></label>
-      <label><span>凭证名称</span><input name="pilotProofName" value="现场完成凭证.jpg" placeholder="请输入凭证文件名"></label>
-      <label><span>完成说明</span><textarea name="pilotProofRemark" placeholder="请输入完成说明">现场服务已完成，成果已交付客户确认。</textarea></label>
+    <section class="pilot-proof-dialog" role="dialog" aria-label="上传交付照片">
+      <b>上传交付照片</b>
+      <p>最多上传 3 张现场交付照片，并填写交付说明。照片仅进入后台订单详情留存，不在飞手端详情展示。</p>
+      <label class="upload-field"><span>交付照片</span><span class="upload-control pilot-proof-upload">
+        <input name="pilotProofPhotos" type="file" accept="image/*" multiple data-upload-label="添加交付照片">
+        <b>+</b><em>添加交付照片</em><small>支持 JPG / PNG，最多 3 张</small>
+      </span></label>
+      <label><span>交付说明</span><textarea name="pilotProofRemark" placeholder="请输入交付说明">现场服务已完成，成果已交付客户确认。</textarea></label>
       <div class="pilot-proof-actions">
         <button type="button" data-action="pilot-proof-cancel">取消</button>
         <button type="button" data-action="pilot-proof-submit">确认完成</button>
       </div>
+    </section>
+  </div>`;
+}
+
+function taskDescriptionDialog() {
+  if (!state.viewingTaskDescriptionId) return "";
+  const task = state.pilotTasks.find(item => item.id === state.viewingTaskDescriptionId);
+  if (!task) return "";
+
+  return `<div class="dialog-mask">
+    <button class="dialog-backdrop" type="button" aria-label="关闭弹窗" data-action="task-description-close"></button>
+    <section class="task-description-dialog" role="dialog" aria-label="附文本说明">
+      <span>附文本说明</span>
+      <b>${task.title}</b>
+      <div class="task-description-content">${task.description || "<p>暂无附文本说明。</p>"}</div>
+      <button type="button" data-action="task-description-close">我知道了</button>
     </section>
   </div>`;
 }
@@ -80,6 +98,7 @@ export function shell(content, options = {}) {
       ${pilotOnlyDialog()}
       ${logoutDialog()}
       ${pilotCompletionProofDialog()}
+      ${taskDescriptionDialog()}
     </div>
     <aside class="review-note"><span>FENGFEIFEI PROTOTYPE</span><h2>${title || "奉飞飞首页"}</h2><p>蓝绿冷静科技风 · Image 2 品牌头图 · HTML 可交互原型</p></aside>
   </div>`;
