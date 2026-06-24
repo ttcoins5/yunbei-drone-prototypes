@@ -151,6 +151,145 @@ const orderRecords = DroneAdmin.data.orderRecords = [
     ])
   },
   {
+    "id": "YB26061710",
+    "user": "天府物业",
+    "service": "无人机巡检服务",
+    "amount": "¥1,680",
+    "needPilot": true,
+    "status": "已完成",
+    "onlinePay": false,
+    "assignedPilots": [
+      {
+        "name": "李明",
+        "area": "成都高新",
+        "device": "Mavic 3E",
+        "status": "已完成",
+        "proofs": [
+          {
+            "photos": ["园区屋面全景.jpg", "排水沟巡检结果.jpg", "设备点位照片.jpg"],
+            "time": "2026-06-14 11:28",
+            "remark": "园区屋面、排水沟和设备点位已巡检完成，现场照片已回传。"
+          }
+        ]
+      }
+    ],
+    "appointment": {
+      "date": "2026-06-14",
+      "slot": "09:00-11:00",
+      "phone": "138****2109",
+      "address": "成都市高新区云谷园区",
+      "remark": "重点查看屋面排水和空调外机区域。",
+      "remarkPhoto": {
+        "name": "园区点位图.jpg"
+      }
+    },
+    "requirementSnapshot": orderSnapshot("无人机巡检服务", [
+      orderField("登记联系人", "text", "天府物业"),
+      orderField("联系电话", "text", "138****2109"),
+      orderField("服务类型", "select", "园区巡检"),
+      orderField("巡检区域", "text", "成都市高新区云谷园区"),
+      orderField("巡检时间", "text", "2026-06-14 09:00-11:00"),
+      orderField("需求说明", "text", "重点查看屋面排水和空调外机区域。"),
+      orderField("例图", "image", "园区点位图.jpg")
+    ])
+  },
+  {
+    "id": "YB26061711",
+    "user": "青城农业",
+    "service": "农田植保飞防",
+    "amount": "¥3,600",
+    "needPilot": true,
+    "status": "已完成",
+    "onlinePay": false,
+    "assignedPilots": [
+      {
+        "name": "王伟",
+        "area": "成都双流",
+        "device": "M350 RTK",
+        "status": "已完成",
+        "proofs": [
+          {
+            "photos": ["飞防作业前.jpg", "飞防作业中.jpg"],
+            "time": "2026-06-16 10:52",
+            "remark": "已完成 120 亩农田飞防作业，现场与客户完成交接。"
+          }
+        ]
+      },
+      {
+        "name": "赵宇",
+        "area": "成都武侯",
+        "device": "Mavic 3E",
+        "status": "已完成",
+        "proofs": [
+          {
+            "photos": ["作业边界复核.jpg"],
+            "time": "2026-06-16 11:05",
+            "remark": "已完成作业边界复核和成果照片补充。"
+          }
+        ]
+      }
+    ],
+    "appointment": {
+      "date": "2026-06-16",
+      "slot": "07:30-11:00",
+      "phone": "139****6708",
+      "address": "都江堰市青城镇农业示范田",
+      "remark": "需两名飞手协作完成植保飞防。",
+      "remarkPhoto": null
+    },
+    "requirementSnapshot": orderSnapshot("农田植保飞防", [
+      orderField("登记联系人", "text", "青城农业"),
+      orderField("联系电话", "text", "139****6708"),
+      orderField("作业面积", "text", "120 亩"),
+      orderField("作业地点", "text", "都江堰市青城镇农业示范田"),
+      orderField("服务时间", "text", "2026-06-16 07:30-11:00"),
+      orderField("需求说明", "text", "需两名飞手协作完成植保飞防。")
+    ])
+  },
+  {
+    "id": "YB26061712",
+    "user": "滨江城投",
+    "service": "桥梁巡检服务",
+    "amount": "线下报价",
+    "needPilot": true,
+    "status": "已完成",
+    "onlinePay": false,
+    "assignedPilots": [
+      {
+        "name": "周航",
+        "area": "成都双流",
+        "device": "M350 RTK",
+        "status": "已完成",
+        "proofs": [
+          {
+            "photos": ["桥面巡检完成.jpg", "墩柱照片.jpg", "裂缝点位复核.jpg"],
+            "time": "2026-06-18 12:18",
+            "remark": "桥面、墩柱和疑似裂缝点位已完成拍摄，原始素材已交付。"
+          }
+        ]
+      }
+    ],
+    "appointment": {
+      "date": "2026-06-18",
+      "slot": "08:30-12:00",
+      "phone": "028-66****18",
+      "address": "成都市双流区滨江大桥",
+      "remark": "重点采集桥梁底部与墩柱影像。",
+      "remarkPhoto": {
+        "name": "桥梁巡检范围.jpg"
+      }
+    },
+    "requirementSnapshot": orderSnapshot("桥梁巡检服务", [
+      orderField("登记联系人", "text", "滨江城投"),
+      orderField("联系电话", "text", "028-66****18"),
+      orderField("巡检对象", "text", "滨江大桥"),
+      orderField("作业地点", "text", "成都市双流区滨江大桥"),
+      orderField("服务时间", "text", "2026-06-18 08:30-12:00"),
+      orderField("需求说明", "text", "重点采集桥梁底部与墩柱影像。"),
+      orderField("例图", "image", "桥梁巡检范围.jpg")
+    ])
+  },
+  {
     "id": "YB26061705",
     "user": "赵女士",
     "service": "无人机托管服务",
@@ -336,16 +475,17 @@ function orderRequirementPanel(order) {
 }
 
 function orderProofRows(order) {
+  const proofFileNames = item => item.photos?.length ? item.photos.join("、") : item.name || "—";
   const deliveryRows = (order.deliveryProofs || []).map(item => [
     item.type || "后台交付凭证",
-    item.name || "—",
+    proofFileNames(item),
     item.operator || "平台管理员",
     item.time || "—",
     item.remark || "—"
   ]);
   const pilotRows = (order.assignedPilots || []).flatMap(pilot => (pilot.proofs || []).map(item => [
     `飞手完成凭证（${pilot.name}）`,
-    item.name || "—",
+    proofFileNames(item),
     pilot.name,
     item.time || "—",
     item.remark || "—"
@@ -353,11 +493,27 @@ function orderProofRows(order) {
   return [...deliveryRows, ...pilotRows];
 }
 
+function pilotStatusCell(order, pilot) {
+  const proofCount = pilot.proofs?.length || 0;
+  const detail = pilot.status === "已完成" && proofCount
+    ? button("完成详情", "pilot-proof-detail", "small", `data-order-id="${order.id}" data-pilot-name="${pilot.name}"`)
+    : "";
+  return `<div class="row-actions" style="justify-content:flex-start">${tag(pilot.status)}${detail}</div>`;
+}
+
+function pilotAssignmentPanel(order, pilots, action) {
+  return panel("飞手分配与履约", pilots, action);
+}
+
+function shouldShowOrderProofPanel(order) {
+  return !order.needPilot && (orderProofRows(order).length > 0 || ["待交付", "待评价", "已完成"].includes(order.status));
+}
+
 function orderProofPanel(order) {
   const rows = orderProofRows(order);
   const content = rows.length
-    ? table(["凭证类型","文件名","提交人","提交时间","备注"], rows)
-    : `<p class="empty">暂无交付或飞手完成凭证。待交付订单需后台上传交付凭证，飞手完成服务也需上传完成凭证；凭证仅在后台订单详情查看。</p>`;
+    ? table(["凭证类型","照片/文件","提交人","提交时间","交付说明"], rows)
+    : `<p class="empty">暂无交付或飞手完成凭证。待交付订单需后台上传交付凭证，飞手完成服务需上传 1-3 张交付照片；凭证仅在后台订单详情查看。</p>`;
   return panel("交付/完成凭证", content);
 }
 
@@ -447,10 +603,10 @@ function orderDetailPage() {
     ? (order.assignedPilots?.length ? button("重新指派", "assign-pilots", "small") : button("分配飞手", "assign-pilots", "primary"))
     : "";
   const pilots = order.assignedPilots.length
-    ? table(["飞手","区域","设备","个人状态"], order.assignedPilots.map(p => [p.name, p.area, p.device, tag(p.status)]))
+    ? table(["飞手","区域","设备","个人状态"], order.assignedPilots.map(p => [p.name, p.area, p.device, pilotStatusCell(order, p)]))
     : `<p class="empty">尚未分配飞手</p>`;
   const pilotPanel = order.needPilot
-    ? panel("飞手分配与履约", pilots, pilotAction)
+    ? pilotAssignmentPanel(order, pilots, pilotAction)
     : "";
   const logs = order.priceChangeLogs?.length
     ? table(["操作时间","操作人","原金额","新金额","改价原因"], order.priceChangeLogs.map(item => [item.time, item.operator || "平台管理员", item.oldAmount, item.newAmount, item.reason]))
@@ -465,6 +621,7 @@ function orderDetailPage() {
         ["支付时间", order.paidAt || "未支付"]
       ]))
     : "";
+  const proofPanel = shouldShowOrderProofPanel(order) ? orderProofPanel(order) : "";
   return panel("订单状态", `<div class="steps steps--flow">${orderSteps(order)}</div>
     <p class="muted order-flow-summary">本单流转：${orderFlowSummary(order)}</p>`, routeButton("返回订单列表","orders","") + deliveryAction)
   + panel("订单信息快照", detailGrid([
@@ -475,7 +632,7 @@ function orderDetailPage() {
   + paymentPanel
   + orderRequirementPanel(order)
   + pilotPanel
-  + orderProofPanel(order)
+  + proofPanel
   + panel("改价记录", logs);
 }
 
@@ -501,7 +658,7 @@ DroneAdmin.registerModule({
       "线下报价订单显示「改价」，填写金额和原因后形成改价记录",
       "点击「查看详情」进入订单详情，顶部步骤条展示动态流转进度",
       "待服务阶段在详情页「调整飞手」修改名单，状态不变",
-      "交付凭证和飞手完成凭证仅在后台订单详情的「交付/完成凭证」面板展示"
+      "不需要飞手的订单在「交付/完成凭证」面板展示后台交付凭证；需要飞手的订单在「飞手分配与履约」中，于已完成状态旁点击「完成详情」查看交付照片和交付说明"
     ],
     "fields": [
       [
@@ -562,11 +719,11 @@ DroneAdmin.registerModule({
       "「订单信息快照」展示金额与业务属性（下单时保存，不可改）",
       "线下报价订单详情可点击「修改金额」，需填写新金额和改价原因，保存后生成留痕记录",
       "订单详情展示「需求信息快照」，字段来自下单时的商品表单配置",
-      "需飞手服务时展示「飞手分配与履约」面板：待派单显示「分配飞手」，待服务显示「调整飞手」",
+      "需飞手服务时只展示「飞手分配与履约」面板：待派单显示「分配飞手」，待服务显示「调整飞手」，已完成状态旁显示「完成详情」弹窗入口",
       "列表「去派单」与详情「分配飞手」为同一指派弹窗；调整飞手仅改名单，不改变订单状态",
       "无需飞手时跳过派单节点，使用「待交付」并隐藏飞手面板",
       "待交付订单点击「交付」上传交付凭证，确认后进入待评价",
-      "飞手端完成服务前也需上传完成凭证；凭证只在后台订单详情展示，用户端和飞手端详情不展示凭证列表"
+      "飞手端完成服务前需上传 1-3 张交付照片并填写交付说明；照片和说明只通过后台「完成详情」弹窗查看，用户端和飞手端详情不展示凭证列表"
     ],
     "fields": [
       [
@@ -603,11 +760,11 @@ DroneAdmin.registerModule({
       ],
       [
         "交付/完成凭证",
-        "后台交付凭证和飞手完成凭证的统一留存区，仅在后台订单详情展示"
+        "仅不需要飞手的订单单独展示该面板；需要飞手的订单通过飞手状态旁「完成详情」弹窗查看照片和说明"
       ],
       [
         "飞手分配",
-        "仅需要飞手时展示；已指派飞手及个人履约状态"
+        "仅需要飞手时展示；已指派飞手、个人履约状态，以及已完成状态旁的完成详情弹窗入口"
       ],
       [
         "区域",
@@ -761,6 +918,22 @@ DroneAdmin.registerModule({
             <span class="thumb order-remark-preview-img"><span class="thumb-img">备注图</span></span>
             <p class="muted">${photo.name}</p>
           </div>`, button("关闭", "close-modal"));
+    },
+    "pilot-proof-detail": function (target) {
+      if (target.dataset.orderId) state.viewingOrderId = target.dataset.orderId;
+      const order = activeOrder();
+      const pilot = (order.assignedPilots || []).find(item => item.name === target.dataset.pilotName);
+      const proofs = pilot?.proofs || [];
+      if (!pilot || !proofs.length) {
+        toast("暂无完成详情");
+        return;
+      }
+      const rows = proofs.map(item => [
+        item.photos?.length ? item.photos.join("、") : item.name || "—",
+        item.time || "—",
+        item.remark || "—"
+      ]);
+      modal(`${pilot.name}完成详情`, table(["交付照片","提交时间","交付说明"], rows), button("关闭", "close-modal"));
     }
   },
   changeActions: {},

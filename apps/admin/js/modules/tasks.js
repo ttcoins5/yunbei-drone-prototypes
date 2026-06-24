@@ -32,7 +32,19 @@ const taskRecords = DroneAdmin.data.taskRecords = [
     "description": "<p>商业活动开幕航拍，需 1 名飞手配合地面导演完成指定机位拍摄。</p>",
     "status": "已关闭",
     "interest": 4,
-    "assignedPilots": [{ "name": "赵宇", "area": "成都武侯", "device": "Mavic 3E", "status": "已完成" }]
+    "assignedPilots": [{
+      "name": "赵宇",
+      "area": "成都武侯",
+      "device": "Mavic 3E",
+      "status": "已完成",
+      "proofs": [
+        {
+          "photos": ["活动现场全景.jpg", "主舞台航拍素材.jpg", "导演确认照片.jpg"],
+          "time": "2026-06-08 18:10",
+          "remark": "活动现场航拍素材已完成采集，并与地面导演完成交付确认。"
+        }
+      ]
+    }]
   },
   {
     "id": "RW26060402",
@@ -107,7 +119,7 @@ function taskListActions(task) {
 function taskDetailPage() {
   const task = activeTask();
   const assigned = task.assignedPilots?.length
-    ? table(["飞手","区域","设备","指派状态"], task.assignedPilots.map(p => [p.name, p.area, p.device, tag(p.status)]))
+    ? table(["飞手","区域","设备","指派状态"], task.assignedPilots.map(p => [p.name, p.area, p.device, taskPilotStatusCell(task, p)]))
     : `<p class="empty">尚未从意愿名单中指派飞手</p>`;
   const taskActions = [
     canReassignTask(task) ? button(task.assignedPilots?.length ? "重新指派" : "查看意愿并指派", "task-interest", "primary", `data-task-id="${task.id}"`) : "",
@@ -124,6 +136,14 @@ function taskDetailPage() {
     readOnly: true
   }))
   + panel("后台指派结果", assigned, taskActions);
+}
+
+function taskPilotStatusCell(task, pilot) {
+  const proofCount = pilot.proofs?.length || 0;
+  const detail = pilot.status === "已完成" && proofCount
+    ? button("完成详情", "task-pilot-proof-detail", "small", `data-task-id="${task.id}" data-pilot-name="${pilot.name}"`)
+    : "";
+  return `<div class="row-actions" style="justify-content:flex-start">${tag(pilot.status)}${detail}</div>`;
 }
 
 function taskAllPilotsDone(task) {
@@ -160,7 +180,8 @@ DroneAdmin.registerModule({
       "后台自建任务与用户订单来源不同，但指派后飞手端统一在服务/订单列表查看",
       "任务可关闭征集；关闭后不再接受新意愿",
       "状态表示征集是否开放：发布后为征集中，点击关闭征集或确认指派后变为已关闭；已关闭仍可基于已有意愿或认证飞手继续指派",
-      "指派状态表示派单履约进度：未选飞手为待指派，确认指派后显示已指派人数，全部已指派飞手完成后显示已完成"
+      "指派状态表示派单履约进度：未选飞手为待指派，确认指派后显示已指派人数，全部已指派飞手完成后显示已完成",
+      "已完成的飞手在详情页指派状态旁显示「完成详情」，弹窗查看交付照片、提交时间和交付说明"
     ],
     "fields": [
       [
@@ -212,7 +233,8 @@ DroneAdmin.registerModule({
       "附文本说明以富文本形式只读展示",
       "查看已指派飞手；点击「查看意愿并指派」可重新选择飞手",
       "点击「返回列表」回到任务需求列表",
-      "征集状态和指派状态相互独立：已关闭只代表停止征集，待指派、已指派和已完成由后台指派结果及飞手履约状态决定"
+      "征集状态和指派状态相互独立：已关闭只代表停止征集，待指派、已指派和已完成由后台指派结果及飞手履约状态决定",
+      "飞手已完成时，指派状态旁显示「完成详情」按钮，点击弹窗查看交付照片和交付说明"
     ],
     "fields": [
       [
@@ -249,7 +271,7 @@ DroneAdmin.registerModule({
       ],
       [
         "指派状态",
-        "待指派、已指派人数或已完成；确认指派会关闭征集，全部指派飞手完成后自动显示已完成"
+        "待指派、已指派人数或已完成；确认指派会关闭征集，全部指派飞手完成后自动显示已完成，已完成旁可查看完成详情"
       ],
       [
         "飞手分配",
@@ -333,6 +355,22 @@ DroneAdmin.registerModule({
       task.status = "已关闭";
       render();
       toast("已关闭征集，飞手端不再接收新的参与意愿");
+    },
+    "task-pilot-proof-detail": function (target) {
+      if (target.dataset.taskId) state.viewingTaskId = target.dataset.taskId;
+      const task = activeTask();
+      const pilot = (task.assignedPilots || []).find(item => item.name === target.dataset.pilotName);
+      const proofs = pilot?.proofs || [];
+      if (!pilot || !proofs.length) {
+        toast("暂无完成详情");
+        return;
+      }
+      const rows = proofs.map(item => [
+        item.photos?.length ? item.photos.join("、") : item.name || "—",
+        item.time || "—",
+        item.remark || "—"
+      ]);
+      modal(`${pilot.name}完成详情`, table(["交付照片","提交时间","交付说明"], rows), button("关闭", "close-modal"));
     },
     "save-modal": function (target) {
       closeModal();
