@@ -705,6 +705,16 @@ button { cursor: pointer; }
 .contact-confirm-actions button { height: 64px; border: 0; color: #3f4a52; background: #fff; font-size: 17px; font-weight: 500; }
 .contact-confirm-actions button + button { border-left: 1px solid #eceff2; color: #1e8cff; font-weight: 700; }
 .logout-confirm-dialog .contact-confirm-actions button + button { color: #d85b48; }
+.pilot-proof-dialog { position: relative; z-index: 1; display: grid; gap: 11px; width: 100%; max-width: 316px; padding: 20px; border-radius: 20px; background: #fff; box-shadow: 0 24px 56px rgba(6,29,43,.24); }
+.pilot-proof-dialog b { color: #0c2935; font-size: 18px; }
+.pilot-proof-dialog p { margin: 0; color: #6e828a; font-size: 12px; line-height: 1.65; }
+.pilot-proof-dialog label { display: grid; gap: 6px; margin: 0; color: #405964; font-size: 12px; font-weight: 800; }
+.pilot-proof-dialog input, .pilot-proof-dialog textarea { width: 100%; box-sizing: border-box; border: 1px solid #dce9eb; border-radius: 12px; color: #17313c; background: #fafdfe; font-size: 12px; }
+.pilot-proof-dialog input { min-height: 38px; padding: 8px 10px; }
+.pilot-proof-dialog textarea { min-height: 72px; padding: 10px; resize: none; }
+.pilot-proof-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 2px; }
+.pilot-proof-actions button { height: 40px; border: 0; border-radius: 12px; color: #126b79; background: #e6f6f5; font-size: 13px; font-weight: 800; }
+.pilot-proof-actions button:last-child { color: #fff; background: linear-gradient(135deg,var(--blue),var(--teal)); }
 .pilot-only-dialog { position: relative; z-index: 1; width: 100%; max-width: 286px; padding: 22px 20px 18px; border-radius: 18px; background: #fff; box-shadow: 0 18px 42px rgba(6,29,43,.2); text-align: center; }
 .pilot-only-dialog b { color: #0c2935; font-size: 17px; }
 .pilot-only-dialog p { margin: 10px 0 18px; color: #6e828a; font-size: 12px; line-height: 1.65; }

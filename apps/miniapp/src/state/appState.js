@@ -500,6 +500,8 @@ export const state = {
   showAddressForm: false,
   showContactSheet: false,
   showPilotOnlyDialog: false,
+  showPilotCompletionProof: false,
+  completingAssignedOrderNo: null,
   flightReports: [
     {
       reportNo: "BB20260615001",

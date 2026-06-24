@@ -386,19 +386,49 @@ function completeAssignedPilotOrder(orderNo) {
   if (!order) return;
   if (order.status === "已完成") return toast("该订单已完成");
 
+  state.completingAssignedOrderNo = orderNo;
+  state.showPilotCompletionProof = true;
+  render();
+}
+
+function cancelPilotCompletionProof() {
+  state.showPilotCompletionProof = false;
+  state.completingAssignedOrderNo = null;
+  render();
+}
+
+function submitPilotCompletionProof() {
+  const orderNo = state.completingAssignedOrderNo;
+  const order = state.assignedPilotOrders.find(item => item.orderNo === orderNo);
+  if (!order) return cancelPilotCompletionProof();
+  if (order.status === "已完成") return toast("该订单已完成");
+
+  const fileInput = document.querySelector("input[name='pilotProofFile']");
+  const nameInput = document.querySelector("input[name='pilotProofName']");
+  const remarkInput = document.querySelector("textarea[name='pilotProofRemark']");
+  const proofName = fileInput?.files?.[0]?.name || nameInput?.value?.trim();
+  if (!proofName) return toast("请上传或填写完成凭证名称");
+
   const time = formatDateTime();
   state.assignedPilotOrders = state.assignedPilotOrders.map(item => (
     item.orderNo === orderNo
       ? {
           ...item,
           status: "已完成",
+          completionProof: {
+            name: proofName,
+            time,
+            remark: remarkInput?.value?.trim() || "现场服务已完成"
+          },
           progress: [
             ...item.progress,
-            { time, title: "订单完成", desc: "飞手已确认完成现场服务" }
+            { time, title: "订单完成", desc: "飞手已上传完成凭证并确认完成现场服务" }
           ]
         }
       : item
   ));
+  state.showPilotCompletionProof = false;
+  state.completingAssignedOrderNo = null;
   toast("订单已完成");
   render();
 }
@@ -796,6 +826,8 @@ document.addEventListener("click", (event) => {
   if (action.dataset.action === "pilot-task-join") return joinPilotTask(action.dataset.id);
   if (action.dataset.action === "pilot-order-open") return openAssignedPilotOrder(action.dataset.id);
   if (action.dataset.action === "pilot-order-complete") return completeAssignedPilotOrder(action.dataset.id);
+  if (action.dataset.action === "pilot-proof-cancel") return cancelPilotCompletionProof();
+  if (action.dataset.action === "pilot-proof-submit") return submitPilotCompletionProof();
   if (action.dataset.action === "product-spec") return selectProductSpec(Number(action.dataset.index));
   if (action.dataset.action === "order-quantity") return adjustOrderQuantity(action.dataset.dir);
   if (action.dataset.action === "mock-pay-order") return payPendingProductOrder();

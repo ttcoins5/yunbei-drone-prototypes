@@ -44,6 +44,25 @@ function logoutDialog() {
   </div>`;
 }
 
+function pilotCompletionProofDialog() {
+  if (!state.showPilotCompletionProof) return "";
+
+  return `<div class="dialog-mask">
+    <button class="dialog-backdrop" type="button" aria-label="关闭弹窗" data-action="pilot-proof-cancel"></button>
+    <section class="pilot-proof-dialog" role="dialog" aria-label="上传完成凭证">
+      <b>上传完成凭证</b>
+      <p>飞手完成服务前需上传现场完成凭证。凭证仅进入后台订单详情留存，不在飞手端详情展示。</p>
+      <label><span>完成凭证</span><input name="pilotProofFile" type="file"></label>
+      <label><span>凭证名称</span><input name="pilotProofName" value="现场完成凭证.jpg" placeholder="请输入凭证文件名"></label>
+      <label><span>完成说明</span><textarea name="pilotProofRemark" placeholder="请输入完成说明">现场服务已完成，成果已交付客户确认。</textarea></label>
+      <div class="pilot-proof-actions">
+        <button type="button" data-action="pilot-proof-cancel">取消</button>
+        <button type="button" data-action="pilot-proof-submit">确认完成</button>
+      </div>
+    </section>
+  </div>`;
+}
+
 export function shell(content, options = {}) {
   const { title = "", back = false, tab = state.tab, hideTabbar = false } = options;
   return `<div class="preview-shell">
@@ -60,6 +79,7 @@ export function shell(content, options = {}) {
       ${contactSheet()}
       ${pilotOnlyDialog()}
       ${logoutDialog()}
+      ${pilotCompletionProofDialog()}
     </div>
     <aside class="review-note"><span>FENGFEIFEI PROTOTYPE</span><h2>${title || "奉飞飞首页"}</h2><p>蓝绿冷静科技风 · Image 2 品牌头图 · HTML 可交互原型</p></aside>
   </div>`;

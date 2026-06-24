@@ -160,6 +160,7 @@ const orderRecords = DroneAdmin.data.orderRecords = [
     "status": "待交付",
     "onlinePay": false,
     "assignedPilots": [],
+    "deliveryProofs": [],
     "appointment": {
       "date": "2026-06-20",
       "slot": "10:00-11:30",
@@ -187,6 +188,7 @@ const orderRecords = DroneAdmin.data.orderRecords = [
     "status": "待交付",
     "onlinePay": false,
     "assignedPilots": [],
+    "deliveryProofs": [],
     "appointment": {
       "date": "2026-06-21",
       "slot": "09:30-10:30",
@@ -217,6 +219,15 @@ const orderRecords = DroneAdmin.data.orderRecords = [
     "status": "待评价",
     "onlinePay": false,
     "assignedPilots": [],
+    "deliveryProofs": [
+      {
+        "type": "后台交付凭证",
+        "name": "赛事资料交付确认单.pdf",
+        "operator": "平台管理员",
+        "time": "2026-06-17 16:20",
+        "remark": "参赛资料与确认名单已交付客户确认"
+      }
+    ],
     "requirementSnapshot": orderSnapshot("无人机赛事", [
       orderField("注册类型", "select", "单位"),
       orderField("单位名称", "text", "成都航协"),
@@ -238,6 +249,15 @@ const orderRecords = DroneAdmin.data.orderRecords = [
     "status": "已完成",
     "onlinePay": false,
     "assignedPilots": [],
+    "deliveryProofs": [
+      {
+        "type": "后台交付凭证",
+        "name": "培训排课确认截图.png",
+        "operator": "平台管理员",
+        "time": "2026-06-12 15:30",
+        "remark": "课程安排和学习资料已发送"
+      }
+    ],
     "requirementSnapshot": orderSnapshot("飞手培训", [
       orderField("姓名", "text", "李同学"),
       orderField("联系电话", "text", "135****8910"),
@@ -260,6 +280,15 @@ const orderRecords = DroneAdmin.data.orderRecords = [
     "status": "已完成",
     "onlinePay": false,
     "assignedPilots": [],
+    "deliveryProofs": [
+      {
+        "type": "后台交付凭证",
+        "name": "试听课确认单.pdf",
+        "operator": "平台管理员",
+        "time": "2026-06-10 17:10",
+        "remark": "试听安排已完成并回访确认"
+      }
+    ],
     "requirementSnapshot": orderSnapshot("少儿培训", [
       orderField("姓名", "text", "王小雨"),
       orderField("性别", "select", "女"),
@@ -306,6 +335,32 @@ function orderRequirementPanel(order) {
   )}`);
 }
 
+function orderProofRows(order) {
+  const deliveryRows = (order.deliveryProofs || []).map(item => [
+    item.type || "后台交付凭证",
+    item.name || "—",
+    item.operator || "平台管理员",
+    item.time || "—",
+    item.remark || "—"
+  ]);
+  const pilotRows = (order.assignedPilots || []).flatMap(pilot => (pilot.proofs || []).map(item => [
+    `飞手完成凭证（${pilot.name}）`,
+    item.name || "—",
+    pilot.name,
+    item.time || "—",
+    item.remark || "—"
+  ]));
+  return [...deliveryRows, ...pilotRows];
+}
+
+function orderProofPanel(order) {
+  const rows = orderProofRows(order);
+  const content = rows.length
+    ? table(["凭证类型","文件名","提交人","提交时间","备注"], rows)
+    : `<p class="empty">暂无交付或飞手完成凭证。待交付订单需后台上传交付凭证，飞手完成服务也需上传完成凭证；凭证仅在后台订单详情查看。</p>`;
+  return panel("交付/完成凭证", content);
+}
+
 function getOrderFlow(order) {
   const steps = ["订单生成"];
   if (order.onlinePay) steps.push("待付款");
@@ -345,11 +400,13 @@ function orderListActions(order) {
   const canAssign = canReassignOrderPilot(order);
   const price = button("改价", "edit-order-price", "small", `data-order-id="${order.id}"${canEditPrice ? "" : " disabled"}`);
   const assignText = order.assignedPilots?.length ? "调飞手" : "去派单";
-  const assign = button(assignText, "assign-pilots", "small primary", `data-order-id="${order.id}"${canAssign ? "" : " disabled"}`);
+  const middle = order.status === "待交付"
+    ? button("交付", "deliver-order", "small primary", `data-order-id="${order.id}"`)
+    : button(assignText, "assign-pilots", "small primary", `data-order-id="${order.id}"${canAssign ? "" : " disabled"}`);
   const detail = `<button class="button small" data-route="order-detail" data-order-id="${order.id}">查看详情</button>`;
   return `<div class="row-actions order-row-actions">
     <span class="row-action-slot">${price}</span>
-    <span class="row-action-slot">${assign}</span>
+    <span class="row-action-slot">${middle}</span>
     <span class="row-action-slot">${detail}</span>
   </div>`;
 }
@@ -385,6 +442,7 @@ function orderDetailPage() {
   const canEditPrice = order.amount === "线下报价" || order.onlinePay === false;
   const canAssignPilot = canReassignOrderPilot(order);
   const priceAction = canEditPrice ? button("修改金额", "edit-order-price", "small primary", `data-order-id="${order.id}"`) : "";
+  const deliveryAction = order.status === "待交付" ? button("交付", "deliver-order", "small primary", `data-order-id="${order.id}"`) : "";
   const pilotAction = canAssignPilot
     ? (order.assignedPilots?.length ? button("重新指派", "assign-pilots", "small") : button("分配飞手", "assign-pilots", "primary"))
     : "";
@@ -408,7 +466,7 @@ function orderDetailPage() {
       ]))
     : "";
   return panel("订单状态", `<div class="steps steps--flow">${orderSteps(order)}</div>
-    <p class="muted order-flow-summary">本单流转：${orderFlowSummary(order)}</p>`, routeButton("返回订单列表","orders",""))
+    <p class="muted order-flow-summary">本单流转：${orderFlowSummary(order)}</p>`, routeButton("返回订单列表","orders","") + deliveryAction)
   + panel("订单信息快照", detailGrid([
     ["订单号", order.id], ["用户", order.user], ["商品/服务", order.service], ["订单金额", order.amount],
     ["在线支付", order.onlinePay ? "是（下单快照）" : "否（下单快照）"],
@@ -417,6 +475,7 @@ function orderDetailPage() {
   + paymentPanel
   + orderRequirementPanel(order)
   + pilotPanel
+  + orderProofPanel(order)
   + panel("改价记录", logs);
 }
 
@@ -438,9 +497,11 @@ DroneAdmin.registerModule({
       "列表状态列 hover 可查看该单完整流转路径",
       "状态颜色：待付款/待评价=橙色，待派单=红色（需管理员操作），待服务/待交付=蓝色，已完成=绿色",
       "需飞手且待派单的订单，列表显示「去派单」，点击直接弹窗指派飞手（与详情「分配飞手」同一逻辑）",
+      "无需飞手且状态为待交付的订单，列表显示「交付」；上传或填写交付凭证后进入待评价",
       "线下报价订单显示「改价」，填写金额和原因后形成改价记录",
       "点击「查看详情」进入订单详情，顶部步骤条展示动态流转进度",
-      "待服务阶段在详情页「调整飞手」修改名单，状态不变"
+      "待服务阶段在详情页「调整飞手」修改名单，状态不变",
+      "交付凭证和飞手完成凭证仅在后台订单详情的「交付/完成凭证」面板展示"
     ],
     "fields": [
       [
@@ -469,7 +530,7 @@ DroneAdmin.registerModule({
       ],
       [
         "操作",
-        "线下报价订单可改价；需飞手且订单未完成前可派单或重新指派；所有订单均可查看详情"
+        "线下报价订单可改价；待交付订单可交付并上传凭证；需飞手且订单未完成前可派单或重新指派；所有订单均可查看详情"
       ],
       [
         "流转路径（在线支付+飞手）",
@@ -503,7 +564,9 @@ DroneAdmin.registerModule({
       "订单详情展示「需求信息快照」，字段来自下单时的商品表单配置",
       "需飞手服务时展示「飞手分配与履约」面板：待派单显示「分配飞手」，待服务显示「调整飞手」",
       "列表「去派单」与详情「分配飞手」为同一指派弹窗；调整飞手仅改名单，不改变订单状态",
-      "无需飞手时跳过派单节点，使用「待交付」并隐藏飞手面板"
+      "无需飞手时跳过派单节点，使用「待交付」并隐藏飞手面板",
+      "待交付订单点击「交付」上传或填写交付凭证，确认后进入待评价",
+      "飞手端完成服务前也需上传完成凭证；凭证只在后台订单详情展示，用户端和飞手端详情不展示凭证列表"
     ],
     "fields": [
       [
@@ -536,7 +599,11 @@ DroneAdmin.registerModule({
       ],
       [
         "待交付",
-        "无需飞手时的履约节点，后台标记交付完成后进入待评价"
+        "无需飞手时的履约节点，后台上传或填写交付凭证后进入待评价"
+      ],
+      [
+        "交付/完成凭证",
+        "后台交付凭证和飞手完成凭证的统一留存区，仅在后台订单详情展示"
       ],
       [
         "飞手分配",
@@ -644,6 +711,51 @@ DroneAdmin.registerModule({
           closeModal();
           render();
           toast(wasPending ? `已分配 ${selected.length} 名飞手，订单进入待服务` : `已更新飞手名单（${selected.length} 名）`);
+    },
+    "deliver-order": function (target) {
+      if (target.dataset.orderId) state.viewingOrderId = target.dataset.orderId;
+      const order = activeOrder();
+      if (order.status !== "待交付") {
+        toast("仅待交付订单可执行交付");
+        return;
+      }
+      modal("订单交付", `<div class="price-change-form el-form">
+        <label><span>订单号</span><input value="${order.id}" readonly></label>
+        <label><span>当前状态</span><input value="${order.status}" readonly></label>
+        <label><span>交付凭证</span><input name="deliveryProofFile" type="file"></label>
+        <label><span>凭证名称</span><input name="deliveryProofName" value="${order.id}-交付凭证.pdf" placeholder="请输入凭证文件名"></label>
+        <label><span>交付说明</span><textarea name="deliveryRemark" placeholder="请输入交付说明">已按订单需求完成交付，凭证仅在后台订单详情留存。</textarea></label>
+      </div><p class="price-change-tip">待交付订单需上传或填写交付凭证后才能进入待评价；凭证不在用户端或飞手端展示。</p>`,
+      `${button("取消","close-modal")}${button("确认交付","confirm-order-delivery","primary")}`, true);
+    },
+    "confirm-order-delivery": function (target) {
+      const order = activeOrder();
+      if (order.status !== "待交付") {
+        toast("仅待交付订单可执行交付");
+        return;
+      }
+      const fileInput = document.querySelector("input[name='deliveryProofFile']");
+      const nameInput = document.querySelector("input[name='deliveryProofName']");
+      const remarkInput = document.querySelector("textarea[name='deliveryRemark']");
+      const fileName = fileInput?.files?.[0]?.name || nameInput?.value?.trim();
+      if (!fileName) {
+        toast("请上传或填写交付凭证名称");
+        return;
+      }
+      order.deliveryProofs = [
+        {
+          type: "后台交付凭证",
+          name: fileName,
+          operator: "平台管理员",
+          time: new Date().toLocaleString("zh-CN", { hour12: false }),
+          remark: remarkInput?.value?.trim() || "已完成交付"
+        },
+        ...(order.deliveryProofs || [])
+      ];
+      order.status = "待评价";
+      closeModal();
+      render();
+      toast("交付凭证已保存，订单进入待评价");
     },
     "preview-order-remark-photo": function (target) {
       const order = orderRecords.find(item => item.id === target.dataset.orderId) || activeOrder();
