@@ -539,6 +539,8 @@ td .actions .button.small { min-width: 52px; min-height: 30px; flex: 0 0 auto; p
 .modal-body { padding: 17px; }
 .close { border: 0; color: var(--muted); background: transparent; font-size: 21px; }
 .pilot-option { display: grid; grid-template-columns: 24px 1fr auto; align-items: center; gap: 10px; margin-bottom: 9px; padding: 12px; border: 1px solid var(--line); border-radius: 4px; }
+.pilot-option.is-disabled { color: var(--muted); background: #f5f7fa; cursor: not-allowed; opacity: .72; }
+.pilot-option.is-disabled input { cursor: not-allowed; }
 .toast { position: fixed; z-index: 50; top: 78px; left: 50%; padding: 11px 18px; border-radius: 4px; color: #fff; background: #303133; box-shadow: var(--shadow); transform: translateX(-50%); }
 
 @media (max-width: 1250px) {

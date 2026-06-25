@@ -47,6 +47,7 @@ function miniOrder(config) {
     productId: product.id,
     orderNo: config.orderNo,
     status: config.status,
+    reviewStatus: config.reviewStatus || (config.review ? "已评价" : "未评价"),
     tab: config.tab || config.status,
     time: config.time,
     title: product.name,
@@ -60,6 +61,7 @@ function miniOrder(config) {
     address: config.address || "",
     remark: config.remark || "",
     requirementSnapshot: snapshot,
+    review: config.review || null,
     timeline: config.timeline || [
       { time: config.time, title: "订单提交", desc: `已提交${product.name}需求` },
       { time: config.time, title: config.status, desc: "平台正在确认需求信息并安排后续服务" }
@@ -259,7 +261,9 @@ export const state = {
     }),
     miniOrder({
       orderNo: "ORD20260617007",
-      status: "待评价",
+      status: "已完成",
+      reviewStatus: "未评价",
+      tab: "已完成",
       time: "2026-06-10 10:30",
       productId: "competition",
       contactName: "成都航协",

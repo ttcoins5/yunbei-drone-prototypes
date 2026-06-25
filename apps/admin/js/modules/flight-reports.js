@@ -3,10 +3,10 @@ state.viewingFlightReportId = "BB20260612001";
 const flightReportRecords = DroneAdmin.data.flightReportRecords = [
   {
     "id": "BB20260612001",
-    "pilotName": "李明",
-    "pilotPhone": "138****9036",
+    "pilotName": "苏炜",
+    "pilotPhone": "18356570510",
     "entrustedSubject": "宁波市自然资源和规划局奉化分局",
-    "droneModel": "Mavic 3E",
+    "droneModel": "DJI Mavic 3E",
     "serialNo": "1581F5FHD23CF00D5",
     "uniqueId": "UAS-****1205",
     "flightPlan": "2026 年 6 月 12 日 12:00-14:00",
@@ -139,13 +139,13 @@ function flightReportStatusTag(status) {
 
 function flightReportsPage() {
   const rows = flightReportRecords.map(item => [
-    item.id, item.entrustedSubject || "—", item.pilotName, item.droneModel, item.flightTime, item.flightArea, item.submittedAt,
+    item.id, item.entrustedSubject || "—", `${item.pilotName}（${item.pilotPhone}）`, item.droneModel, item.flightPlan || `${item.flightDate} ${item.flightTime}`, item.flightArea, item.submittedAt,
     flightReportStatusTag(item.status),
     opRoute("查看详情", "flight-report-detail", "", `data-flight-report-id="${item.id}"`)
   ]);
   return panel("飞行报备", `<div class="toolbar" style="margin-bottom:14px">
     <input placeholder="报备编号 / 飞手 / 机型"><select><option>全部状态</option><option>待确认</option><option>已确认</option></select>${button("查询","filter","primary")}
-  </div><div class="module-note" style="margin-bottom:14px"><b>报备编号生成规则：</b>小程序填写报备时不展示编号，提交成功后由系统生成；格式为 <code>BB + YYYYMMDD + 3位当日流水</code>，例如 <code>BB20260612001</code>。</div>${paginatedTable("flight-reports", ["报备编号","委托主体","飞手","机型","飞行时间","区域/地点","报备时间","状态","操作"], rows)}`);
+  </div><div class="module-note" style="margin-bottom:14px"><b>字段口径：</b>后台飞行报备读取小程序提交的同一组字段；详情按「委托/飞手/设备」和「飞行计划」两大块展示。报备编号提交后由系统生成，格式为 <code>BB + YYYYMMDD + 3位当日流水</code>。</div>${paginatedTable("flight-reports", ["报备编号","委托主体","飞手信息","机型","飞行计划","区域/地点","报备时间","状态","操作"], rows)}`);
 }
 
 function flightReportDetailPage() {
@@ -154,17 +154,22 @@ function flightReportDetailPage() {
     report.status === "待确认" ? button("确认报备", "confirm-flight-report", "primary") : "",
     button("推送第三方", "push-flight-report-third-party")
   ].filter(Boolean).join("");
+  const flightPlan = report.flightPlan || `${report.flightDate || "—"} ${report.flightTime || ""}`.trim();
   return panel("报备信息", detailGrid([
-    ["报备编号", report.id], ["委托主体", report.entrustedSubject || "—", true],
+    ["报备编号", report.id],
+    ["委托主体", report.entrustedSubject || "—", true],
     ["飞手信息", `${report.pilotName}（联系方式 ${report.pilotPhone}）`, true],
-    ["飞行计划", report.flightPlan || `${report.flightDate} ${report.flightTime}`, true],
-    ["飞行时间", report.flightTime], ["区域/具体地点", report.flightArea, true],
-    ["高度", report.flightAltitude || "—"], ["任务性质", report.taskNature || "—"],
-    ["报备说明", report.remark || "特此报备", true], ["报备时间", report.submittedAt],
-    ["来源", report.source || "小程序"], ["状态", flightReportStatusTag(report.status)]
+    ["设备信息", `无人机型号 ${report.droneModel || "—"}、序列号 ${report.serialNo || "—"}`, true],
+    ["报备时间", report.submittedAt],
+    ["来源", report.source || "小程序"],
+    ["状态", flightReportStatusTag(report.status)]
   ]), routeButton("返回列表", "flight-reports", ""))
-  + panel("飞行器信息", detailGrid([
-    ["无人机型号", report.droneModel], ["序列号", report.serialNo], ["唯一识别码", report.uniqueId || "—"]
+  + panel("飞行计划", detailGrid([
+    ["时间", flightPlan, true],
+    ["区域/具体地点", report.flightArea, true],
+    ["高度", report.flightAltitude || "—"],
+    ["任务性质", report.taskNature || "—"],
+    ["报备说明", report.remark || "特此报备", true]
   ]), actions);
 }
 
@@ -180,10 +185,10 @@ DroneAdmin.registerModule({
 },
   docs: {
   "flight-reports": {
-    "summary": "管理飞手在小程序提交的飞行报备数据，按委托主体、飞手信息、设备信息、飞行计划、区域、高度和任务性质查看与确认。",
+    "summary": "管理飞手在小程序提交的飞行报备数据，字段与小程序新增报备保持一致，详情按报备信息和飞行计划两大块查看与确认。",
     "operations": [
       "按报备编号、飞手姓名、机型、状态筛选",
-      "点击「查看详情」查看完整报备信息与飞行器信息",
+      "点击「查看详情」按报备信息、飞行计划两块查看完整内容",
       "待确认报备可在详情页执行「确认报备」",
       "「推送第三方」为预留能力，点击仅提示待对接"
     ],
@@ -197,16 +202,16 @@ DroneAdmin.registerModule({
         "本次飞行作业的委托单位或委托人"
       ],
       [
-        "飞手",
-        "提交报备的认证飞手姓名"
+        "飞手信息",
+        "提交报备的认证飞手姓名和联系方式"
       ],
       [
         "机型",
         "执飞无人机型号"
       ],
       [
-        "飞行时间",
-        "飞行计划中的起止时间"
+        "飞行计划",
+        "小程序填写的飞行日期和起止时间"
       ],
       [
         "区域/地点",
@@ -227,9 +232,10 @@ DroneAdmin.registerModule({
     ]
   },
   "flight-report-detail": {
-    "summary": "查看单条飞行报备的完整内容与飞行器信息，并完成确认或第三方推送操作。",
+    "summary": "查看单条飞行报备的完整内容，并完成确认或第三方推送操作；详情分为报备信息和飞行计划两大块。",
     "operations": [
-      "展示飞手在小程序填写的委托主体、飞手信息、设备信息、飞行计划、区域、高度和任务性质",
+      "报备信息展示委托主体、飞手信息、设备信息、报备时间、来源和状态",
+      "飞行计划展示时间、区域/具体地点、高度、任务性质和报备说明",
       "待确认时可点击「确认报备」标记为已确认",
       "「推送第三方」将飞手及报备信息推送外部系统（原型仅占位，待业务确认）"
     ],
@@ -247,16 +253,8 @@ DroneAdmin.registerModule({
         "提交报备的飞手姓名及联系方式"
       ],
       [
-        "飞行器信息",
-        "机型、架次、飞行时长、序列号和唯一识别码"
-      ],
-      [
-        "飞行计划",
-        "飞行日期、起止时间、区域地点、高度和任务性质"
-      ],
-      [
-        "状态",
-        "待确认时可确认；已确认后只读展示"
+        "设备信息",
+        "无人机型号和序列号，和小程序填写口径一致"
       ],
       [
         "飞行计划",
@@ -289,18 +287,6 @@ DroneAdmin.registerModule({
       [
         "状态",
         "待确认 / 已确认"
-      ],
-      [
-        "无人机型号",
-        "执飞无人机型号"
-      ],
-      [
-        "序列号",
-        "无人机机身序列号"
-      ],
-      [
-        "唯一识别码",
-        "无人机唯一识别码"
       ]
     ]
   }

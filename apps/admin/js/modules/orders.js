@@ -96,7 +96,7 @@ const orderRecords = DroneAdmin.data.orderRecords = [
         "name": "王伟",
         "area": "成都双流",
         "device": "M350 RTK",
-        "status": "待服务"
+        "status": "服务中"
       }
     ],
     "appointment": {
@@ -355,7 +355,8 @@ const orderRecords = DroneAdmin.data.orderRecords = [
     "service": "无人机赛事",
     "amount": "线下报价",
     "needPilot": false,
-    "status": "待评价",
+    "status": "已完成",
+    "reviewStatus": "未评价",
     "onlinePay": false,
     "assignedPilots": [],
     "deliveryProofs": [
@@ -443,8 +444,34 @@ const orderRecords = DroneAdmin.data.orderRecords = [
   }
 ];
 
+orderRecords.forEach(order => {
+  if (!order.reviewStatus) order.reviewStatus = "未评价";
+});
+
 function activeOrder() {
   return orderRecords.find(item => item.id === state.viewingOrderId) || orderRecords[0];
+}
+
+const orderPilotRoster = [
+  { name: "李明", area: "成都高新", device: "Mavic 3E" },
+  { name: "王伟", area: "成都双流", device: "M350 RTK" },
+  { name: "周航", area: "成都双流", device: "M350 RTK" },
+  { name: "赵宇", area: "成都武侯", device: "Mavic 3E" }
+];
+
+function orderPilotOptions(order) {
+  const assignedByName = new Map((order.assignedPilots || []).map(pilot => [pilot.name, pilot]));
+  return orderPilotRoster.map(profile => {
+    const assigned = assignedByName.get(profile.name);
+    const completed = assigned?.status === "已完成";
+    return {
+      ...profile,
+      assigned,
+      checked: Boolean(assigned),
+      disabled: completed,
+      statusText: completed ? "已完成" : assigned ? "服务中" : "空闲飞手"
+    };
+  });
 }
 
 function formatOrderAppointmentBrief(order) {
@@ -506,7 +533,7 @@ function pilotAssignmentPanel(order, pilots, action) {
 }
 
 function shouldShowOrderProofPanel(order) {
-  return !order.needPilot && (orderProofRows(order).length > 0 || ["待交付", "待评价", "已完成"].includes(order.status));
+  return !order.needPilot && (orderProofRows(order).length > 0 || ["待交付", "已完成"].includes(order.status));
 }
 
 function orderProofPanel(order) {
@@ -522,7 +549,7 @@ function getOrderFlow(order) {
   if (order.onlinePay) steps.push("待付款");
   if (order.needPilot) steps.push("待派单", "待服务");
   else steps.push("待交付");
-  steps.push("待评价", "已完成");
+  steps.push("已完成");
   return steps;
 }
 
@@ -536,8 +563,9 @@ function statusTag(text) {
     "待派单": "red",
     "待服务": "blue",
     "待交付": "blue",
-    "待评价": "amber",
-    "已完成": "green"
+    "已完成": "green",
+    "未评价": "amber",
+    "已评价": "green"
   };
   if (map[text]) return `<span class="tag ${map[text]}">${text}</span>`;
   return tag(text);
@@ -549,6 +577,10 @@ function orderStatusTag(order) {
 
 function orderStatusCell(order) {
   return `<span title="本单流转：${orderFlowSummary(order)}">${statusTag(order.status)}</span>`;
+}
+
+function reviewStatusTag(order) {
+  return `<span title="评价状态不参与订单履约流转">${statusTag(order.reviewStatus || "未评价")}</span>`;
 }
 
 function orderListActions(order) {
@@ -585,12 +617,12 @@ function orderSteps(order) {
 function ordersPage() {
   const rows = orderRecords.map(item => [
     item.id, item.user, item.service, item.amount, item.needPilot ? "需要" : "不需要",
-    orderStatusCell(item), orderListActions(item)
+    orderStatusCell(item), reviewStatusTag(item), orderListActions(item)
   ]);
   return panel("订单列表", `<div class="toolbar" style="margin-bottom:14px">
-    <input placeholder="订单号 / 用户 / 商品"><select><option>全部状态</option><option>待付款</option><option>待派单</option><option>待服务</option><option>待交付</option><option>待评价</option><option>已完成</option></select>
+    <input placeholder="订单号 / 用户 / 商品"><select><option>全部订单状态</option><option>待付款</option><option>待派单</option><option>待服务</option><option>待交付</option><option>已完成</option></select><select><option>全部评价状态</option><option>未评价</option><option>已评价</option></select>
     <select><option>是否需要飞手</option><option>需要</option><option>不需要</option></select>${button("查询","filter","primary")}
-  </div>${paginatedTable("orders", ["订单号","用户","商品/服务","金额","需要飞手","状态","操作"], rows, "orders-table")}`);
+  </div>${paginatedTable("orders", ["订单号","用户","商品/服务","金额","需要飞手","订单状态","评价状态","操作"], rows, "orders-table")}`);
 }
 
 function orderDetailPage() {
@@ -626,6 +658,8 @@ function orderDetailPage() {
     <p class="muted order-flow-summary">本单流转：${orderFlowSummary(order)}</p>`, routeButton("返回订单列表","orders","") + deliveryAction)
   + panel("订单信息快照", detailGrid([
     ["订单号", order.id], ["用户", order.user], ["商品/服务", order.service], ["订单金额", order.amount],
+    ["订单状态", order.status],
+    ["评价状态", order.reviewStatus || "未评价"],
     ["在线支付", order.onlinePay ? "是（下单快照）" : "否（下单快照）"],
     ["需要飞手", order.needPilot ? "是（下单快照）" : "否（下单快照）"]
   ]), priceAction)
@@ -648,16 +682,17 @@ DroneAdmin.registerModule({
 },
   docs: {
   "orders": {
-    "summary": "查看与管理全部商品订单。列表「状态」为当前节点；完整流转路径因下单快照（在线支付 / 飞手服务）不同而不同。",
+    "summary": "查看与管理全部商品订单。列表「订单状态」为当前履约节点，「评价状态」独立记录用户是否已评价；完整履约路径因下单快照（在线支付 / 飞手服务）不同而不同。",
     "operations": [
       "按订单号、用户、商品、状态、是否需要飞手筛选",
-      "列表状态列 hover 可查看该单完整流转路径",
-      "状态颜色：待付款/待评价=橙色，待派单=红色（需管理员操作），待服务/待交付=蓝色，已完成=绿色",
+      "列表订单状态列 hover 可查看该单完整履约流转路径",
+      "订单状态颜色：待付款=橙色，待派单=红色（需管理员操作），待服务/待交付=蓝色，已完成=绿色；评价状态单独展示未评价/已评价",
       "需飞手且待派单的订单，列表显示「去派单」，点击直接弹窗指派飞手（与详情「分配飞手」同一逻辑）",
-      "无需飞手且状态为待交付的订单，列表显示「交付」；上传交付凭证后进入待评价",
+      "无需飞手且订单状态为待交付的订单，列表显示「交付」；上传交付凭证后订单状态进入已完成，评价状态保持未评价",
       "线下报价订单显示「改价」，填写金额和原因后形成改价记录",
       "点击「查看详情」进入订单详情，顶部步骤条展示动态流转进度",
       "待服务阶段在详情页「调整飞手」修改名单，状态不变",
+      "指派弹窗中：已勾选飞手显示「服务中」，未勾选飞手显示「空闲飞手」；已完成飞手置灰且不可取消",
       "不需要飞手的订单在「交付/完成凭证」面板展示后台交付凭证；需要飞手的订单在「飞手分配与履约」中，于已完成状态旁点击「完成详情」查看交付照片和交付说明"
     ],
     "fields": [
@@ -683,7 +718,11 @@ DroneAdmin.registerModule({
       ],
       [
         "状态",
-        "当前流转节点；待派单为红色待办；合法值因快照组合而异，见订单详情说明"
+        "当前履约流转节点；待派单为红色待办；合法值因快照组合而异，见订单详情说明"
+      ],
+      [
+        "评价状态",
+        "独立于订单状态，合法值为未评价、已评价；用于用户侧待评价入口和商品评价管理"
       ],
       [
         "操作",
@@ -691,19 +730,19 @@ DroneAdmin.registerModule({
       ],
       [
         "流转路径（在线支付+飞手）",
-        "订单生成 → 待付款 → 待派单 → 待服务 → 待评价 → 已完成"
+        "订单生成 → 待付款 → 待派单 → 待服务 → 已完成"
       ],
       [
         "流转路径（在线支付+无飞手）",
-        "订单生成 → 待付款 → 待交付 → 待评价 → 已完成"
+        "订单生成 → 待付款 → 待交付 → 已完成"
       ],
       [
         "流转路径（非在线支付+飞手）",
-        "订单生成 → 待派单 → 待服务 → 待评价 → 已完成"
+        "订单生成 → 待派单 → 待服务 → 已完成"
       ],
       [
         "流转路径（非在线支付+无飞手）",
-        "订单生成 → 待交付 → 待评价 → 已完成"
+        "订单生成 → 待交付 → 已完成"
       ],
       [
         "需求信息快照",
@@ -722,7 +761,7 @@ DroneAdmin.registerModule({
       "需飞手服务时只展示「飞手分配与履约」面板：待派单显示「分配飞手」，待服务显示「调整飞手」，已完成状态旁显示「完成详情」弹窗入口",
       "列表「去派单」与详情「分配飞手」为同一指派弹窗；调整飞手仅改名单，不改变订单状态",
       "无需飞手时跳过派单节点，使用「待交付」并隐藏飞手面板",
-      "待交付订单点击「交付」上传交付凭证，确认后进入待评价",
+      "待交付订单点击「交付」上传交付凭证，确认后订单状态进入已完成；评价状态独立保持未评价",
       "飞手端完成服务前需上传 1-3 张交付照片并填写交付说明；照片和说明只通过后台「完成详情」弹窗查看，用户端和飞手端详情不展示凭证列表"
     ],
     "fields": [
@@ -756,7 +795,7 @@ DroneAdmin.registerModule({
       ],
       [
         "待交付",
-        "无需飞手时的履约节点，后台上传交付凭证后进入待评价"
+        "无需飞手时的履约节点，后台上传交付凭证后进入已完成"
       ],
       [
         "交付/完成凭证",
@@ -764,7 +803,7 @@ DroneAdmin.registerModule({
       ],
       [
         "飞手分配",
-        "仅需要飞手时展示；已指派飞手、个人履约状态，以及已完成状态旁的完成详情弹窗入口"
+        "仅需要飞手时展示；指派弹窗内已选飞手为服务中，未选飞手为空闲飞手，已完成飞手置灰不可取消"
       ],
       [
         "区域",
@@ -776,7 +815,7 @@ DroneAdmin.registerModule({
       ],
       [
         "个人状态",
-        "该飞手在当前订单下的接单或履约状态"
+        "该飞手在当前订单下的履约状态；已指派为服务中，完成后为已完成并可查看完成详情"
       ],
       [
         "重新指派",
@@ -843,13 +882,10 @@ DroneAdmin.registerModule({
       if (target.dataset.orderId) state.viewingOrderId = target.dataset.orderId;
           const order = activeOrder();
           const modalTitle = order.assignedPilots?.length ? "重新指派飞手" : "分配飞手";
-          const pilots = [
-            ["李明","成都高新 · Mavic 3E","空闲",true],["王伟","成都双流 · M350 RTK","空闲",true],
-            ["周航","成都双流 · M350 RTK","服务中",false],["赵宇","成都武侯 · Mavic 3E","空闲",false]
-          ];
-          modal(modalTitle, `<p class="muted">可选择一个或多个审核通过的飞手。确认后立即生效，无需飞手再次确认。</p>
-            ${pilots.map(p => `<label class="pilot-option"><input type="checkbox" name="pilot" value="${p[0]}" ${p[3] ? "checked" : ""}>
-              <span><strong>${p[0]}</strong><br><span class="muted">${p[1]}</span></span>${tag(p[2])}</label>`).join("")}`,
+          const pilots = orderPilotOptions(order);
+          modal(modalTitle, `<p class="muted">可选择一个或多个审核通过的飞手。已指派飞手显示为「服务中」，未选中飞手显示为「空闲飞手」；已完成飞手置灰且不可取消。</p>
+            ${pilots.map(p => `<label class="pilot-option${p.disabled ? " is-disabled" : ""}"><input type="checkbox" name="pilot" value="${p.name}" ${p.checked ? "checked" : ""} ${p.disabled ? "disabled" : ""}>
+              <span><strong>${p.name}</strong><br><span class="muted">${p.area} · ${p.device}</span></span>${tag(p.statusText)}</label>`).join("")}`,
             `${button("取消","close-modal")}${button("确认分配","confirm-assignment","primary")}`, true);
     },
     "confirm-assignment": function (target) {
@@ -861,9 +897,18 @@ DroneAdmin.registerModule({
             return;
           }
           const wasPending = order.status === "待派单";
-          order.assignedPilots = selected.map((name, index) => ({
-            name, area: index ? "成都双流" : "成都高新", device: index ? "M350 RTK" : "Mavic 3E", status: "待服务"
-          }));
+          const previousByName = new Map((order.assignedPilots || []).map(pilot => [pilot.name, pilot]));
+          order.assignedPilots = selected.map(name => {
+            const profile = orderPilotRoster.find(item => item.name === name) || { name, area: "—", device: "—" };
+            const previous = previousByName.get(name);
+            return {
+              name,
+              area: profile.area,
+              device: profile.device,
+              status: previous?.status === "已完成" ? "已完成" : "服务中",
+              ...(previous?.proofs ? { proofs: previous.proofs } : {})
+            };
+          });
           if (wasPending) order.status = "待服务";
           closeModal();
           render();
@@ -879,7 +924,7 @@ DroneAdmin.registerModule({
       modal("订单交付", `<div class="price-change-form el-form">
         <label><span>交付凭证</span><input name="deliveryProofFile" type="file"></label>
         <label><span>交付说明</span><textarea name="deliveryRemark" placeholder="请输入交付说明">已按订单需求完成交付，凭证仅在后台订单详情留存。</textarea></label>
-      </div><p class="price-change-tip">待交付订单需上传交付凭证后才能进入待评价；凭证不在用户端或飞手端展示。</p>`,
+      </div><p class="price-change-tip">待交付订单需上传交付凭证后才能进入已完成；评价状态独立保持未评价，凭证不在用户端或飞手端展示。</p>`,
       `${button("取消","close-modal")}${button("确认交付","confirm-order-delivery","primary")}`, true);
     },
     "confirm-order-delivery": function (target) {
@@ -905,10 +950,11 @@ DroneAdmin.registerModule({
         },
         ...(order.deliveryProofs || [])
       ];
-      order.status = "待评价";
+      order.status = "已完成";
+      order.reviewStatus = "未评价";
       closeModal();
       render();
-      toast("交付凭证已保存，订单进入待评价");
+      toast("交付凭证已保存，订单已完成");
     },
     "preview-order-remark-photo": function (target) {
       const order = orderRecords.find(item => item.id === target.dataset.orderId) || activeOrder();

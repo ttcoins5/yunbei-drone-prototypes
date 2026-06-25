@@ -202,7 +202,7 @@ function openOrder(orderNo) {
 function openOrderReview(orderNo) {
   const order = state.orders.find(item => item.orderNo === orderNo);
   if (!order) return;
-  if (order.status !== "待评价") return toast("当前订单暂无评价入口");
+  if (order.status !== "已完成" || order.reviewStatus === "已评价") return toast("当前订单暂无评价入口");
   state.selectedOrderNo = orderNo;
   state.orderReviewDraft = {
     rating: order.review?.rating || 5,
@@ -332,8 +332,7 @@ function submitOrderReview(form) {
     item.orderNo === order.orderNo
       ? {
           ...item,
-          status: "已完成",
-          tab: "已完成",
+          reviewStatus: "已评价",
           review: {
             rating,
             content,
@@ -569,6 +568,7 @@ function submitProductOrder(form) {
   state.pendingProductOrder = {
     orderNo,
     status: initialStatus,
+    reviewStatus: "未评价",
     productName: state.selectedProduct.name,
     specName: spec.name,
     amount: unitPrice,
@@ -591,6 +591,7 @@ function submitProductOrder(form) {
     {
       orderNo: order.orderNo,
       status: initialStatus,
+      reviewStatus: order.reviewStatus,
       tab: initialStatus,
       time: formatDateTime(),
       title: order.productName,

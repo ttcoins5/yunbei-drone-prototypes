@@ -393,7 +393,7 @@ export const orderStatuses = [
   { name: "待付款", count: 1, route: "orders", icon: 0 },
   { name: "待接单", count: 3, route: "orders", icon: 1 },
   { name: "待服务", count: 2, route: "orders", icon: 2 },
-  { name: "待评价", count: 1, route: "orders", icon: 3 },
+  { name: "待评价", count: 1, route: "orders", icon: 3, source: "reviewStatus", desc: "已完成且未评价" },
   { name: "已完成", count: 3, route: "orders", icon: 4 }
 ];
 

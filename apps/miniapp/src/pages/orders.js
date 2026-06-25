@@ -11,9 +11,14 @@ function selectedOrder() {
   return state.orders.find(order => order.orderNo === state.selectedOrderNo) || state.orders[0] || null;
 }
 
+function orderNeedsReview(order) {
+  return order.status === "已完成" && order.reviewStatus !== "已评价";
+}
+
 function visibleOrders() {
   return state.orders.filter(order => {
-    const matchTab = state.orderFilter === "全部" || order.tab === state.orderFilter;
+    const matchTab = state.orderFilter === "全部"
+      || (state.orderFilter === "待评价" ? orderNeedsReview(order) : order.status === state.orderFilter || order.tab === state.orderFilter);
     const keyword = state.orderSearch.trim();
     const matchKeyword = !keyword || order.orderNo.includes(keyword) || order.title.includes(keyword);
     return matchTab && matchKeyword;
@@ -33,6 +38,7 @@ function hasUnreadServiceNotification() {
 }
 
 function orderCard(order) {
+  const reviewBadge = orderNeedsReview(order) ? `<small>评价状态：未评价</small>` : "";
   const hasSpec = order.spec && order.spec !== "信息提交";
   const metaRows = [
     order.contactName ? `联系人：${order.contactName}` : "",
@@ -51,6 +57,7 @@ function orderCard(order) {
       <span>
         <b>${order.orderNo}</b>
         <small>${order.time}</small>
+        ${reviewBadge}
       </span>
       <em>${order.status}</em>
     </div>
@@ -82,7 +89,7 @@ function orderFlow(order) {
   if (onlinePay) steps.push("待付款");
   if (needPilot) steps.push("待派单", "待服务");
   else steps.push("待交付");
-  steps.push("待评价", "已完成");
+  steps.push("已完成");
   return steps;
 }
 
@@ -93,7 +100,6 @@ function orderFlowStatus(order) {
     "待付款": "待付款",
     "待服务": "待服务",
     "待交付": "待交付",
-    "待评价": "待评价",
     "已完成": "已完成"
   };
   return map[order.status] || map[order.timeline?.at(-1)?.title] || "订单生成";
@@ -106,8 +112,7 @@ function orderFlowDesc(title) {
     "待派单": "后台确认需求后，为订单分配合适的飞手或服务人员。",
     "待服务": "服务人员已确认订单，按约定时间执行服务。",
     "待交付": "订单无需飞手派单，平台正在处理服务交付。",
-    "待评价": "服务已完成，等待用户提交服务评价。",
-    "已完成": "评价完成或订单流程结束，订单归档。"
+    "已完成": "服务已完成或订单流程结束，订单归档。"
   };
   return descMap[title] || "订单正在按流程推进。";
 }
@@ -125,7 +130,7 @@ function orderProgressSteps(order) {
 }
 
 function orderReviewEntry(order) {
-  if (order.status === "待评价") {
+  if (orderNeedsReview(order)) {
     return `<section class="order-detail-card order-review-card">
       <div class="order-review-entry-head">
         <span>
@@ -257,6 +262,7 @@ export function orderDetailPage() {
       <div class="order-detail-hero-meta">
         <span><small>下单时间</small><b>${order.time}</b></span>
         <span><small>${order.status === "待付款" ? "待支付" : "实付款"}</small><b>￥${order.paid}</b></span>
+        <span><small>评价状态</small><b>${order.reviewStatus || "未评价"}</b></span>
       </div>
     </section>
     <section class="order-detail-card">
