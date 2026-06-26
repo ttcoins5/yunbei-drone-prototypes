@@ -7,6 +7,7 @@ function reqField(key, label, type = "text", required = false, extra = {}) {
     placeholder: extra.placeholder || (type === "image" ? `上传${label}` : `请输入${label}`),
     options: extra.options,
     visibleWhen: extra.visibleWhen,
+    subForms: extra.subForms,
     sort: extra.sort || 1
   };
 }
@@ -197,7 +198,20 @@ state.products = [
   productItem("p2", "无人机物流服务", "无人机服务", productFields([
     reqField("contactName", "登记联系人", "text", true),
     reqField("contactPhone", "联系电话", "text", true),
-    reqField("customerType", "客户类型", "select", true, { options: ["个人", "企业", "医院/园区", "政府机构"] }),
+    reqField("customerType", "客户类型", "select", true, {
+      options: ["个人", "企业", "医院/园区", "政府机构"],
+      subForms: {
+        "个人": [
+          { key: "personalName", label: "姓名", type: "text", required: true, placeholder: "请输入姓名", sort: 1 },
+          { key: "personalPhone", label: "手机号", type: "text", required: true, placeholder: "请输入手机号", sort: 2 }
+        ],
+        "企业": [
+          { key: "companyName", label: "企业名称", type: "text", required: true, placeholder: "请输入企业名称", sort: 1 },
+          { key: "companyContact", label: "企业联系人", type: "text", required: true, placeholder: "请输入联系人", sort: 2 },
+          { key: "creditCode", label: "统一社会信用代码", type: "text", required: false, placeholder: "请输入统一社会信用代码", sort: 3 }
+        ]
+      }
+    }),
     reqField("companyName", "企业/机构名称", "text", false, { placeholder: "企业、医院、园区或政府机构请填写", visibleWhen: { fieldKey: "customerType", equals: "企业" } }),
     reqField("cargoType", "货物类型", "text", true),
     reqField("cargoWeight", "货物重量", "text", true),
@@ -322,9 +336,11 @@ function normalizeRequirementField(field, index) {
   };
   if (type === "select") {
     normalized.options = Array.isArray(field.options) ? field.options : [];
+    normalized.subForms = normalizeRequirementSubForms(field.subForms, normalized.options);
     delete normalized.unit;
   } else {
     delete normalized.options;
+    delete normalized.subForms;
     delete normalized.unit;
   }
   if (field.visibleWhen?.fieldKey && field.visibleWhen?.equals) {
@@ -335,6 +351,28 @@ function normalizeRequirementField(field, index) {
   } else {
     delete normalized.visibleWhen;
   }
+  return normalized;
+}
+
+function normalizeRequirementSubForms(subForms = {}, options = []) {
+  return options.reduce((result, option) => {
+    const fields = Array.isArray(subForms?.[option]) ? subForms[option] : [];
+    result[option] = fields.map((field, index) => normalizeSubFormField(field, index));
+    return result;
+  }, {});
+}
+
+function normalizeSubFormField(field = {}, index = 0) {
+  const type = requirementFieldTypes.includes(field.type) ? field.type : "text";
+  const normalized = {
+    key: field.key || `subField${Date.now()}${index}`,
+    label: field.label || "子字段",
+    type,
+    required: Boolean(field.required),
+    placeholder: field.placeholder || (type === "image" ? `上传${field.label || "子字段"}` : `请输入${field.label || "子字段"}`),
+    sort: field.sort || index + 1
+  };
+  if (type === "select") normalized.options = Array.isArray(field.options) ? field.options : [];
   return normalized;
 }
 
@@ -666,6 +704,13 @@ function requirementFieldValue(field, key, fallback = "") {
   return value === undefined || value === null ? fallback : value;
 }
 
+function splitRequirementOptions(value) {
+  return String(value || "")
+    .split(/\s+\/\s+/)
+    .map(item => item.trim())
+    .filter(Boolean);
+}
+
 function requirementFieldTitle(field) {
   return `${field.label || "未命名字段"}（${field.key}）`;
 }
@@ -689,6 +734,102 @@ function requirementConditionClass(fields, field) {
   if (field.visibleWhen?.fieldKey && field.visibleWhen?.equals) return " is-set";
   if (firstSelectField?.key === field.key) return " is-source";
   return "";
+}
+
+function requirementSubFormSummary(field) {
+  if (field.type !== "select") return "仅下拉框可绑定";
+  const options = field.options || [];
+  if (!options.length) return "先填写下拉选项";
+  const count = options.reduce((total, option) => total + ((field.subForms?.[option] || []).length), 0);
+  return count ? `已绑定 ${count} 个子字段` : "绑定子表单";
+}
+
+function requirementSubFormModal(product, index, activeOption = "") {
+  const fields = activeRequirementFields(product)
+    .map((field, fieldIndex) => ({ ...field, sort: field.sort || fieldIndex + 1 }))
+    .sort((a, b) => a.sort - b.sort);
+  const field = fields[index];
+  if (!field || field.type !== "select") return;
+  const options = field.options || [];
+  if (!options.length) {
+    toast("请先填写下拉选项");
+    return;
+  }
+  const option = options.includes(activeOption) ? activeOption : options[0];
+  const subForms = normalizeRequirementSubForms(field.subForms, options);
+  const subFields = subForms[option] || [];
+  const tabs = options.map(item => {
+    const count = (subForms[item] || []).length;
+    return `<button class="subform-option${item === option ? " active" : ""}" data-action="switch-requirement-subform-option" data-index="${index}" data-option="${catalogEscape(item)}">
+      <span>${catalogEscape(item)}</span><small>${count} 个字段</small>
+    </button>`;
+  }).join("");
+  const rows = subFields.map((subField, subIndex) => [
+    `<span class="requirement-sort">${subIndex + 1}</span>`,
+    `<input data-field="subform-label" data-sub-index="${subIndex}" value="${catalogEscape(subField.label)}" placeholder="字段名称">`,
+    `<input data-field="subform-key" data-sub-index="${subIndex}" value="${catalogEscape(subField.key)}" placeholder="字段Key">`,
+    `<select data-field="subform-type" data-sub-index="${subIndex}">
+      ${requirementFieldTypes.map(type => `<option value="${type}"${subField.type === type ? " selected" : ""}>${fieldTypeLabel(type)}</option>`).join("")}
+    </select>`,
+    `<label class="requirement-required"><input type="checkbox" data-field="subform-required" data-sub-index="${subIndex}"${subField.required ? " checked" : ""}> 必填</label>`,
+    `<input data-field="subform-placeholder" data-sub-index="${subIndex}" value="${catalogEscape(subField.placeholder)}" placeholder="提示文案">`,
+    `<div class="row-actions">${button("删除", "delete-requirement-subform-field", "small danger", `data-sub-index="${subIndex}"`)}</div>`
+  ]);
+  modal("绑定子表单", `<div class="subform-modal" data-requirement-index="${index}" data-active-option="${catalogEscape(option)}">
+    <div class="subform-head">
+      <div>
+        <p class="muted">当前下拉字段</p>
+        <h3>${catalogEscape(field.label || "未命名字段")}</h3>
+      </div>
+      <span class="tag blue">${options.length} 个选项</span>
+    </div>
+    <div class="subform-layout">
+      <aside class="subform-sidebar">
+        <strong>主体分类</strong>
+        ${tabs}
+      </aside>
+      <section class="subform-editor">
+        <div class="subform-editor-head">
+          <div>
+            <p class="muted">正在配置</p>
+            <h3>${catalogEscape(option)}</h3>
+          </div>
+          ${button("添加字段", "add-requirement-subform-field", "primary")}
+        </div>
+        <div class="table-scroll subform-table-wrap">${rows.length ? table(["排序","字段名称","字段Key","组件类型","必填","提示文案","操作"], rows, "subform-table") : `<p class="empty">当前选项暂无子字段，点击「添加字段」开始配置。</p>`}</div>
+        <p class="muted subform-tip">保存后，该下拉选项会带上自己的子字段配置；例如「客户类型=个人」和「客户类型=企业」可分别维护不同字段。</p>
+      </section>
+    </div>
+  </div>`, `${button("取消","close-modal")}${button("保存子表单","save-requirement-subform","primary")}`, true);
+}
+
+function readRequirementSubFormFromModal(product) {
+  const overlay = document.getElementById("overlay");
+  const root = overlay.querySelector(".subform-modal");
+  if (!root) return null;
+  const index = Number(root.dataset.requirementIndex);
+  const option = root.dataset.activeOption || "";
+  const field = product.requirementFields[index];
+  if (!field || field.type !== "select" || !option) return null;
+  const options = field.options || [];
+  field.subForms = normalizeRequirementSubForms(field.subForms, options);
+  const rows = [...root.querySelectorAll("[data-field='subform-label']")];
+  field.subForms[option] = rows.map((input, subIndex) => {
+    const type = root.querySelector(`[data-field="subform-type"][data-sub-index="${subIndex}"]`)?.value || "text";
+    const label = input.value.trim() || "子字段";
+    const key = root.querySelector(`[data-field="subform-key"][data-sub-index="${subIndex}"]`)?.value.trim() || `${option}Field${subIndex + 1}`;
+    const placeholder = root.querySelector(`[data-field="subform-placeholder"][data-sub-index="${subIndex}"]`)?.value.trim() || (type === "image" ? `上传${label}` : `请输入${label}`);
+    return normalizeSubFormField({
+      key,
+      label,
+      type,
+      required: Boolean(root.querySelector(`[data-field="subform-required"][data-sub-index="${subIndex}"]`)?.checked),
+      placeholder,
+      sort: subIndex + 1
+    }, subIndex);
+  });
+  product.requirementFields[index] = normalizeRequirementField(field, index);
+  return { index, option };
 }
 
 function requirementConditionModal(product, index) {
@@ -753,10 +894,11 @@ function requirementFieldRows(product) {
         : `<span class="requirement-option-empty">仅下拉框填写</span>`,
       `<button class="condition-link${requirementConditionClass(fields, field)}" data-action="open-requirement-condition" data-index="${index}">${catalogEscape(requirementConditionSummary(fields, field))}</button>`,
       `<div class="row-actions">
+        ${button("绑定子表单", "open-requirement-subform", "small", `data-index="${index}"${field.type !== "select" || !field.options?.length ? " disabled" : ""}`)}
         ${button("上移", "move-requirement-field", "small", `data-index="${index}" data-dir="-1"${locked || index <= 0 ? " disabled" : ""}`)}
         ${button("下移", "move-requirement-field", "small", `data-index="${index}" data-dir="1"${locked || index === fields.length - 1 ? " disabled" : ""}`)}
         ${button("删除", "delete-requirement-field", "small danger", `data-index="${index}"${locked ? " disabled" : ""}`)}
-      </div>`
+      </div><span class="subform-summary">${catalogEscape(requirementSubFormSummary(field))}</span>`
     ];
   });
 }
@@ -1083,7 +1225,7 @@ function readProductFormFromPage() {
       if (!field) return;
       const value = input.value.trim();
       if (field.type === "select") {
-        field.options = value.split("/").map(item => item.trim()).filter(Boolean);
+        field.options = splitRequirementOptions(value);
       } else {
         delete field.options;
       }
@@ -1235,13 +1377,14 @@ DroneAdmin.registerModule({
     ]
   },
   "product-edit": {
-    "summary": "创建或编辑商品，配置单张商品图标、评价展示、规格价格、详情页轻量配置、需求采集字段、轻量显示条件和业务属性。",
+    "summary": "创建或编辑商品，配置单张商品图标、评价展示、规格价格、详情页轻量配置、需求采集字段、轻量显示条件、下拉选项子表单和业务属性。",
     "operations": [
       "上传 / 替换 / 删除商品图标，用于列表封面、小程序商品卡片与商品详情页头图",
       "评价管理：分页浏览订单评价列表，多选后随「保存商品」一并生效；默认全不展示",
       "添加 / 删除规格，每个规格独立定价",
       "详情页轻量配置：维护详情页标题区、模块内容、排序和启停",
       "需求采集字段支持 V1 显示条件：当某个下拉字段选择指定选项时，显示当前字段；不做复杂规则引擎",
+      "下拉框字段支持「绑定子表单」：把当前下拉选项拆成左侧分类，并为每个选项分别维护子字段",
       "业务属性通过勾选配置：在线支付、飞手服务；下单字段统一由需求采集字段配置",
       "保存后更新商品；历史订单保留下单时属性快照"
     ],
@@ -1317,6 +1460,10 @@ DroneAdmin.registerModule({
       [
         "下拉选项",
         "仅字段类型为下拉框时填写，多个选项用斜杠或分隔符区分"
+      ],
+      [
+        "绑定子表单",
+        "仅下拉框字段可用；按选项分别配置子字段，例如个人、企业使用不同补充信息"
       ],
       [
         "显示条件",
@@ -1509,6 +1656,51 @@ DroneAdmin.registerModule({
           closeModal();
           render();
           toast("显示条件已保存");
+    },
+    "open-requirement-subform": function (target) {
+      const product = readProductFormFromPage();
+          requirementSubFormModal(product, Number(target.dataset.index));
+    },
+    "switch-requirement-subform-option": function (target) {
+      const product = activeProduct();
+          const current = readRequirementSubFormFromModal(product);
+          requirementSubFormModal(product, current?.index ?? Number(target.dataset.index), target.dataset.option);
+    },
+    "add-requirement-subform-field": function (target) {
+      const product = activeProduct();
+          const current = readRequirementSubFormFromModal(product);
+          if (!current) return;
+          const field = product.requirementFields[current.index];
+          field.subForms = normalizeRequirementSubForms(field.subForms, field.options || []);
+          const fields = field.subForms[current.option] || [];
+          fields.push(normalizeSubFormField({
+            key: `${current.option}Field${Date.now()}`,
+            label: "新子字段",
+            type: "text",
+            required: false,
+            placeholder: "请输入内容",
+            sort: fields.length + 1
+          }, fields.length));
+          field.subForms[current.option] = fields;
+          requirementSubFormModal(product, current.index, current.option);
+    },
+    "delete-requirement-subform-field": function (target) {
+      const product = activeProduct();
+          const current = readRequirementSubFormFromModal(product);
+          if (!current) return;
+          const field = product.requirementFields[current.index];
+          const fields = field.subForms?.[current.option] || [];
+          fields.splice(Number(target.dataset.subIndex), 1);
+          field.subForms[current.option] = fields.map((item, index) => normalizeSubFormField({ ...item, sort: index + 1 }, index));
+          requirementSubFormModal(product, current.index, current.option);
+    },
+    "save-requirement-subform": function (target) {
+      const product = activeProduct();
+          const current = readRequirementSubFormFromModal(product);
+          if (!current) return;
+          closeModal();
+          render();
+          toast("子表单已保存");
     },
     "save-product": function (target) {
       const product = readProductFormFromPage();

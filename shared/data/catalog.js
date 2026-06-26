@@ -6,6 +6,7 @@ function reqField(key, label, type = "text", required = false, extra = {}) {
     required,
     placeholder: extra.placeholder || (type === "image" ? `上传${label}` : `请输入${label}`),
     options: extra.options,
+    subForms: extra.subForms,
     sort: extra.sort || 1
   };
 }
@@ -301,7 +302,20 @@ export const hoistingProducts = [
   serviceProduct("logistics", "无人机物流服务", "货物信息 · 运输时效", productFields([
     reqField("contactName", "登记联系人", "text", true),
     reqField("contactPhone", "联系电话", "text", true),
-    reqField("customerType", "客户类型", "select", true, { options: ["个人", "企业", "医院/园区", "政府机构"] }),
+    reqField("customerType", "客户类型", "select", true, {
+      options: ["个人", "企业", "医院/园区", "政府机构"],
+      subForms: {
+        "个人": [
+          { key: "personalName", label: "姓名", type: "text", required: true, placeholder: "请输入姓名", sort: 1 },
+          { key: "personalPhone", label: "手机号", type: "text", required: true, placeholder: "请输入手机号", sort: 2 }
+        ],
+        "企业": [
+          { key: "companyName", label: "企业名称", type: "text", required: true, placeholder: "请输入企业名称", sort: 1 },
+          { key: "companyContact", label: "企业联系人", type: "text", required: true, placeholder: "请输入联系人", sort: 2 },
+          { key: "creditCode", label: "统一社会信用代码", type: "text", required: false, placeholder: "请输入统一社会信用代码", sort: 3 }
+        ]
+      }
+    }),
     reqField("cargoType", "货物类型", "text", true),
     reqField("cargoWeight", "货物重量", "text", true),
     reqField("cargoVolume", "货物体积"),

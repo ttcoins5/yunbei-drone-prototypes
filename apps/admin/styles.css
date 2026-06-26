@@ -355,12 +355,12 @@ td .actions .button.small { min-width: 52px; min-height: 30px; flex: 0 0 auto; p
 .requirement-template-bar label { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; }
 .requirement-template-bar select { min-height: 32px; padding: 6px 10px; border: 1px solid var(--line-dark); border-radius: 4px; background: #fff; }
 .requirement-actions { justify-content: flex-start; margin-bottom: 12px; }
-.requirement-table-wrap table { min-width: 1360px; }
+.requirement-table-wrap table { min-width: 1460px; }
 .requirement-table input, .requirement-table select { width: 100%; min-height: 32px; padding: 6px 8px; border: 1px solid var(--line-dark); border-radius: 4px; color: var(--ink); background: #fff; }
 .requirement-table th:first-child, .requirement-table td:first-child { width: 56px; text-align: center; }
 .requirement-table th:nth-child(4), .requirement-table td:nth-child(4) { width: 92px; min-width: 92px; }
 .requirement-table th:nth-child(7), .requirement-table td:nth-child(7) { width: 250px; min-width: 250px; }
-.requirement-table th:last-child, .requirement-table td:last-child { width: 210px; min-width: 210px; }
+.requirement-table th:last-child, .requirement-table td:last-child { width: 300px; min-width: 300px; }
 .requirement-sort { display: inline-grid; width: 26px; height: 26px; place-items: center; border: 1px solid #d9ecff; border-radius: 4px; color: #409eff; background: #ecf5ff; font-weight: 600; }
 .requirement-required { display: inline-flex; align-items: center; gap: 6px; color: #4f6068; white-space: nowrap; }
 .requirement-required input { width: 15px; height: 15px; }
@@ -374,6 +374,7 @@ td .actions .button.small { min-width: 52px; min-height: 30px; flex: 0 0 auto; p
 .condition-link:hover { border-color: #c6e2ff; color: #409eff; background: #ecf5ff; }
 .condition-link.is-set { color: #303133; }
 .condition-link.is-source { color: var(--muted); }
+.subform-summary { display: block; margin-top: 6px; color: var(--muted); font-size: 12px; line-height: 1.4; }
 .requirement-help { margin: 12px 0 0; line-height: 1.7; }
 .condition-modal { display: grid; gap: 18px; }
 .condition-modal p { margin: 0; line-height: 1.7; }
@@ -382,6 +383,24 @@ td .actions .button.small { min-width: 52px; min-height: 30px; flex: 0 0 auto; p
 .condition-modal select { width: 100%; min-height: 36px; padding: 7px 11px; border: 1px solid var(--line-dark); border-radius: 4px; color: var(--ink); background: #fff; }
 .condition-modal select:disabled { color: var(--muted); background: var(--soft); cursor: not-allowed; }
 .condition-modal-tip { padding-left: 76px; font-size: 13px; }
+.subform-modal { display: grid; gap: 16px; }
+.subform-head, .subform-editor-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.subform-head p, .subform-editor-head p { margin: 0 0 4px; }
+.subform-head h3, .subform-editor-head h3 { margin: 0; color: #303133; font-size: 18px; line-height: 1.4; }
+.subform-layout { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 16px; min-height: 360px; }
+.subform-sidebar { padding: 12px; border: 1px solid var(--line); border-radius: 4px; background: #f8fafc; }
+.subform-sidebar strong { display: block; margin-bottom: 10px; color: #303133; }
+.subform-option { display: grid; width: 100%; gap: 4px; margin-bottom: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 4px; color: #303133; background: #fff; text-align: left; cursor: pointer; }
+.subform-option.active { border-color: #91d5ff; color: #1677ff; background: #e6f7ff; }
+.subform-option small { color: var(--muted); font-size: 12px; }
+.subform-editor { min-width: 0; padding: 12px; border: 1px solid var(--line); border-radius: 4px; background: #fff; }
+.subform-table-wrap { margin-top: 12px; }
+.subform-table { min-width: 980px; }
+.subform-table input, .subform-table select { width: 100%; min-height: 32px; padding: 6px 8px; border: 1px solid var(--line-dark); border-radius: 4px; color: var(--ink); background: #fff; }
+.subform-table th:first-child, .subform-table td:first-child { width: 56px; text-align: center; }
+.subform-table th:nth-child(5), .subform-table td:nth-child(5) { width: 92px; min-width: 92px; }
+.subform-table th:last-child, .subform-table td:last-child { width: 90px; min-width: 90px; }
+.subform-tip { margin: 12px 0 0; line-height: 1.7; }
 .permission-matrix { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .permission-group { padding: 12px; border: 1px solid var(--line); border-radius: 4px; background: #fff; }
 .permission-group h3 { margin: 0 0 10px; color: var(--ink); font-size: 14px; }
