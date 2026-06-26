@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="293" height="293" viewBox="0 0 293 293" role="img" aria-labelledby="title" fill="none">
+  <title id="title">待服务</title>
+  <defs>
+    <linearGradient id="orderTeal" x1="56" y1="50" x2="237" y2="243" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2fcac1"/>
+      <stop offset="1" stop-color="#128ba4"/>
+    </linearGradient>
+  </defs>
+  <path d="M147 100c-25-52-82-48-101-14-15 27-2 59 29 84 23 18 49 31 61 45v35h22v-35c12-14 38-27 61-45 31-25 44-57 29-84-19-34-76-38-101 14Z" fill="url(#orderTeal)"/>
+  <path d="M73 177c12 26 35 49 63 62v-33c-17-13-41-25-63-29Z" fill="#eafbf9" opacity=".92"/>
+  <path d="M220 177c-12 26-35 49-62 62v-33c16-13 40-25 62-29Z" fill="#eafbf9" opacity=".92"/>
+  <rect x="137" y="171" width="20" height="79" rx="10" fill="#eafbf9" opacity=".92"/>
+</svg>

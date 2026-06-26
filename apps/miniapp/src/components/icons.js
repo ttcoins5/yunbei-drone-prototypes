@@ -11,5 +11,13 @@ export function serviceIcon(item) {
 }
 
 export function orderIcon(item) {
-  return `<i class="order-icon" style="--x:${item.icon}"></i>`;
+  const files = [
+    "pending-payment.svg",
+    "pending-acceptance.svg",
+    "pending-service.svg",
+    "pending-review.svg",
+    "completed.svg"
+  ];
+  const file = files[item.icon] || files[0];
+  return `<img class="order-icon" src="../../shared/assets/order-status-icons/${file}" alt="" aria-hidden="true">`;
 }

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="293" height="293" viewBox="0 0 293 293" role="img" aria-labelledby="title" fill="none">
+  <title id="title">待评价</title>
+  <defs>
+    <linearGradient id="orderTeal" x1="54" y1="48" x2="239" y2="245" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2fcac1"/>
+      <stop offset="1" stop-color="#128ba4"/>
+    </linearGradient>
+  </defs>
+  <rect x="65" y="48" width="136" height="178" rx="23" fill="url(#orderTeal)"/>
+  <rect x="96" y="79" width="71" height="17" rx="8.5" fill="#eafbf9"/>
+  <rect x="96" y="113" width="72" height="17" rx="8.5" fill="#eafbf9"/>
+  <rect x="96" y="147" width="52" height="17" rx="8.5" fill="#eafbf9"/>
+  <path d="M178 223 224 177c12-12 32-12 44 0s12 32 0 44l-46 46-59 14 15-58Z" fill="url(#orderTeal)"/>
+  <path d="m212 189 44 44" stroke="#eafbf9" stroke-width="14" stroke-linecap="round"/>
+</svg>

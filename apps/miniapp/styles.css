@@ -155,7 +155,7 @@ button { cursor: pointer; }
 .profile-card-title button { border: 0; color: #7d8f96; background: transparent; font-size: 10px; }
 .order-status-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 4px; }
 .order-status-grid button { position: relative; display: grid; min-height: 74px; gap: 3px; place-items: center; padding: 0; border: 0; color: #72858d; background: transparent; font-size: 9px; }
-.order-icon { display: block; width: 38px; height: 38px; border-radius: 12px; background: url("../../shared/assets/order-status-icons.svg") no-repeat; background-size: 190px 38px; background-position: calc(var(--x) * -38px) 0; }
+.order-icon { display: block; width: 38px; height: 38px; object-fit: contain; }
 .service-module-grid { display: grid; grid-template-columns: repeat(4,1fr); row-gap: 15px; }
 .service-module-grid button { display: grid; min-height: 62px; gap: 6px; place-items: center; padding: 0; border: 0; color: #73878f; background: transparent; font-size: 9px; }
 .service-icon { display: block; width: 42px; height: 42px; background: url("../../shared/assets/profile-service-icons-transparent.png") no-repeat; background-size: 168px 84px; background-position: calc(var(--x) * -42px) calc(var(--y) * -42px); }

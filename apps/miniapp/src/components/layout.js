@@ -1,4 +1,4 @@
-import { state } from "../state/appState.js?v=miniapp-live-20260624-report-clean-1";
+import { state } from "../state/appState.js?v=miniapp-live-20260626-rental-fields-1";
 
 function contactSheet() {
   if (!state.showContactSheet) return "";

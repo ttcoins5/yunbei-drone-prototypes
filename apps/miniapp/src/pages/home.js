@@ -1,7 +1,7 @@
-import { categories, homepageNavItems, products } from "../data/catalog.js?v=miniapp-live-20260624-report-clean-1";
-import { caseStudies } from "../data/caseStudies.js?v=miniapp-live-20260624-report-clean-1";
-import { shell } from "../components/layout.js?v=miniapp-live-20260624-report-clean-1";
-import { state } from "../state/appState.js?v=miniapp-live-20260624-report-clean-1";
+import { categories, homepageNavItems, products } from "../data/catalog.js?v=miniapp-live-20260626-rental-fields-1";
+import { caseStudies } from "../data/caseStudies.js?v=miniapp-live-20260626-rental-fields-1";
+import { shell } from "../components/layout.js?v=miniapp-live-20260626-rental-fields-1";
+import { state } from "../state/appState.js?v=miniapp-live-20260626-rental-fields-1";
 
 function stripHtml(html = "") {
   return String(html).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();

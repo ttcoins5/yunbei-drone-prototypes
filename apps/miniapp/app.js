@@ -1,9 +1,9 @@
-import { hoistingProducts } from "./src/data/catalog.js?v=miniapp-live-20260624-report-clean-1";
-import { caseStudies } from "./src/data/caseStudies.js?v=miniapp-live-20260624-report-clean-1";
-import { state } from "./src/state/appState.js?v=miniapp-live-20260624-report-clean-1";
-import { navigate, render } from "./src/router/navigation.js?v=miniapp-live-20260624-report-clean-1";
-import { toast } from "./src/utils/toast.js?v=miniapp-live-20260624-report-clean-1";
-import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=miniapp-live-20260624-report-clean-1";
+import { hoistingProducts } from "./src/data/catalog.js?v=miniapp-live-20260626-rental-fields-1";
+import { caseStudies } from "./src/data/caseStudies.js?v=miniapp-live-20260626-rental-fields-1";
+import { state } from "./src/state/appState.js?v=miniapp-live-20260626-rental-fields-1";
+import { navigate, render } from "./src/router/navigation.js?v=miniapp-live-20260626-rental-fields-1";
+import { toast } from "./src/utils/toast.js?v=miniapp-live-20260626-rental-fields-1";
+import { currentProducts, selectedRequirementTemplate } from "./src/pages/products.js?v=miniapp-live-20260626-rental-fields-1";
 
 function formatDateTime(date = new Date()) {
   const year = date.getFullYear();

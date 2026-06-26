@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="293" height="293" viewBox="0 0 293 293" role="img" aria-labelledby="title" fill="none">
+  <title id="title">已完成</title>
+  <defs>
+    <linearGradient id="orderTeal" x1="57" y1="47" x2="236" y2="246" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2fcac1"/>
+      <stop offset="1" stop-color="#128ba4"/>
+    </linearGradient>
+  </defs>
+  <rect x="70" y="55" width="153" height="187" rx="25" fill="url(#orderTeal)"/>
+  <path d="M122 50c0-13 10-23 23-23h19c13 0 23 10 23 23v20h-65V50Z" fill="url(#orderTeal)"/>
+  <rect x="110" y="63" width="90" height="28" rx="14" fill="#eafbf9"/>
+  <path d="m108 153 35 35 65-74" stroke="#eafbf9" stroke-width="21" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

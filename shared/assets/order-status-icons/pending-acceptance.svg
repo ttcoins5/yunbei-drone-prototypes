@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="293" height="293" viewBox="0 0 293 293" role="img" aria-labelledby="title" fill="none">
+  <title id="title">待接单</title>
+  <defs>
+    <linearGradient id="orderTeal" x1="55" y1="49" x2="238" y2="244" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2fcac1"/>
+      <stop offset="1" stop-color="#128ba4"/>
+    </linearGradient>
+  </defs>
+  <rect x="67" y="54" width="132" height="181" rx="24" fill="url(#orderTeal)"/>
+  <rect x="100" y="84" width="65" height="18" rx="9" fill="#eafbf9"/>
+  <rect x="99" y="119" width="47" height="16" rx="8" fill="#eafbf9"/>
+  <circle cx="182" cy="183" r="59" fill="url(#orderTeal)"/>
+  <circle cx="182" cy="183" r="43" fill="#eafbf9"/>
+  <path d="M182 153v35l28 18" stroke="url(#orderTeal)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

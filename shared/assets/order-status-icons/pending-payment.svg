@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="293" height="293" viewBox="0 0 293 293" role="img" aria-labelledby="title" fill="none">
+  <title id="title">待付款</title>
+  <defs>
+    <linearGradient id="orderTeal" x1="56" y1="50" x2="237" y2="243" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2fcac1"/>
+      <stop offset="1" stop-color="#128ba4"/>
+    </linearGradient>
+  </defs>
+  <rect x="64" y="61" width="151" height="171" rx="25" fill="url(#orderTeal)"/>
+  <path d="M199 103h22c16 0 29 13 29 29v45c0 16-13 29-29 29h-22c-18 0-32-14-32-32v-39c0-18 14-32 32-32Z" fill="url(#orderTeal)"/>
+  <rect x="185" y="125" width="50" height="58" rx="14" fill="#eafbf9"/>
+  <circle cx="210" cy="154" r="8" fill="url(#orderTeal)"/>
+</svg>

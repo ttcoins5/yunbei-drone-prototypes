@@ -6,6 +6,7 @@ function reqField(key, label, type = "text", required = false, extra = {}) {
     required,
     placeholder: extra.placeholder || (type === "image" ? `上传${label}` : `请输入${label}`),
     options: extra.options,
+    visibleWhen: extra.visibleWhen,
     sort: extra.sort || 1
   };
 }
@@ -197,6 +198,7 @@ state.products = [
     reqField("contactName", "登记联系人", "text", true),
     reqField("contactPhone", "联系电话", "text", true),
     reqField("customerType", "客户类型", "select", true, { options: ["个人", "企业", "医院/园区", "政府机构"] }),
+    reqField("companyName", "企业/机构名称", "text", false, { placeholder: "企业、医院、园区或政府机构请填写", visibleWhen: { fieldKey: "customerType", equals: "企业" } }),
     reqField("cargoType", "货物类型", "text", true),
     reqField("cargoWeight", "货物重量", "text", true),
     reqField("cargoVolume", "货物体积"),
@@ -236,6 +238,7 @@ state.products = [
     reqField("timeSlot", "表演时段", "text", true),
     reqField("backupDate", "是否备用雨天/延期日期"),
     reqField("scale", "表演规模", "select", true, { options: ["100 架以内", "100-300 架", "300 架以上", "待方案确认"] }),
+    reqField("patternBrief", "图案/文字需求", "text", false, { placeholder: "请输入编队图案、文字或创意说明", visibleWhen: { fieldKey: "scale", equals: "300 架以上" } }),
     reqField("exampleImage", "例图", "image")
   ]), "填写表演目的、日期、时段和规模，平台根据活动需求制定无人机表演方案。", "0", true, productIcon("icon-performance.png")),
   productItem("p5", "无人机托管服务", "无人机服务", productFields([
@@ -324,7 +327,31 @@ function normalizeRequirementField(field, index) {
     delete normalized.options;
     delete normalized.unit;
   }
+  if (field.visibleWhen?.fieldKey && field.visibleWhen?.equals) {
+    normalized.visibleWhen = {
+      fieldKey: String(field.visibleWhen.fieldKey),
+      equals: String(field.visibleWhen.equals)
+    };
+  } else {
+    delete normalized.visibleWhen;
+  }
   return normalized;
+}
+
+function normalizeRequirementConditions(fields) {
+  const firstSelectIndex = fields.findIndex(field => field.type === "select");
+  const firstSelectField = firstSelectIndex >= 0 ? fields[firstSelectIndex] : null;
+  return fields.map((field, fieldIndex) => {
+    const condition = field.visibleWhen;
+    if (!condition) return field;
+    const validOption = firstSelectField?.options?.includes(condition.equals);
+    if (!firstSelectField || fieldIndex <= firstSelectIndex || condition.fieldKey !== firstSelectField.key || !validOption) {
+      const cleaned = { ...field };
+      delete cleaned.visibleWhen;
+      return cleaned;
+    }
+    return field;
+  });
 }
 
 function isLockedRequirementField(field, index) {
@@ -453,7 +480,7 @@ function ensureProductShape(product) {
   if (!product.detailPage.cta) product.detailPage.cta = { text: product.detailPage.templateType === "external" ? "去配送" : "立即下单", actionType: product.detailPage.templateType === "external" ? "external" : "order" };
   if (!Array.isArray(product.detailPage.sections)) product.detailPage.sections = [];
   if (!product.requirementFields?.length) product.requirementFields = defaultRequirementFields();
-  product.requirementFields = product.requirementFields.map(normalizeRequirementField);
+  product.requirementFields = normalizeRequirementConditions(product.requirementFields.map(normalizeRequirementField));
   return product;
 }
 
@@ -639,6 +666,74 @@ function requirementFieldValue(field, key, fallback = "") {
   return value === undefined || value === null ? fallback : value;
 }
 
+function requirementFieldTitle(field) {
+  return `${field.label || "未命名字段"}（${field.key}）`;
+}
+
+function requirementConditionSummary(fields, field) {
+  const firstSelectIndex = fields.findIndex(item => item.type === "select");
+  const fieldIndex = fields.findIndex(item => item.key === field.key);
+  const firstSelectField = firstSelectIndex >= 0 ? fields[firstSelectIndex] : null;
+  if (field.visibleWhen?.fieldKey && field.visibleWhen?.equals) {
+    const parent = fields.find(item => item.key === field.visibleWhen.fieldKey);
+    return `${parent?.label || field.visibleWhen.fieldKey}=${field.visibleWhen.equals}`;
+  }
+  if (firstSelectField?.key === field.key) return "-";
+  if (firstSelectIndex >= 0 && fieldIndex < firstSelectIndex) return "始终显示";
+  return "始终显示";
+}
+
+function requirementConditionClass(fields, field) {
+  const firstSelectIndex = fields.findIndex(item => item.type === "select");
+  const firstSelectField = firstSelectIndex >= 0 ? fields[firstSelectIndex] : null;
+  if (field.visibleWhen?.fieldKey && field.visibleWhen?.equals) return " is-set";
+  if (firstSelectField?.key === field.key) return " is-source";
+  return "";
+}
+
+function requirementConditionModal(product, index) {
+  const fields = activeRequirementFields(product)
+    .map((field, fieldIndex) => ({ ...field, sort: field.sort || fieldIndex + 1 }))
+    .sort((a, b) => a.sort - b.sort);
+  const field = fields[index];
+  if (!field) return;
+  const firstSelectIndex = fields.findIndex(item => item.type === "select" && item.options?.length);
+  const firstSelectField = firstSelectIndex >= 0 ? fields[firstSelectIndex] : null;
+  const selectFields = firstSelectField && index > firstSelectIndex ? [firstSelectField] : [];
+  const parentKey = field.visibleWhen?.fieldKey || "";
+  const selectedParent = selectFields.find(item => item.key === parentKey);
+  const selectedOption = field.visibleWhen?.equals || "";
+  const parentOptions = selectFields
+    .map(item => `<option value="${catalogEscape(item.key)}"${item.key === parentKey ? " selected" : ""}>${catalogEscape(requirementFieldTitle(item))}</option>`)
+    .join("");
+  const optionOptions = selectedParent?.options
+    ?.map(option => `<option value="${catalogEscape(option)}"${option === selectedOption ? " selected" : ""}>${catalogEscape(option)}</option>`)
+    .join("") || "";
+  modal("显示条件", `<div class="condition-modal" data-requirement-condition-index="${index}">
+    <p class="muted">当前字段：<strong>${catalogEscape(field.label || "未命名字段")}</strong></p>
+    <label>
+      <span>字段</span>
+      <select id="requirement-condition-parent" data-action="requirement-condition-parent"${selectFields.length ? "" : " disabled"}>
+        <option value="">始终显示</option>
+        ${parentOptions}
+      </select>
+    </label>
+    <label>
+      <span>条件</span>
+      <select id="requirement-condition-operator" disabled>
+        <option value="equals">等于</option>
+      </select>
+    </label>
+    <label>
+      <span>值</span>
+      <select id="requirement-condition-option"${selectedParent ? "" : " disabled"}>
+        ${selectedParent ? `<option value="">请选择</option>${optionOptions}` : `<option value="">先选择字段</option>`}
+      </select>
+    </label>
+    <p class="muted condition-modal-tip">V1 只针对当前商品的第一个下拉框配置显示条件；清空字段后即恢复为始终显示。</p>
+  </div>`, `${button("取消","close-modal")}${button("清空条件","clear-requirement-condition")}${button("确定","save-requirement-condition","primary")}`);
+}
+
 function requirementFieldRows(product) {
   const fields = activeRequirementFields(product)
     .map((field, index) => ({ ...field, sort: field.sort || index + 1 }))
@@ -656,6 +751,7 @@ function requirementFieldRows(product) {
       field.type === "select"
         ? `<input data-field="requirement-extra" data-index="${index}" value="${requirementFieldValue(field, "options")}" placeholder="选项用 / 分隔">`
         : `<span class="requirement-option-empty">仅下拉框填写</span>`,
+      `<button class="condition-link${requirementConditionClass(fields, field)}" data-action="open-requirement-condition" data-index="${index}">${catalogEscape(requirementConditionSummary(fields, field))}</button>`,
       `<div class="row-actions">
         ${button("上移", "move-requirement-field", "small", `data-index="${index}" data-dir="-1"${locked || index <= 0 ? " disabled" : ""}`)}
         ${button("下移", "move-requirement-field", "small", `data-index="${index}" data-dir="1"${locked || index === fields.length - 1 ? " disabled" : ""}`)}
@@ -666,7 +762,7 @@ function requirementFieldRows(product) {
 }
 
 function setProductRequirementFields(product, fields) {
-  product.requirementFields = fields.map((field, index) => normalizeRequirementField({ ...field, sort: index + 1 }, index));
+  product.requirementFields = normalizeRequirementConditions(fields.map((field, index) => normalizeRequirementField({ ...field, sort: index + 1 }, index)));
 }
 
 function ensureCustomRequirementFields(product) {
@@ -684,8 +780,8 @@ function requirementFieldsPanel(product) {
       <div class="toolbar requirement-actions">
         ${button("新增字段", "add-requirement-field", "primary")}
       </div>
-      <div class="table-scroll requirement-table-wrap">${table(["排序","字段名称","字段类型","必填","提示文案","下拉选项","操作"], rows, "requirement-table")}</div>
-      <p class="muted requirement-help">字段由当前商品单独维护。首版字段类型仅支持文本、下拉框、图片；不支持条件字段、字段联动和自动报价。</p>
+      <div class="table-scroll requirement-table-wrap">${table(["排序","字段名称","字段类型","必填","提示文案","下拉选项","显示条件","操作"], rows, "requirement-table")}</div>
+      <p class="muted requirement-help">点击「显示条件」弹出轻量配置。V1 仅针对当前商品的第一个下拉框做「字段 = 选项」判断；不支持多条件组合、公式、跨商品规则或自动报价。</p>
     </div>
   </div>`);
 }
@@ -992,7 +1088,21 @@ function readProductFormFromPage() {
         delete field.options;
       }
     });
-    product.requirementFields = product.requirementFields.map(normalizeRequirementField);
+    page.querySelectorAll('[data-field="requirement-condition-parent"]').forEach(input => {
+      const index = Number(input.dataset.index);
+      const field = product.requirementFields[index];
+      if (!field) return;
+      const parentKey = input.value.trim();
+      const option = page.querySelector(`[data-field="requirement-condition-option"][data-index="${index}"]`)?.value.trim() || "";
+      const parent = product.requirementFields.find(item => item.key === parentKey);
+      const nextOption = option || parent?.options?.[0] || "";
+      if (parentKey && nextOption) {
+        field.visibleWhen = { fieldKey: parentKey, equals: nextOption };
+      } else {
+        delete field.visibleWhen;
+      }
+    });
+    product.requirementFields = normalizeRequirementConditions(product.requirementFields.map(normalizeRequirementField));
   }
   product.detailPage = readDetailPageFormFromPage(product);
   return product;
@@ -1125,12 +1235,13 @@ DroneAdmin.registerModule({
     ]
   },
   "product-edit": {
-    "summary": "创建或编辑商品，配置单张商品图标、评价展示、规格价格、详情页轻量配置、需求采集字段和业务属性。",
+    "summary": "创建或编辑商品，配置单张商品图标、评价展示、规格价格、详情页轻量配置、需求采集字段、轻量显示条件和业务属性。",
     "operations": [
       "上传 / 替换 / 删除商品图标，用于列表封面、小程序商品卡片与商品详情页头图",
       "评价管理：分页浏览订单评价列表，多选后随「保存商品」一并生效；默认全不展示",
       "添加 / 删除规格，每个规格独立定价",
       "详情页轻量配置：维护详情页标题区、模块内容、排序和启停",
+      "需求采集字段支持 V1 显示条件：当某个下拉字段选择指定选项时，显示当前字段；不做复杂规则引擎",
       "业务属性通过勾选配置：在线支付、飞手服务；下单字段统一由需求采集字段配置",
       "保存后更新商品；历史订单保留下单时属性快照"
     ],
@@ -1206,6 +1317,10 @@ DroneAdmin.registerModule({
       [
         "下拉选项",
         "仅字段类型为下拉框时填写，多个选项用斜杠或分隔符区分"
+      ],
+      [
+        "显示条件",
+        "默认始终显示；V1 可选择一个下拉字段和一个选项，表示当前字段仅在该选项被选中时展示"
       ],
       [
         "是否在线支付",
@@ -1364,6 +1479,37 @@ DroneAdmin.registerModule({
             render();
           }
     },
+    "open-requirement-condition": function (target) {
+      const product = readProductFormFromPage();
+          requirementConditionModal(product, Number(target.dataset.index));
+    },
+    "clear-requirement-condition": function (target) {
+      const product = activeProduct();
+          const overlay = document.getElementById("overlay");
+          const index = Number(overlay.querySelector(".condition-modal")?.dataset.requirementConditionIndex);
+          if (product.requirementFields[index]) {
+            delete product.requirementFields[index].visibleWhen;
+            product.requirementFields = normalizeRequirementConditions(product.requirementFields.map(normalizeRequirementField));
+          }
+          closeModal();
+          render();
+          toast("显示条件已清空");
+    },
+    "save-requirement-condition": function (target) {
+      const product = activeProduct();
+          const overlay = document.getElementById("overlay");
+          const index = Number(overlay.querySelector(".condition-modal")?.dataset.requirementConditionIndex);
+          const field = product.requirementFields[index];
+          if (!field) return;
+          const parentKey = overlay.querySelector("#requirement-condition-parent")?.value || "";
+          const option = overlay.querySelector("#requirement-condition-option")?.value || "";
+          if (parentKey && option) field.visibleWhen = { fieldKey: parentKey, equals: option };
+          else delete field.visibleWhen;
+          product.requirementFields = normalizeRequirementConditions(product.requirementFields.map(normalizeRequirementField));
+          closeModal();
+          render();
+          toast("显示条件已保存");
+    },
     "save-product": function (target) {
       const product = readProductFormFromPage();
           if (!product.name.trim()) {
@@ -1438,8 +1584,25 @@ DroneAdmin.registerModule({
           ensureCustomRequirementFields(product);
           const field = product.requirementFields[Number(event.target.dataset.index)];
           if (field) field.type = event.target.value;
-          product.requirementFields = product.requirementFields.map(normalizeRequirementField);
+          product.requirementFields = normalizeRequirementConditions(product.requirementFields.map(normalizeRequirementField));
           render();
+          return;
+    },
+    "requirement-condition-parent": function (target) {
+      const product = activeProduct();
+          const overlay = document.getElementById("overlay");
+          const index = Number(overlay.querySelector(".condition-modal")?.dataset.requirementConditionIndex);
+          const fields = activeRequirementFields(product);
+          const parent = fields.find(field => field.key === event.target.value);
+          const optionSelect = overlay.querySelector("#requirement-condition-option");
+          if (!optionSelect) return;
+          if (!parent?.options?.length) {
+            optionSelect.innerHTML = `<option value="">先选择字段</option>`;
+            optionSelect.disabled = true;
+          } else {
+            optionSelect.innerHTML = `<option value="">请选择</option>${parent.options.map(option => `<option value="${catalogEscape(option)}">${catalogEscape(option)}</option>`).join("")}`;
+            optionSelect.disabled = false;
+          }
           return;
     },
     "change-detail-template": function (target) {
